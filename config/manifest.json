@@ -1,0 +1,39 @@
+{
+  "id": "/SIRA-FP/index.html",
+  "name": "SIRA-FP",
+  "short_name": "SIRA-FP",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./assets/img/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/img/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./assets/img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Vista de Escritorio SIRA-FP"
+    },
+    {
+      "src": "./assets/img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "label": "Vista Móvil SIRA-FP"
+    }
+  ]
+}

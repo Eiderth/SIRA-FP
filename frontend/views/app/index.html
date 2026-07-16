@@ -1,0 +1,61 @@
+<div class="vh-100 vw-100 d-flex gap-2 p-1 ps-0 bg-dark">
+    <nav 
+     class="h-100 p-4 rounded-5 d-flex flex-column gap-4 rounded-start-0 flex-shrink-0 text-white bg-dark" style="width: 240px;"
+    > 
+        <h1 class="text-white fs-4 mb-4 px-2">
+            Sistema Peñalver
+        </h1>
+
+        <div class="d-flex flex-column gap-2">
+          
+            <button 
+             type="button" 
+             id="btn-dashboard" 
+             class="btn btn-outline-light border-0 text-start fs-5 py-3 shadow-sm"
+            >
+                Dashboard
+            </button>
+            
+            <button 
+             type="button" 
+             id="btn-registro" 
+             class="btn btn-outline-light border-0 text-start fs-5 py-3 shadow-sm"
+            >
+                Registro
+            </button>
+
+            <button 
+             type="button" 
+             id="btn-reporte" 
+             class="btn btn-outline-light border-0 text-start fs-5 py-3 shadow-sm"
+            >
+                Reporte
+            </button>
+
+            <button 
+             type="button" 
+             id="btn-usuarios" 
+             class="btn btn-outline-warning border-0 text-start fs-5 py-3 shadow-sm d-none">
+                Gestionar Usuarios
+            </button>
+        </div>
+
+        <div class="mt-auto">
+            <button 
+             type="button"
+             id="btn-salir" 
+             class="btn btn-danger w-100 rounded-3 py-2"
+            >
+                Salir
+            </button>
+        </div>
+    </nav>
+
+    <!-- main encargado de hacer los renderizados -->
+    <main 
+     id="root-app" 
+     class="flex-grow-1 h-100 d-flex flex-column overflow-auto rounded-4 fade show bg-light border-3 border-dark"
+    >
+
+    </main>
+</div>

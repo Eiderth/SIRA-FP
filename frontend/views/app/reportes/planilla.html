@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Planilla Oficial</title>
+    <link rel="stylesheet" href="../../assets/bootstrap/css/bootstrap.min.css">
+    <style>
+        body { font-size: 14px; background-color: #fff; color: #000; padding: 20px; }
+        .planilla-header { border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+        .seccion-titulo { background-color: #f2f2f2; font-weight: bold; padding: 5px 10px; margin-top: 15px; border: 1px solid #ddd; }
+        @media print { .no-print { display: none !important; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="planilla-header text-center">
+        <h5 class="m-0 fw-bold">REPÚBLICA BOLIVARIANA DE VENEZUELA</h5>
+        <h6 class="m-0 text-secondary">U.E. FERNANDO PEÑALVER</h6>
+        <h4 class="fw-bold mt-2 text-dark">PLANILLA OFICIAL DE INSCRIPCIÓN</h4>
+        <span class="badge bg-dark">Periodo: <span id="pl-periodo"></span></span>
+    </div>
+
+    <div class="seccion-titulo">1. DATOS ESCOLARES ASIGNADOS</div>
+    <div class="row p-2 g-2">
+        <div class="col-4"><strong>Nivel:</strong> <span id="pl-nivel"></span></div>
+        <div class="col-4"><strong>Grado:</strong> <span id="pl-grado"></span></div>
+        <div class="col-4"><strong>Sección:</strong> <span id="pl-seccion"></span></div>
+        <div class="col-6"><strong>Tipo Ingreso:</strong> <span id="pl-ingreso"></span></div>
+    </div>
+
+    <div class="seccion-titulo">2. DATOS PERSONALES DEL ESTUDIANTE</div>
+    <div class="row p-2 g-2">
+        <div class="col-6"><strong>Nombres:</strong> <span id="pl-nombres"></span></div>
+        <div class="col-6"><strong>Apellidos:</strong> <span id="pl-apellidos"></span></div>
+        <div class="col-4"><strong>C.I:</strong> <span id="pl-ci"></span></div>
+        <div class="col-4"><strong>C. Escolar:</strong> <span id="pl-escolar"></span></div>
+        <div class="col-4"><strong>Fecha Nac:</strong> <span id="pl-nacimiento"></span></div>
+    </div>
+
+    <div class="seccion-titulo">3. REPRESENTANTE LEGAL</div>
+    <div class="row p-2 g-2">
+        <div class="col-6"><strong>Nombre:</strong> <span id="pl-rep-nombre"></span></div>
+        <div class="col-6"><strong>C.I:</strong> <span id="pl-rep-ci"></span></div>
+        <div class="col-6"><strong>Parentesco:</strong> <span id="pl-rep-parentesco"></span></div>
+    </div>
+</div>
+</body>
+</html>

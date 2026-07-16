@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.i Fernando Peñalver</title>
+
+    <link rel="stylesheet" href="./frontend/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./frontend/assets/css/custom-styles.css">
+    <link rel="icon" type="image/png" href="./frontend/assets/img/icon-512.png">
+
+   <!--  <link rel="manifest"  href="./config/manifest.json">
+    <meta name="theme-color" content="#000000">
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./config/sw.js')
+                    .catch((err) => console.error('Error al registrar el SW', err));
+            });
+        }
+    </script> -->
+</head>
+<body>
+
+    <div 
+     id="notificacion" 
+     class="bg-light position-fixed start-50 z-3 p-3 rounded-4  fw-semibold shadow d-flex align-items-center gap-4" 
+     style="
+        top: 20px;
+        transform: translate(-50%, -200%);
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+     "
+    ></div>
+
+    <div id="root" class="fade show"></div>
+
+    
+    <script type="module" src="./script.js"></script>    
+    
+    <script src="./frontend/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="./frontend/assets/js/index.js"></script>
+
+</body>
+</html>
+
