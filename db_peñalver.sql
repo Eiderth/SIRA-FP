@@ -218,7 +218,17 @@ CREATE TABLE materia (
 CREATE TABLE profesor (
     id INT(11) PRIMARY KEY AUTO_INCREMENT,
     persona_id INT(11) NOT NULL,
+    estado ENUM('Activo', 'Inactivo') NOT NULL DEFAULT 'Activo',
     FOREIGN KEY (persona_id) REFERENCES persona(id) ON DELETE RESTRICT
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE periodo_academico (
+    id INT(11) PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(20) NOT NULL UNIQUE,
+    estado ENUM('Activo', 'Cerrado') NOT NULL DEFAULT 'Activo',
+    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE materia_profesor(
@@ -231,29 +241,23 @@ CREATE TABLE materia_profesor(
     FOREIGN KEY (materia_id) REFERENCES materia(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE periodo_academico (
+CREATE TABLE seccion_profe_periodo (
     id INT(11) PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(20) NOT NULL UNIQUE,
-    estado ENUM('Activo', 'Cerrado') NOT NULL DEFAULT 'Activo',
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE seccion_profe (
-    id INT(11) PRIMARY KEY AUTO_INCREMENT,
-    profesor_id INT(11) NOT NULL,
     seccion_id INT(11) NOT NULL,
     grado_id INT(11) NOT NULL,
+    profesor_id INT(11) NOT NULL,
     periodo_id INT(11) NOT NULL,
+    materia_id INT(11) DEFAULT NULL,
 
-    FOREIGN KEY (profesor_id) REFERENCES profesor(id) ON DELETE RESTRICT,
     FOREIGN KEY (seccion_id) REFERENCES seccion(id) ON DELETE RESTRICT,
     FOREIGN KEY (grado_id) REFERENCES grado(id) ON DELETE RESTRICT,
-    FOREIGN KEY (periodo_id) REFERENCES periodo_academico(id) ON DELETE RESTRICT
-
+    FOREIGN KEY (profesor_id) REFERENCES profesor(id) ON DELETE RESTRICT,
+    FOREIGN KEY (periodo_id) REFERENCES periodo_academico(id) ON DELETE RESTRICT,
+    FOREIGN KEY (materia_id) REFERENCES materia(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- =========================================================================
--- 5. MATRÍCULA Y EVALUACIONES (Tablas Transaccionales con Claves Compuestas)
+-- 5. MATRÍCULA Y EVALUACIONES 
 -- =========================================================================
 
 CREATE TABLE inscripcion (
@@ -262,8 +266,8 @@ CREATE TABLE inscripcion (
 
     PRIMARY KEY id (periodo_id, estudiante_id), 
     
-    grado_assigned_id INT(11) NOT NULL,
-    seccion_assigned_id INT(11) NOT NULL,
+    grado_asignado_id INT(11) NOT NULL,
+    seccion_asignada_id INT(11) NOT NULL,
 
     tipo_ingreso ENUM('Nuevo Ingreso', 'Regular', 'Repitiente') NOT NULL,
     colegio_procedencia VARCHAR(255),
@@ -271,8 +275,8 @@ CREATE TABLE inscripcion (
     fecha_inscripcion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (periodo_id) REFERENCES periodo_academico(id) ON DELETE RESTRICT,
-    FOREIGN KEY (grado_assigned_id) REFERENCES grado(id) ON DELETE RESTRICT,
-    FOREIGN KEY (seccion_assigned_id) REFERENCES seccion(id) ON DELETE RESTRICT,
+    FOREIGN KEY (grado_asignado_id) REFERENCES grado(id) ON DELETE RESTRICT,
+    FOREIGN KEY (seccion_asignada_id) REFERENCES seccion(id) ON DELETE RESTRICT,
     FOREIGN KEY (estudiante_id) REFERENCES estudiante(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
