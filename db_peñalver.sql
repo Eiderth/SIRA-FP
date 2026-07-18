@@ -16,7 +16,7 @@ CREATE TABLE PAIS (
     nombre VARCHAR(80) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE ESTAD (
+CREATE TABLE ESTADO (
     id INT(11) PRIMARY KEY AUTO_INCREMENT,
     pais_id INT(11) NOT NULL,
     nombre VARCHAR(250) NOT NULL,
@@ -27,17 +27,17 @@ CREATE TABLE CIUDAD (
     id INT(11) PRIMARY KEY AUTO_INCREMENT,
     estado_id INT(11) NOT NULL,
     nombre VARCHAR(200) NOT NULL,
-    FOREIGN KEY (estado_id) REFERENCES ESTAD(id) ON DELETE RESTRICT
+    FOREIGN KEY (estado_id) REFERENCES ESTADO(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE MUNICIPIO (
     id INT(11) PRIMARY KEY AUTO_INCREMENT,
     estado_id INT(11) NOT NULL,
     nombre VARCHAR(100) NOT NULL,
-    FOREIGN KEY (estado_id) REFERENCES ESTAD(id) ON DELETE RESTRICT
+    FOREIGN KEY (estado_id) REFERENCES ESTADO(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE parroquia (
+CREATE TABLE PARROQUIA (
     id INT(11) PRIMARY KEY AUTO_INCREMENT,
     municipio_id INT(11) NOT NULL,
     nombre VARCHAR(250) NOT NULL,
@@ -70,10 +70,10 @@ CREATE TABLE DIRECCION (
 
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (estado_id) REFERENCES ESTAD(id) ON DELETE RESTRICT,
+    FOREIGN KEY (estado_id) REFERENCES ESTADO(id) ON DELETE RESTRICT,
     FOREIGN KEY (municipio_id) REFERENCES MUNICIPIO(id) ON DELETE RESTRICT,
     FOREIGN KEY (ciudad_id) REFERENCES CIUDAD(id) ON DELETE RESTRICT,
-    FOREIGN KEY (parroquia_id) REFERENCES parroquia(id) ON DELETE RESTRICT
+    FOREIGN KEY (parroquia_id) REFERENCES PARROQUIA(id) ON DELETE RESTRICT
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -86,7 +86,7 @@ CREATE TABLE ANTROPOMETRICOS (
     talla_zapato INT(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE salud (
+CREATE TABLE SALUD (
     id INT(11) PRIMARY KEY AUTO_INCREMENT,
     reacciones_alergicas ENUM('Si', 'No') NOT NULL,
     cuales_alergias TEXT,
@@ -127,10 +127,12 @@ CREATE TABLE PERSONA (
     apellido_1 VARCHAR(100) NOT NULL,
     apellido_2 VARCHAR(100),
     fecha_nacimiento DATE,              
-    sexo ENUM('F', 'M') NOT NULL
+    sexo ENUM('F', 'M') NOT NULL,
+    direccion_id INT(11) DEFAULT NULL, 
+    FOREIGN KEY (direccion_id) REFERENCES DIRECCION(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE persona_representante (        
+CREATE TABLE PERSONA_REPRESENTANTE (        
     id INT PRIMARY KEY AUTO_INCREMENT,
     parentesco VARCHAR(50) NOT NULL,           
     estado_civil ENUM('Soltera/o', 'Casada/o', 'Divorciada/o', 'Viuda/o', 'Concubinato') NOT NULL,
@@ -144,14 +146,11 @@ CREATE TABLE persona_representante (
     direccion_empresa TEXT,
 
     persona_id INT(11) NOT NULL,
-    direccion_id INT(11) DEFAULT NULL, 
-
     estado_registro ENUM('Activo', 'Inactivo') DEFAULT 'Activo',
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (persona_id) REFERENCES PERSONA(id) ON DELETE RESTRICT,
-    FOREIGN KEY (direccion_id) REFERENCES DIRECCION(id) ON DELETE SET NULL
+    FOREIGN KEY (persona_id) REFERENCES PERSONA(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE PERSONA_ESTUDIANTE (
@@ -179,15 +178,15 @@ CREATE TABLE PERSONA_ESTUDIANTE (
 
     FOREIGN KEY (persona_id) REFERENCES PERSONA(id),
     FOREIGN KEY (pais_nacimiento_id) REFERENCES PAIS(id),
-    FOREIGN KEY (estado_nacimiento_id) REFERENCES ESTAD(id),
+    FOREIGN KEY (estado_nacimiento_id) REFERENCES ESTADO(id),
     FOREIGN KEY (municipio_nacimiento_id) REFERENCES MUNICIPIO(id),
     FOREIGN KEY (ciudad_nacimiento_id) REFERENCES CIUDAD(id),
 
     FOREIGN KEY (antropometrico_id) REFERENCES ANTROPOMETRICOS(id),
-    FOREIGN KEY (salud_id) REFERENCES salud(id),
+    FOREIGN KEY (salud_id) REFERENCES SALUD(id),
     FOREIGN KEY (extra_curricular_id) REFERENCES EXTRA_CURRICULAR(id),
-    FOREIGN KEY (representante_principal_id) REFERENCES persona_representante(id),
-    FOREIGN KEY (representante_secundario_id) REFERENCES persona_representante(id),
+    FOREIGN KEY (representante_principal_id) REFERENCES PERSONA_REPRESENTANTE(id),
+    FOREIGN KEY (representante_secundario_id) REFERENCES PERSONA_REPRESENTANTE(id),
 
     CONSTRAINT check_lugar_nacimiento CHECK (
         (pais_nacimiento_id = 232 AND estado_nacimiento_id IS NOT NULL AND municipio_nacimiento_id IS NOT NULL AND ciudad_nacimiento_id IS NOT NULL) 
@@ -200,14 +199,14 @@ CREATE TABLE PERSONA_ESTUDIANTE (
 -- 4. CONTROL ACADÉMICO Y ASIGNACIONES
 -- =========================================================================
 
-CREATE TABLE SECCION (
-    id INT(11) PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 CREATE TABLE GRADO (
     id INT(11) PRIMARY KEY AUTO_INCREMENT,
     nivel ENUM('Primaria', 'Secundaria'),
+    nombre VARCHAR(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE SECCION (
+    id INT(11) PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -220,15 +219,23 @@ CREATE TABLE PROFESOR (
     id INT(11) PRIMARY KEY AUTO_INCREMENT,
     tipo_nivel ENUM('Primaria', 'Secundaria'),
     persona_id INT(11) NOT NULL,
-    ESTAD ENUM('Activo', 'Inactivo') NOT NULL DEFAULT 'Activo',
+    ESTADO ENUM('Activo', 'Inactivo') NOT NULL DEFAULT 'Activo',
     FOREIGN KEY (persona_id) REFERENCES PERSONA(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE PERIODO_ACADEMICO (
     id INT(11) PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(20) NOT NULL UNIQUE,
-    ESTAD ENUM('Activo', 'Cerrado') NOT NULL DEFAULT 'Activo',
+    ESTADO ENUM('Activo', 'Cerrado') NOT NULL DEFAULT 'Activo',
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE GRADO_SECCION (
+    id INT(11) PRIMARY KEY AUTO_INCREMENT,
+    grado_id INT(11) NOT NULL,
+    seccion_id INT(11) NOT NULL,
+    FOREIGN KEY (grado_id) REFERENCES GRADO(id),
+    FOREIGN KEY (seccion_id) REFERENCES SECCION(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE MATERIA_PROFESOR (
@@ -253,17 +260,15 @@ CREATE TABLE GRADO_MATERIA (
 -- 5. MATRÍCULA Y EVALUACIONES 
 -- =========================================================================
 
-CREATE TABLE seccion_profe_periodo (
+CREATE TABLE MATERIA_PROFESOR_PERIODO (
     id INT(11) PRIMARY KEY AUTO_INCREMENT,
 
-    seccion_id INT(11) NOT NULL,
-    grado_materia_id INT(11) NOT NULL,
-    profesor_id INT(11) NOT NULL,
+    grado_seccion_id INT(11) NOT NULL,
+    materia_profesor_id INT(11) NOT NULL,
     periodo_id INT(11) NOT NULL,
 
-    FOREIGN KEY (seccion_id) REFERENCES SECCION(id) ON DELETE RESTRICT,
-    FOREIGN KEY (grado_materia_id) REFERENCES GRADO_MATERIA(id) ON DELETE RESTRICT,
-    FOREIGN KEY (profesor_id) REFERENCES PROFESOR(id) ON DELETE RESTRICT,
+    FOREIGN KEY (grado_seccion_id) REFERENCES GRADO_SECCION(id) ON DELETE RESTRICT,
+    FOREIGN KEY (materia_profesor_id) REFERENCES MATERIA_PROFESOR(id) ON DELETE RESTRICT,
     FOREIGN KEY (periodo_id) REFERENCES PERIODO_ACADEMICO(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -274,8 +279,7 @@ CREATE TABLE INSCRIPCION (
 
     UNIQUE KEY unica_inscripcion_anual (periodo_id, estudiante_id), 
     
-    grado_asignado_id INT(11) NOT NULL,
-    seccion_asignada_id INT(11) NOT NULL,
+    grado_seccion_id INT(11) NOT NULL,
 
     tipo_ingreso ENUM('Nuevo Ingreso', 'Regular', 'Repitiente') NOT NULL,
     colegio_procedencia VARCHAR(255),
@@ -283,26 +287,53 @@ CREATE TABLE INSCRIPCION (
     fecha_inscripcion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (periodo_id) REFERENCES PERIODO_ACADEMICO(id) ON DELETE RESTRICT,
-    FOREIGN KEY (grado_asignado_id) REFERENCES GRADO(id) ON DELETE RESTRICT,
-    FOREIGN KEY (seccion_asignada_id) REFERENCES SECCION(id) ON DELETE RESTRICT,
+    FOREIGN KEY (grado_seccion_id) REFERENCES GRADO_SECCION(id) ON DELETE RESTRICT,
     FOREIGN KEY (estudiante_id) REFERENCES PERSONA_ESTUDIANTE(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE NOTA_PERIODO (
+CREATE TABLE NOTA_PERIODO_INSCRIPCION (
     id INT(11) PRIMARY KEY AUTO_INCREMENT,
     inscripcion_id INT(11) NOT NULL,
-    seccion_profe_periodo_id INT(11) NOT NULL, 
+    materia_profe_periodo_id INT(11) NOT NULL, 
     
     nota INT(2) DEFAULT NULL,
-    UNIQUE KEY unica_nota_materia (inscripcion_id,seccion_profe_periodo_id),
+    UNIQUE KEY unica_nota_materia (inscripcion_id,materia_profe_periodo_id),
 
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
     FOREIGN KEY (inscripcion_id) REFERENCES INSCRIPCION(id) ON DELETE RESTRICT,
-    FOREIGN KEY (seccion_profe_periodo_id) REFERENCES seccion_profe_periodo(id) ON DELETE RESTRICT
+    FOREIGN KEY (materia_profe_periodo_id) REFERENCES MATERIA_PROFESOR_PERIODO(id) ON DELETE RESTRICT
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE NOTA_LAPSO_PERIODO (
+    id INT(11) PRIMARY KEY AUTO_INCREMENT,
+    nombre ENUM('1er lapso', '2do lapso', '3er lapso', 'Reparacion'),
+    nota_periodo_id INT(11) NOT NULL,
+    UNIQUE KEY unica_nota_lapso(nombre, nota_periodo_id),
+    
+    nota INT(2) NOT NULL,
+
+    FOREIGN KEY (nota_periodo_id) REFERENCES NOTA_PERIODO_INSCRIPCION(id) ON DELETE RESTRICT
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE EVALUACION (
+    id INT(11) PRIMARY KEY AUTO_INCREMENT,
+    descripcion VARCHAR(100) NOT NULL, 
+    nota INT(2) NOT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE NOTA_EVALUACION_LAPSO (
+    id INT(11) PRIMARY KEY AUTO_INCREMENT,
+    nota_lapso_id INT NOT NULL,
+    evaluacion_id INT(11) NOT NULL,
+    porcentaje INT(3) NOT NULL,         
+
+    FOREIGN KEY (nota_lapso_id) REFERENCES NOTA_LAPSO_PERIODO(id) ON DELETE RESTRICT,
+    FOREIGN KEY (evaluacion_id) REFERENCES EVALUACION(id) ON DELETE RESTRICT
+
+)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- =========================================================================
 -- 6. SEGURIDAD Y ACCESOS
@@ -313,7 +344,7 @@ CREATE TABLE USUARIO (
     nombre VARCHAR(100) NOT NULL,
     rol ENUM('Administrador', 'Secretaria', 'Docente') NOT NULL,
     pass VARCHAR(255) NOT NULL,
-    ESTAD ENUM('Activo', 'Inactivo') DEFAULT 'Activo',
+    ESTADO ENUM('Activo', 'Inactivo') DEFAULT 'Activo',
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -565,7 +596,7 @@ INSERT INTO PAIS (id, nombre) VALUES
 (240, 'Zimbabue');
 
 
-INSERT INTO ESTAD (id, pais_id, nombre) VALUES
+INSERT INTO ESTADO (id, pais_id, nombre) VALUES
 (1, 232, 'Amazonas'),
 (2, 232, 'Anzoátegui'),
 (3, 232, 'Apure'),
@@ -931,7 +962,7 @@ INSERT INTO MUNICIPIO (id, estado_id, nombre) VALUES
 (462, 24, 'Libertador');
 
 
-INSERT INTO parroquia (id, municipio_id, nombre) VALUES
+INSERT INTO PARROQUIA (id, municipio_id, nombre) VALUES
 (1, 1, 'Alto Orinoco'),
 (2, 1, 'Huachamacare Acanaña'),
 (3, 1, 'Marawaka Toky Shamanaña'),
