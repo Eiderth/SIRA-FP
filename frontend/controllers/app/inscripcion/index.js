@@ -95,9 +95,9 @@ export default class Inscripcion_controller extends Utils {
    }
 
    async #siguiente() {
-      if(!this._validar_formulario(document.querySelectorAll('form'))) {
-         return;
-      }
+      // if(!this._validar_formulario(document.querySelectorAll('form'))) {
+      //    return;
+      // }
 
       if (this.#cont == 1) {
 
@@ -110,9 +110,10 @@ export default class Inscripcion_controller extends Utils {
       } 
 
       if (this.#cont == 2) {
-         this._data.antropometricos = Object.fromEntries(new FormData(document.getElementById('formulario-antropometricos')));
-         this._data.salud = Object.fromEntries(new FormData(document.getElementById('formulario-salud')));
-         this._data.extra_curriculares = Object.fromEntries(new FormData(document.getElementById('formulario-extra-curriculares')));
+         this._data.estudiante.antropometrico = Object.fromEntries(new FormData(document.getElementById('formulario-antropometrico')));
+         this._data.estudiante.salud = Object.fromEntries(new FormData(document.getElementById('formulario-salud')));
+         this._data.estudiante.extra_curricular = Object.fromEntries(new FormData(document.getElementById('formulario-extra-curricular')));
+         console.log(this._data)
       } 
 
       if (this.#cont == 3) {

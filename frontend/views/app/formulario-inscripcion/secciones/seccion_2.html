@@ -1,147 +1,190 @@
+<!-- Card 4: Datos Antropométricos -->
+<form id="formulario-antropometrico" class="card border border-light-subtle shadow-sm rounded-4 mb-4" style="background-color: #fcfcfd;" novalidate>
+    <div class="card-body p-4 p-md-5">
 
+        <div class="mb-4 pb-3 border-bottom border-light-subtle">
+            <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2 fs-6">Paso 4</span>
+            <h5 class="fw-bold text-dark m-0 fs-4">Datos Antropométricos</h5>
+        </div>
 
-<form id="formulario-antropometricos" class="mb-5 needs-validation" novalidate>
-    <h5 class="fw-bold mb-4 fs-4">3. Datos Antropométricos</h5>
-    <div class="row g-4">
-        <div class="col-md-2">
-            <label class="form-label fw-bold small text-secondary">Estatura (m)</label>
-            <input type="number" step="0.01" name="estatura" class="form-control border-0 shadow-sm py-2" placeholder="Ej: 1.65" autocomplete="off">
+        <div class="row g-3">
+            <div class="col-md-2 col-6">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Estatura (m)</label>
+                <input type="number" step="0.01" name="estatura" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" placeholder="Ej: 1.65" autocomplete="off">
+            </div>
+
+            <div class="col-md-2 col-6">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Peso (kg)</label>
+                <input type="number" step="0.1" name="peso" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" placeholder="Ej: 55.4" autocomplete="off">
+            </div>
+
+            <div class="col-md-2 col-4">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Talla Camisa</label>
+                <input type="text" name="talla_camisa" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" placeholder="S, M, 14" autocomplete="off">
+            </div>
+
+            <div class="col-md-3 col-4">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Talla Pantalón</label>
+                <input type="text" name="talla_pantalon" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" placeholder="28, 30" autocomplete="off">
+            </div>
+
+            <div class="col-md-3 col-4">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Talla Zapato</label>
+                <input type="number" name="talla_zapato" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" placeholder="38" autocomplete="off">
+            </div>
         </div>
-        <div class="col-md-2">
-            <label class="form-label fw-bold small text-secondary">Peso (kg)</label>
-            <input type="number" step="0.1" name="peso" class="form-control border-0 shadow-sm py-2" placeholder="Ej: 55.4" autocomplete="off">
-        </div>
-        <div class="col-md-2">
-            <label class="form-label fw-bold small text-secondary">Talla Camisa</label>
-            <input type="text" name="talla_camisa" class="form-control border-0 shadow-sm py-2" placeholder="Ej: S, M, 14" autocomplete="off">
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Talla Pantalón</label>
-            <input type="text" name="talla_pantalon" class="form-control border-0 shadow-sm py-2" placeholder="Ej: 28, 30" autocomplete="off">
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Talla Zapato</label>
-            <input type="number" name="talla_zapato" class="form-control border-0 shadow-sm py-2" placeholder="Ej: 38" autocomplete="off">
-        </div>
+
     </div>
 </form>
 
-<hr class="my-5 opacity-10">
 
-<form id="formulario-salud" class="mb-5 needs-validation" novalidate>
-    <h5 class="fw-bold mb-4 fs-4">4. Información de Salud</h5>
-    <div class="row g-4">
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">¿Reacciones Alérgicas? *</label>
-            <select name="reacciones_alergicas" class="form-select border-0 shadow-sm py-2">
-                <option value="No">No</option>
-                <option value="Si">Si</option>
-            </select>
+<!-- Card 5: Información de Salud -->
+<form id="formulario-salud" class="card border border-light-subtle shadow-sm rounded-4 mb-4" style="background-color: #fcfcfd;" novalidate>
+    <div class="card-body p-4 p-md-5">
+
+        <div class="mb-4 pb-3 border-bottom border-light-subtle">
+            <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2 fs-6">Paso 5</span>
+            <h5 class="fw-bold text-dark m-0 fs-4">Información de Salud</h5>
         </div>
-        <div class="col-md-9">
-            <label class="form-label fw-bold small text-secondary">¿Cuáles Alergias?</label>
-            <input type="text" name="cuales_alergias" class="form-control border-0 shadow-sm py-2" placeholder="Indique si aplica" autocomplete="off">
+
+        <div class="row g-3">
+
+            <div class="col-md-3">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">¿Reacciones Alérgicas? *</label>
+                <select name="reacciones_alergicas" class="form-select border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;">
+                    <option value="No">No</option>
+                    <option value="Si">Si</option>
+                </select>
+            </div>
+
+            <div class="col-md-9">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">¿Cuáles Alergias?</label>
+                <input type="text" name="cuales_alergias" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" placeholder="Indique las alergias detectadas" autocomplete="off">
+            </div>
+
+            <div class="col-md-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Enfermedades Padecidas</label>
+                <input type="text" name="enfermedades_padecidas" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" placeholder="Ej: Asma, Diabetes, Rinitis, etc." autocomplete="off">
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Atención Especial *</label>
+                <select name="atencion_especial" class="form-select border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;">
+                    <option value="No">No</option>
+                    <option value="Si">Si</option>
+                </select>
+            </div>
+
+            <div class="col-md-8">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Horario de Tratamiento</label>
+                <input type="text" name="horario_tratamiento" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" placeholder="Ej: 8:00 AM (Medicamento específico)" autocomplete="off">
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Atendido por Especialista *</label>
+                <select name="atendido_por_especialista" class="form-select border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;">
+                    <option value="No">No</option>
+                    <option value="Si">Si</option>
+                </select>
+            </div>
+
+            <div class="col-md-8">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Nombre del Especialista</label>
+                <input type="text" name="nombre_especialista" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Fecha Inicio Especialista</label>
+                <input type="date" name="fecha_inicio_especialista" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
+
+            <div class="col-md-8">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Condición de Atención</label>
+                <input type="text" name="condicion_atencion" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
         </div>
-        <div class="col-md-12">
-            <label class="form-label fw-bold small text-secondary">Enfermedades Padecidas</label>
-            <input type="text" name="enfermedades_padecidas" class="form-control border-0 shadow-sm py-2" placeholder="Asma, Diabetes, etc." autocomplete="off">
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Atención Especial *</label>
-            <select name="atencion_especial" class="form-select border-0 shadow-sm py-2">
-                <option value="No">No</option>
-                <option value="Si">Si</option>
-            </select>
-        </div>
-        <div class="col-md-8">
-            <label class="form-label fw-bold small text-secondary">Horario de Tratamiento</label>
-            <input type="text" name="horario_tratamiento" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Atendido por Especialista *</label>
-            <select name="atendido_por_especialista" class="form-select border-0 shadow-sm py-2">
-                <option value="No">No</option>
-                <option value="Si">Si</option>
-            </select>
-        </div>
-        <div class="col-md-8">
-            <label class="form-label fw-bold small text-secondary">Nombre del Especialista</label>
-            <input type="text" name="nombre_especialista" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Fecha Inicio Especialista</label>
-            <input type="date" name="fecha_inicio_especialista" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-8">
-            <label class="form-label fw-bold small text-secondary">Condición de Atención</label>
-            <input type="text" name="condicion_atencion" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
+
     </div>
 </form>
 
-<hr class="my-5 opacity-10">
+<!-- Card 6: Extra-curriculares y Tecnología -->
+<form id="formulario-extra-curricular" class="card border border-light-subtle shadow-sm rounded-4 mb-4" style="background-color: #fcfcfd;" novalidate>
+    <div class="card-body p-4 p-md-5">
 
-<form id="formulario-extra-curriculares" class="needs-validation mb-5" novalidate>
-    <h5 class="fw-bold mb-4 fs-4"><i class="bi bi-laptop me-2"></i>5. Extra-curriculares y Tecnología</h5>
-    <div class="row g-4">
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">¿Realiza Deportes? *</label>
-            <select name="realiza_deportes" class="form-select border-0 shadow-sm py-2">
-                <option value="No" selected>No</option>
-                <option value="Si">Si</option>
-            </select>
-        </div>
-        <div class="col-md-8">
-            <label class="form-label fw-bold small text-secondary">¿Cuáles Deportes?</label>
-            <input type="text" name="cuales_deportes" class="form-control border-0 shadow-sm py-2" autocomplete="off">
+    
+        <div class="mb-4 pb-3 border-bottom border-light-subtle">
+            <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2 fs-6">Paso 6</span>
+            <h5 class="fw-bold text-dark m-0 fs-4">Extra-curriculares y Tecnología</h5>
         </div>
 
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">¿Posee Canaima? *</label>
-            <select name="posee_canaima" class="form-select border-0 shadow-sm py-2">
-                <option value="No" selected>No</option>
-                <option value="Si">Si</option>
-            </select>
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Fecha Asignación</label>
-            <input type="date" name="fecha_asignacion_canaima" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Serial Canaima</label>
-            <input type="text" name="serial_canaima" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Estado Canaima</label>
-            <select name="estado_canaima" class="form-select border-0 shadow-sm py-2">
-                <option value="Operativa">Operativa</option>
-                <option value="Dañada">Dañada</option>
-                <option value="Robada">Robada</option>
-                <option value="En Reparacion">En Reparacion</option>
-            </select>
-        </div>
-        <div class="col-md-6">
-            <label class="form-label fw-bold small text-secondary">Falla de la Canaima (Si aplica)</label>
-            <input type="text" name="falla_canaima" class="form-control border-0 shadow-sm py-2" autocomplete="off">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">¿Realiza Deportes? *</label>
+                <select name="realiza_deportes" class="form-select border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;">
+                    <option value="No" selected>No</option>
+                    <option value="Si">Si</option>
+                </select>
+            </div>
+
+            <div class="col-md-8">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">¿Cuáles Deportes?</label>
+                <input type="text" name="cuales_deportes" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" placeholder="Ej: Béisbol, Baloncesto, Natación" autocomplete="off">
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">¿Posee Canaima? *</label>
+                <select name="posee_canaima" class="form-select border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;">
+                    <option value="No" selected>No</option>
+                    <option value="Si">Si</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Fecha Asignación</label>
+                <input type="date" name="fecha_asignacion_canaima" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Serial Canaima</label>
+                <input type="text" name="serial_canaima" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Estado Canaima</label>
+                <select name="estado_canaima" class="form-select border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;">
+                    <option value="Operativa">Operativa</option>
+                    <option value="Dañada">Dañada</option>
+                    <option value="Robada">Robada</option>
+                    <option value="En Reparacion">En Reparacion</option>
+                </select>
+            </div>
+
+            <div class="col-md-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Falla de la Canaima (Si aplica)</label>
+                <input type="text" name="falla_canaima" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" placeholder="Describa brevemente el problema" autocomplete="off">
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">¿Posee Cargador? *</label>
+                <select name="posee_cargador" class="form-select border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;">
+                    <option value="No" selected>No</option>
+                    <option value="Si">Si</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Estado Cargador</label>
+                <select name="estado_cargador" class="form-select border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;">
+                    <option value="Operativo">Operativo</option>
+                    <option value="Dañado">Dañado</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Falla Cargador</label>
+                <input type="text" name="falla_cargador" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
         </div>
 
-        <div class="col-md-2">
-            <label class="form-label fw-bold small text-secondary">¿Cargador? *</label>
-            <select name="posee_cargador" class="form-select border-0 shadow-sm py-2">
-                <option value="No" selected>No</option>
-                <option value="Si">Si</option>
-            </select>
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Estado Cargador</label>
-            <select name="estado_cargador" class="form-select border-0 shadow-sm py-2">
-                <option value="Operativo">Operativo</option>
-                <option value="Dañado">Dañado</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Falla Cargador</label>
-            <input type="text" name="falla_cargador" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
     </div>
 </form>
