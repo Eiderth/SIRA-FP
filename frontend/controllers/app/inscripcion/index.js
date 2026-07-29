@@ -10,16 +10,24 @@ import Seccion_error from "./interfaz-final/seccion_error.js";
 export default class Inscripcion_controller extends Utils {
 
    _data = {
-      periodo: {},
       inscripcion: {},
-      estudiante: {},
-      antropometricos: {},
-      salud : {},
-      extra_curriculares: {},
-      representante_principal: {},
-      direccion_r_principal: {},
-      representante_secundario: {},
-      direccion_r_secundario: {},
+      estudiante: {
+         persona: {},
+         persona_estudiante: {},
+         antropometrico: {},
+         salud : {},
+         extra_curricular: {},
+      },
+      representante_principal: {
+         persona: {},
+         persona_representante: {},
+         direccion_representante: {},
+      },
+      representante_secundario: {
+         persona: {},
+         persona_representante: {},
+         direccion_representante: {},
+      },
    }
 
    #parametros_formulario; 
@@ -92,12 +100,13 @@ export default class Inscripcion_controller extends Utils {
       }
 
       if (this.#cont == 1) {
-         this._data.periodo.id = document.getElementById('select-periodo').value;
 
          this._data.inscripcion = Object.fromEntries(new FormData(document.getElementById('formulario-inscripcion')));
-         this._data.estudiante = Object.fromEntries(new FormData(document.getElementById('formulario-estudiantes')));
+         this._data.estudiante.persona = Object.fromEntries(new FormData(document.getElementById('formulario-persona')));
+         this._data.estudiante.persona_estudiante = Object.fromEntries(new FormData(document.getElementById('formulario-persona-estudiante')));
          
          this.#btn_atras.classList.remove('d-none'); 
+         console.log(this._data)
       } 
 
       if (this.#cont == 2) {

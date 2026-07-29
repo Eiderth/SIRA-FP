@@ -1,139 +1,176 @@
+<div class="container-fluid px-0">
 
-<div class="col-md-4 mb-3">
-    <label class="form-label fw-bold small text-secondary">Periodo *</label>
-    <select id="select-periodo" name="nombre" class="form-select border-0 shadow-sm py-2" required>
-    </select>
-</div>
-<form id="formulario-inscripcion" class="needs-validation" novalidate>
-    <h5 class="fw-bold mb-0 text-dark mb-4 fs-4">1.Datos escolares</h5>
-    <div class="mb-5 row g-4">
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Tipo de Ingreso *</label>
-            <select name="tipo_ingreso" class="form-select border-0 shadow-sm py-2" required>
-                <option value="Regular">Regular</option>
-                <option value="Nuevo Ingreso">Nuevo Ingreso</option>
-                <option value="Nuevo Ingreso">Repite</option>
-            </select>
-        </div>
-        <div class="col-md-8">
-            <label class="form-label fw-bold small text-secondary">Colegio de Procedencia</label>
-            <input type="text" name="colegio_procedencia" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Nivel Académico *</label>
-            <select name="nivel_academico" class="form-select border-0 shadow-sm py-2" required>
-                <option value="Media General">Media General</option>
-                <option value="Primaria">Primaria</option>
-                <option value="Inicial">Inicial</option>
-            </select>
-        </div>
-
-        <div class="col-md-6">
-            <label class="form-label fw-bold small text-secondary">Grado Asignado *</label>
-            <select id="select-grado" name="grado_asignado_id" class="form-select border-0 shadow-sm py-2" required>
-            </select>
-        </div>
-        <div class="col-md-6">
-            <label class="form-label fw-bold small text-secondary">Sección Asignada *</label>
-            <select id="select-seccion" name="seccion_asignada_id" class="form-select border-0 shadow-sm py-2" required>
-            </select>
-        </div>
-    </div>
-</form>
-
-<hr class="my-5 opacity-10">
-
-<form id="formulario-estudiantes" class="needs-validation" novalidate>
-    <h5 class="fw-bold mb-0 text-dark mb-4 fs-4">2.Identificación del Estudiante</h5>
-    
-    <div class="mb-5 row g-4">
-     
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Nacionalidad *</label>
-            <div class="btn-group w-100" role="group">
-                <input type="radio" class="btn-check" name="nacionalidad" id="nac_v" value="V" checked autocomplete="off">
-                <label class="btn btn-outline-secondary py-2" for="nac_v">V</label>
-                <input type="radio" class="btn-check" name="nacionalidad" id="nac_e" value="E" autocomplete="off">
-                <label class="btn btn-outline-secondary py-2" for="nac_e">E</label>
+    <!-- Card 1: Datos Escolares (Tabla: Inscripcion / Periodo / Grado) -->
+    <form id="formulario-inscripcion" class="card border-0 shadow-sm rounded-4 mb-4 bg-white" novalidate>
+        <div class="card-body p-4 p-md-5">
+            
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4 pb-3 border-bottom">
+                <div>
+                    <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2 rounded-pill mb-2">Paso 1</span>
+                    <h5 class="fw-bold text-dark m-0 fs-4">Datos Escolares</h5>
+                </div>
+                <div class="w-100 w-md-auto" style="min-width: 220px;">
+                    <label class="form-label fw-semibold small text-muted mb-1">Periodo Escolar *</label>
+                    <select id="select-periodo" name="periodo_id" class="form-select bg-light border-0 py-2 rounded-3" required>
+                    </select>
+                </div>
             </div>
-        </div>
 
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Cédula de Identidad</label>
-            <input id="input-cedula-identidad-estudiante" type="text" name="cedula_identidad" class="form-control border-0 shadow-sm py-2" placeholder="Ej: 30123456" autocomplete="off">
-        </div>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small text-secondary">Tipo de Ingreso *</label>
+                    <select name="tipo_ingreso" class="form-select bg-light border-0 py-2 rounded-3" required>
+                        <option value="Regular">Regular</option>
+                        <option value="Nuevo Ingreso">Nuevo Ingreso</option>
+                        <option value="Repite">Repite</option>
+                    </select>
+                </div>
 
-        <div class="col-md-6">
-            <label class="form-label fw-bold small text-secondary">Cédula Escolar *</label>
-            <input id="input-cedula-escolar-estudiante" type="text" name="cedula_escolar" class="form-control border-0 shadow-sm py-2" placeholder="dejar vacio de no tener" autocomplete="off">
+                <div class="col-md-9">
+                    <label class="form-label fw-semibold small text-secondary">Colegio de Procedencia</label>
+                    <input type="text" name="colegio_procedencia" class="form-control bg-light border-0 py-2 rounded-3" placeholder="Nombre de la institución anterior" autocomplete="off">
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold small text-secondary">Nivel Académico *</label>
+                    <select name="nivel_academico" class="form-select bg-light border-0 py-2 rounded-3" required>
+                        <option value="Inicial">Inicial</option>
+                        <option value="Primaria">Primaria</option>
+                        <option value="Media General" selected>Media General</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold small text-secondary">Grado Asignado *</label>
+                    <select id="select-grado" name="grado_asignado_id" class="form-select bg-light border-0 py-2 rounded-3" required>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold small text-secondary">Sección Asignada *</label>
+                    <select id="select-seccion" name="seccion_asignada_id" class="form-select bg-light border-0 py-2 rounded-3" required>
+                    </select>
+                </div>
+            </div>
+
         </div>
-        
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Primer Nombre *</label>
-            <input type="text" name="nombre_1" class="form-control border-0 shadow-sm py-2" required autocomplete="off">
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Segundo Nombre</label>
-            <input type="text" name="nombre_2" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Primer Apellido *</label>
-            <input type="text" name="apellido_1" class="form-control border-0 shadow-sm py-2" required autocomplete="off">
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Segundo Apellido</label>
-            <input type="text" name="apellido_2" class="form-control border-0 shadow-sm py-2"  autocomplete="off">
-        </div>
+    </form>
 
 
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Fecha de Nacimiento *</label>
-            <input type="date" name="fecha_nacimiento" class="form-control border-0 shadow-sm py-2" required autocomplete="off">
-        </div>
+    <!-- Card 2: Datos Personales Básicos (Tabla: PERSONA) -->
+    <form id="formulario-persona" class="card border-0 shadow-sm rounded-4 mb-4 bg-white" novalidate>
+        <div class="card-body p-4 p-md-5">
 
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">¿Que Numero de hijo es?*</label>
-            <input type="number" name="numero_hijo" class="form-control border-0 shadow-sm py-2" value="1" min="1" autocomplete="off">
-        </div>
+            <div class="mb-4 pb-3 border-bottom">
+                <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2 rounded-pill mb-2">Paso 2</span>
+                <h5 class="fw-bold text-dark m-0 fs-4">Datos Personales</h5>
+            </div>
 
-        <div class="col-md-2">
-            <label class="form-label fw-bold small text-secondary">Sexo *</label>
-            <select name="sexo" class="form-select border-0 shadow-sm py-2">
-                <option value="M" selected>M</option>
-                <option value="F">F</option>
-            </select>
-        </div>
-        
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Lateralidad *</label>
-            <select name="lateralidad" class="form-select border-0 shadow-sm py-2">
-                <option value="Derecha" selected>Derecha</option>
-                <option value="Izquierda">Izquierda</option>
-                <option value="Ambas">Ambas</option>
-            </select>
-        </div>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small text-secondary">Nacionalidad *</label>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="nacionalidad" id="nac_v" value="V" checked autocomplete="off">
+                        <label class="btn btn-outline-primary py-2 rounded-start-3" for="nac_v">V</label>
+                        <input type="radio" class="btn-check" name="nacionalidad" id="nac_e" value="E" autocomplete="off">
+                        <label class="btn btn-outline-primary py-2 rounded-end-3" for="nac_e">E</label>
+                    </div>
+                </div>
 
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">País Nac. *</label>
-            <select id="select-pais" name="pais_nacimiento_id" class="form-select border-0 shadow-sm py-2">
-            </select>
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Estado Nac. *</label>
-            <select id="select-estado"  name="estado_nacimiento_id" class="form-select border-0 shadow-sm py-2">
-            </select>
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Municipio Nac. *</label>
-            <select id="select-municipio" name="municipio_nacimiento_id" class="form-select border-0 shadow-sm py-2">
-            </select>
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Ciudad Nac. *</label>
-            <select id="select-ciudad" name="ciudad_nacimiento_id" class="form-select border-0 shadow-sm py-2">
-            </select>
-        </div>
-    </div>
-</form>
+                <div class="col-md-9">
+                    <label class="form-label fw-semibold small text-secondary">Cédula de Identidad</label>
+                    <input id="input-cedula-identidad-estudiante" type="text" name="cedula_identidad" class="form-control bg-light border-0 py-2 rounded-3" placeholder="Ej: 30123456" autocomplete="off">
+                </div>
 
+                <!-- Nombres y Apellidos -->
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small text-secondary">Primer Nombre *</label>
+                    <input type="text" name="nombre_1" class="form-control bg-light border-0 py-2 rounded-3" required autocomplete="off">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small text-secondary">Segundo Nombre</label>
+                    <input type="text" name="nombre_2" class="form-control bg-light border-0 py-2 rounded-3" autocomplete="off">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small text-secondary">Primer Apellido *</label>
+                    <input type="text" name="apellido_1" class="form-control bg-light border-0 py-2 rounded-3" required autocomplete="off">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small text-secondary">Segundo Apellido</label>
+                    <input type="text" name="apellido_2" class="form-control bg-light border-0 py-2 rounded-3" autocomplete="off">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small text-secondary">Fecha de Nacimiento *</label>
+                    <input type="date" name="fecha_nacimiento" class="form-control bg-light border-0 py-2 rounded-3" required autocomplete="off">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small text-secondary">Sexo *</label>
+                    <select name="sexo" class="form-select bg-light border-0 py-2 rounded-3">
+                        <option value="M" selected>Masculino</option>
+                        <option value="F">Femenino</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+
+    <!-- Card 3: Datos Específicos del Estudiante (Tabla: ESTUDIANTE) -->
+    <form id="formulario-persona-estudiante" class="card border-0 shadow-sm rounded-4 mb-4 bg-white" novalidate>
+        <div class="card-body p-4 p-md-5">
+
+            <div class="mb-4 pb-3 border-bottom">
+                <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2 rounded-pill mb-2">Paso 3</span>
+                <h5 class="fw-bold text-dark m-0 fs-4">Perfil del Estudiante</h5>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold small text-secondary">Cédula Escolar *</label>
+                    <input id="input-cedula-escolar-estudiante" type="text" name="cedula_escolar" class="form-control bg-light border-0 py-2 rounded-3" placeholder="Dejar vacío si no tiene" autocomplete="off">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small text-secondary">Nº de Hijo *</label>
+                    <input type="number" name="numero_hijo" class="form-control bg-light border-0 py-2 rounded-3" value="1" min="1" autocomplete="off">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small text-secondary">Lateralidad *</label>
+                    <select name="lateralidad" class="form-select bg-light border-0 py-2 rounded-3">
+                        <option value="Derecha" selected>Derecha</option>
+                        <option value="Izquierda">Izquierda</option>
+                        <option value="Ambas">Ambas</option>
+                    </select>
+                </div>
+
+                <!-- Ubicación de Nacimiento del Estudiante -->
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small text-secondary">País Nac. *</label>
+                    <select id="select-pais" name="pais_nacimiento_id" class="form-select bg-light border-0 py-2 rounded-3">
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small text-secondary">Estado Nac. *</label>
+                    <select id="select-estado" name="estado_nacimiento_id" class="form-select bg-light border-0 py-2 rounded-3">
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small text-secondary">Municipio Nac. *</label>
+                    <select id="select-municipio" name="municipio_nacimiento_id" class="form-select bg-light border-0 py-2 rounded-3">
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold small text-secondary">Ciudad Nac. *</label>
+                    <select id="select-ciudad" name="ciudad_nacimiento_id" class="form-select bg-light border-0 py-2 rounded-3">
+                    </select>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+</div>

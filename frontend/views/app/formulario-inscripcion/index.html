@@ -1,21 +1,40 @@
-<div class="card-body p-5">
-    <p id="info" class="alert alert-info shadow-sm">
-        <strong>Instrucciones:</strong> Los campos marcados con <span class="text-danger fw-bold">*</span> son obligatorios. Asegúrese de que los datos coincidan con los documentos de identidad.
-    </p>
+<!-- Contenedor Principal con fondo suave neutro (off-white) -->
+<div class="card-body p-4 p-md-5 rounded-4" style="background-color: #f4f6f8;">
 
+    <!-- Alerta de Instrucciones (Tono azul suave y accesible) -->
+    <div id="info" class="alert border-0 rounded-4 p-3 mb-4 d-flex align-items-center gap-3 shadow-sm" style="background-color: #e8f4fd; color: #1a4971;">
+        <div class="d-flex align-items-center justify-content-center rounded-circle p-2 shadow-sm flex-shrink-0" style="width: 42px; height: 42px; background-color: #d0e7fb; color: #0c4a6e;">
+            
+        </div>
+        <div class="fs-6 lh-sm">
+            <strong class="d-block mb-1 fs-6">Instrucciones de llenado:</strong> 
+            Los campos marcados con <span class="text-danger fw-bold">*</span> son obligatorios. Asegúrese de que los datos coincidan exactamente con los documentos de identidad.
+        </div>
+    </div>
+
+    <!-- Zona donde se inyectan las secciones -->
     <div id="secciones-root" class="fade show">
+        <!-- Aquí van las cards de las secciones -->
+    </div>
+
+    <!-- Botonera de Navegación (Más grande y legible) -->
+    <div id="botonera" class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mt-5 pt-4 border-top border-secondary-subtle">
+        
+        <!-- Botón Atrás -->
+        <button type="button" id="btn-atras" class="btn btn-outline-secondary btn-lg px-4 py-3 rounded-3 fw-semibold w-100 w-sm-auto bg-white fs-6">
+            &larr; Atrás
+        </button>
+
+        <!-- Grupo Derecho (Limpiar + Siguiente) -->
+        <div class="d-flex flex-column flex-sm-row gap-3 w-100 w-sm-auto justify-content-end">
+            <button type="button" id="btn-reset" form="formulario-inscripcion" class="btn btn-outline-secondary btn-lg px-4 py-3 rounded-3 fw-semibold bg-white fs-6">
+                Limpiar
+            </button>
+            <button type="button" id="btn-siguiente" class="btn btn-primary btn-lg px-5 py-3 rounded-3 fw-bold shadow-sm fs-6">
+                Siguiente &rarr;
+            </button>
+        </div>
 
     </div>
-    <div id="botonera" class="d-flex flex-column flex-md-row gap-3 justify-content-center mt-5">
-        <button type="button" id="btn-atras" class="btn btn-primary btn-lg px-5 py-3 fw-bold shadow-sm border-0">
-            Atras
-        </button>
-        <button type="button" id="btn-reset" form="formulario-inscripcion"  class="btn btn-light btn-lg px-5 py-3 fw-bold shadow-sm border-0">
-            Limpiar
-        </button>
-        <button type="button" id="btn-siguiente" class="btn btn-primary btn-lg px-5 py-3 fw-bold shadow-sm border-0">
-            Siguiente
-        </button>
-    </div>
+
 </div>
-
