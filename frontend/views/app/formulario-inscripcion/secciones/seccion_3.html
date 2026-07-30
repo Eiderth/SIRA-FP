@@ -1,200 +1,256 @@
-    
-<form id="formulario-representante-principal" class="mb-5 needs-validation" novalidate>
-    <h5 class="fw-bold mb-4 text-dark fs-4">6. Información del Representante Principal</h5>
-    <div class="row g-3">
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Nacionalidad *</label>
-            <div class="btn-group w-100" role="group">
-                <input type="radio" class="btn-check" name="nacionalidad" id="nac_v" value="V" checked autocomplete="off">
-                <label class="btn btn-outline-secondary py-2" for="nac_v">V</label>
-                <input type="radio" class="btn-check" name="nacionalidad" id="nac_e" value="E" autocomplete="off">
-                <label class="btn btn-outline-secondary py-2" for="nac_e">E</label>
+<form 
+  id="formulario-persona" 
+  class="card border border-light-subtle shadow-sm rounded-4 mb-4 needs-validation" 
+  style="background-color: #fcfcfd;"
+  novalidate
+>
+    <div class="card-body p-4 p-md-5">
+
+        <div class="mb-4 pb-3 border-bottom border-light-subtle">
+            <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2 fs-6">Paso 7</span>
+            <h5 class="fw-bold text-dark m-0 fs-4">Datos del Representante Principal</h5>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-3 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Nacionalidad *</label>
+                <div class="btn-group w-100" role="group">
+                    <input type="radio" class="btn-check" name="nacionalidad" id="nac_v" value="V" checked autocomplete="off">
+                    <label class="btn btn-outline-secondary py-2 border-secondary-subtle fw-semibold" for="nac_v">V</label>
+                    
+                    <input type="radio" class="btn-check" name="nacionalidad" id="nac_e" value="E" autocomplete="off">
+                    <label class="btn btn-outline-secondary py-2 border-secondary-subtle fw-semibold" for="nac_e">E</label>
+                </div>
+            </div>
+
+            <div class="col-md-9 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Cédula de Identidad *</label>
+                <input type="text" name="cedula_identidad" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" required autocomplete="off">
+            </div>
+
+            <div class="col-md-3 col-6">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Primer Nombre *</label>
+                <input type="text" name="nombre_1" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" required autocomplete="off">
+            </div>
+
+            <div class="col-md-3 col-6">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Segundo Nombre</label>
+                <input type="text" name="nombre_2" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
+
+            <div class="col-md-3 col-6">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Primer Apellido *</label>
+                <input type="text" name="apellido_1" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" required autocomplete="off">
+            </div>
+
+            <div class="col-md-3 col-6">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Segundo Apellido</label>
+                <input type="text" name="apellido_2" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
+
+            <div class="col-md-6 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Fecha de Nacimiento</label>
+                <input type="date" name="fecha_nacimiento" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" required autocomplete="off">
+            </div>
+
+            <div class="col-md-6 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Sexo *</label>
+                <select name="sexo" class="form-select border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" required>
+                    <option value="F" selected>Femenino (F)</option>
+                    <option value="M">Masculino (M)</option>
+                </select>
             </div>
         </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Cédula *</label>
-            <input type="text" name="cedula" class="form-control border-0 shadow-sm py-2" required autocomplete="off">
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Parentesco *</label>
-            <select name="parentesco" class="form-select border-0 shadow-sm py-2">
-                <option value="Madre" selected>Madre</option>
-                <option value="Padre">Padre</option>
-                <option value="Tio">Tio</option>
-                <option value="Tia">Tia</option>
-                <option value="Abuelo">Abuelo</option>
-                <option value="Abuela">Abuela</option>
-                <option value="Otro">Otro</option>
-            </select>
-        </div>
 
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Primer Nombre *</label>
-            <input type="text" name="nombre_1" class="form-control border-0 shadow-sm py-2" required autocomplete="off">
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Segundo Nombre</label>
-            <input type="text" name="nombre_2" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Primer Apellido *</label>
-            <input type="text" name="apellido_1" class="form-control border-0 shadow-sm py-2" required autocomplete="off">
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Segundo Apellido</label>
-            <input type="text" name="apellido_2" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-
-
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Fecha de Nacimiento</label>
-            <input type="date" name="fecha_nacimiento" class="form-control border-0 shadow-sm py-2" required autocomplete="off">
-        </div>
-        <div class="col-md-2">
-            <label class="form-label fw-bold small text-secondary">Sexo</label>
-            <select name="sexo" class="form-select border-0 shadow-sm py-2">
-                <option value="F" selected>F</option>
-                <option value="M">M</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Estado Civil</label>
-            <select name="estado_civil" class="form-select border-0 shadow-sm py-2">
-                <option value="Soltera/o" selected>Soltera/o</option>
-                <option value="Casada/o">Casada/o</option>
-                <option value="Divorciada/o">Divorciada/o</option>
-                <option value="Viuda/o">Viuda/o</option>
-            </select>
-        </div>
-        <div class="col-md-6">
-            <label class="form-label fw-bold small text-secondary">Ingreso Mensual (REAL)</label>
-            <input type="number" step="0.01" name="ingreso_mensual" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Teléfono Móvil</label>
-            <input type="text" name="telefono_movil" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Teléfono Habitación</label>
-            <input type="text" name="telefono_habitacion" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Correo Electrónico</label>
-            <input type="email" name="correo_electronico" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-
-        <!-- Información Laboral -->
-        <div class="col-md-6">
-            <label class="form-label fw-bold small text-secondary">Profesión / Oficio</label>
-            <input type="text" name="profesion" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-6">
-            <label class="form-label fw-bold small text-secondary">Empresa de Trabajo</label>
-            <input type="text" name="empresa_trabajo" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Teléfono Empresa</label>
-            <input type="text" name="telefono_empresa" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-8">
-            <label class="form-label fw-bold small text-secondary">Dirección de la Empresa</label>
-            <input type="text" name="direccion_empresa" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
     </div>
 </form>
 
-<hr class="my-5 opacity-10">
+<form 
+  id="formulario-persona-representante" 
+  class="card border border-light-subtle shadow-sm rounded-4 mb-4 needs-validation" 
+  style="background-color: #fcfcfd;" 
+  novalidate
+>
+    <div class="card-body p-4 p-md-5">
 
-<form id="formulario-direccion-r-principal" class="mb-5 needs-validation" novalidate>
-    <h5 class="fw-bold mb-4 text-dark fs-4">7. Dirección de Representante Principal</h5>
-    <div class="row g-3">
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Estado *</label>
-            <select id="select-estado" name="estado_id" class="form-select border-0 shadow-sm py-2">
-            </select>
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Municipio *</label>
-            <select id="select-municipio" name="municipio_id" class="form-select border-0 shadow-sm py-2">
-            </select>
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Ciudad *</label>
-            <select id="select-ciudad" name="ciudad_id" class="form-select border-0 shadow-sm py-2">
-            </select>
-        </div>
-        
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Parroquia</label>
-            <select id="select-parroquia" name="parroquia_id" class="form-select border-0 shadow-sm py-2">
-            </select>
+        <div class="mb-4 pb-3 border-bottom border-light-subtle">
+            <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2 fs-6">Paso 8</span>
+            <h5 class="fw-bold text-dark m-0 fs-4">Datos Formales</h5>
         </div>
 
-        <!-- Detalles de Ubicación Específica -->
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Urbanización</label>
-            <input type="text" name="urbanizacion" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Sector</label>
-            <input type="text" name="sector" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Barrio</label>
-            <input type="text" name="barrio" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Avenida</label>
-            <input type="text" name="avenida" class="form-control border-0 shadow-sm py-2" autocomplete="off">
+        <div class="row g-3">
+            <div class="col-md-4 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Parentesco *</label>
+                <select name="parentesco" class="form-select border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" required>
+                    <option value="Madre" selected>Madre</option>
+                    <option value="Padre">Padre</option>
+                    <option value="Tio">Tio</option>
+                    <option value="Tia">Tia</option>
+                    <option value="Abuelo">Abuelo</option>
+                    <option value="Abuela">Abuela</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="col-md-4 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Estado Civil *</label>
+                <select name="estado_civil" class="form-select border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" required>
+                    <option value="Soltera/o" selected>Soltera/o</option>
+                    <option value="Casada/o">Casada/o</option>
+                    <option value="Divorciada/o">Divorciada/o</option>
+                    <option value="Viuda/o">Viuda/o</option>
+                    <option value="Concubinato">Concubinato</option>
+                </select>
+            </div>
+
+            <div class="col-md-4 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Ingreso Mensual (REAL)</label>
+                <input type="number" step="0.01" name="ingreso_mensual" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" placeholder="0.00" autocomplete="off">
+            </div>
+
+            <!-- Contacto -->
+            <div class="col-md-4 col-6">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Teléfono Móvil</label>
+                <input type="text" name="telefono_movil" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" placeholder="04XX-XXXXXXX" autocomplete="off">
+            </div>
+
+            <div class="col-md-4 col-6">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Teléfono Habitación</label>
+                <input type="text" name="telefono_habitacion" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" placeholder="02XX-XXXXXXX" autocomplete="off">
+            </div>
+
+            <div class="col-md-4 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Correo Electrónico</label>
+                <input type="email" name="correo_electronico" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" placeholder="ejemplo@correo.com" autocomplete="off">
+            </div>
+
+            <!-- Datos Laborales -->
+            <div class="col-md-6 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Profesión / Oficio</label>
+                <input type="text" name="profesion" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
+
+            <div class="col-md-6 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Empresa de Trabajo</label>
+                <input type="text" name="empresa_trabajo" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
+
+            <div class="col-md-4 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Teléfono Empresa</label>
+                <input type="text" name="telefono_empresa" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
+
+            <div class="col-md-8 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Dirección de la Empresa</label>
+                <input type="text" name="direccion_empresa" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
         </div>
 
-        <div class="col-md-3">
-            <label class="form-label fw-bold small text-secondary">Calle</label>
-            <input type="text" name="calle" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-2">
-            <label class="form-label fw-bold small text-secondary">Manzana</label>
-            <input type="text" name="manzana" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-2">
-            <label class="form-label fw-bold small text-secondary">Vereda</label>
-            <input type="text" name="vereda" class="form-control border-0 shadow-sm py-2" autocomplete="off">
-        </div>
-        <div class="col-md-2">
-            <label class="form-label fw-bold small text-secondary">N° vivienda</label>
-            <input type="text" name="numero_vivienda" class="form-control border-0 shadow-sm py-2" autocomplete="off">
+    </div>
+</form>
+
+
+<form 
+  id="formulario-direccion" 
+  class="card border border-light-subtle shadow-sm rounded-4 mb-4 needs-validation"
+  style="background-color: #fcfcfd;" 
+  novalidate
+>
+    <div class="card-body p-4 p-md-5">
+
+        <div class="mb-4 pb-3 border-bottom border-light-subtle">
+            <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2 fs-6">Paso 9</span>
+            <h5 class="fw-bold text-dark m-0 fs-4">Dirección</h5>
         </div>
 
-        <!-- Condiciones de Vivienda -->
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Tipo de Vivienda *</label>
-            <select name="tipo_vivienda" class="form-select border-0 shadow-sm py-2">
-                <option value="Casa" selected>Casa</option>
-                <option value="Edificio">Edificio</option>
-                <option value="Apartamento">Apartamento</option>
-                <option value="Quinta">Quinta</option>
-                <option value="Rancho">Rancho</option>
-                <option value="Otro">Otro</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Condición Vivienda *</label>
-            <select name="condicion_vivienda" class="form-select border-0 shadow-sm py-2">
-                <option value="Propia" selected>Propia</option>
-                <option value="Alquilada">Alquilada</option>
-                <option value="Pagándose">Pagándose</option>
-                <option value="Prestada">Prestada</option>
-                <option value="Invadida">Invadida</option>
-            </select>
-        </div>
-        <div class="col-md-4">
-            <label class="form-label fw-bold small text-secondary">Infraestructura *</label>
-            <select name="infraestructura_vivienda" class="form-select border-0 shadow-sm py-2">
-                <option value="Buena" selected>Buena</option>
-                <option value="Regular">Regular</option>
-                <option value="Deteriorada">Deteriorada</option>
-            </select>
+        <div class="row g-3">
+
+            <div class="col-md-6 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Estado *</label>
+                <select id="select-estado" name="estado_id" class="form-select border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" required>
+                </select>
+            </div>
+
+            <div class="col-md-6 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Ciudad *</label>
+                <select id="select-ciudad" name="ciudad_id" class="form-select border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" required>
+                </select>
+            </div>
+
+
+            <div class="col-md-6 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Sector / Urbanización / Barrio *</label>
+                <input type="text" name="sector" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off" required>
+            </div>
+
+            <div class="col-md-6 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Avenida</label>
+                <input type="text" name="avenida" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
+
+            <div class="col-md-4 col-6">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Calle</label>
+                <input type="text" name="calle" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
+
+            <div class="col-md-4 col-6">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Manzana</label>
+                <input type="text" name="manzana" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
+
+            <div class="col-md-2 col-6">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Vereda</label>
+                <input type="text" name="vereda" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
+
+            <div class="col-md-2 col-6">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">N° Vivienda</label>
+                <input type="text" name="numero_vivienda" class="form-control border-secondary-subtle py-2 px-3 rounded-3 fs-6" style="background-color: #f1f5f9;" autocomplete="off">
+            </div>
+
+            <div class="col-md-4 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Tipo de Vivienda *</label>
+                <select name="tipo_vivienda" 
+                  class="form-select border-secondary-subtle py-2 px-3 rounded-3 fs-6"
+                  style="background-color: #f1f5f9;"
+                  required
+                >
+                    <option value="Casa" selected>Casa</option>
+                    <option value="Edificio">Edificio</option>
+                    <option value="Apartamento">Apartamento</option>
+                    <option value="Quinta">Quinta</option>
+                    <option value="Rancho">Rancho</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+
+            <div class="col-md-4 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Condición Vivienda *</label>
+                <select name="condicion_vivienda" 
+                  class="form-select border-secondary-subtle py-2 px-3 rounded-3 fs-6"
+                  style="background-color: #f1f5f9;" 
+                  required
+                >
+                    <option value="Propia" selected>Propia</option>
+                    <option value="Alquilada">Alquilada</option>
+                    <option value="Pagandose">Pagándose</option>
+                    <option value="Prestada">Prestada</option>
+                    <option value="Invadida">Invadida</option>
+                </select>
+            </div>
+
+            <div class="col-md-4 col-12">
+                <label class="form-label fw-bold fs-6 text-secondary mb-2">Infraestructura *</label>
+                <select name="infraestructura_vivienda" 
+                  class="form-select border-secondary-subtle py-2 px-3 rounded-3 fs-6" 
+                  style="background-color: #f1f5f9;" 
+                  required
+                >
+                    <option value="Buena" selected>Buena</option>
+                    <option value="Regular">Regular</option>
+                    <option value="Deteriorada">Deteriorada</option>
+                </select>
+            </div>
         </div>
     </div>
 </form>

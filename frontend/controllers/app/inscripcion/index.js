@@ -21,12 +21,12 @@ export default class Inscripcion_controller extends Utils {
       representante_principal: {
          persona: {},
          persona_representante: {},
-         direccion_representante: {},
+         direccion: {},
       },
       representante_secundario: {
          persona: {},
          persona_representante: {},
-         direccion_representante: {},
+         direccion: {},
       },
    }
 
@@ -65,7 +65,7 @@ export default class Inscripcion_controller extends Utils {
       this.#seccion_exito = new Seccion_exito();
       this.#seccion_error = new Seccion_error();
 
-      this.#seccion_1_controller.init(this._data);
+      this.#seccion_1_controller.init({...this._data.estudiante.persona,...this._data.estudiante.persona_estudiante, ...this._data.inscripcion});
 
       this.#cont = 1;
       this.#btn_siguiente = document.getElementById('btn-siguiente');
@@ -106,22 +106,22 @@ export default class Inscripcion_controller extends Utils {
          this._data.estudiante.persona_estudiante = Object.fromEntries(new FormData(document.getElementById('formulario-persona-estudiante')));
          
          this.#btn_atras.classList.remove('d-none'); 
-         console.log(this._data)
+         // console.log(this._data)
       } 
 
       if (this.#cont == 2) {
          this._data.estudiante.antropometrico = Object.fromEntries(new FormData(document.getElementById('formulario-antropometrico')));
          this._data.estudiante.salud = Object.fromEntries(new FormData(document.getElementById('formulario-salud')));
          this._data.estudiante.extra_curricular = Object.fromEntries(new FormData(document.getElementById('formulario-extra-curricular')));
-         console.log(this._data)
+         // console.log(this._data)
       } 
 
       if (this.#cont == 3) {
-         this._data.representante_principal = Object.fromEntries(new FormData(document.getElementById('formulario-representante-principal')));
-         this._data.direccion_r_principal = Object.fromEntries(new FormData(document.getElementById('formulario-direccion-r-principal')));
-         if(this._data.direccion_r_principal.parroquia_id){
-            this._data.direccion_r_principal.ciudad_id = null;
-         }
+         this._data.representante_principal.persona = Object.fromEntries(new FormData(document.getElementById('formulario-persona')));
+         this._data.representante_principal.persona_representante = Object.fromEntries(new FormData(document.getElementById('formulario-persona-representante')));         
+         this._data.representante_principal.direccion = Object.fromEntries(new FormData(document.getElementById('formulario-direccion')));
+         delete this._data.representante_principal.direccion.estado_id
+         console.log(this._data)   
       }
 
       if (this.#cont == 4) {
@@ -136,8 +136,8 @@ export default class Inscripcion_controller extends Utils {
 
       if(this.#cont != 5) {
 
-         if(this.#cont == 2) this.#seccion_2_controller.init({...this._data.antropometricos, ...this._data.salud, ...this._data.extra_curriculares});
-         if(this.#cont == 3) this.#seccion_3_controller.init({...this._data.representante_principal, ...this._data.direccion_r_principal});
+         if(this.#cont == 2) this.#seccion_2_controller.init({...this._data.estudiante.antropometrico, ...this._data.estudiante.salud, ...this._data.estudiante.extra_curricular});
+         if(this.#cont == 3) this.#seccion_3_controller.init({...this._data.representante_principal.persona, ...this._data.representante_principal.persona_representante, ...this._data.representante_principal.direccion});
          if(this.#cont == 4) {
             this.#seccion_4_controller.init({...this._data.representante_secundario, ...this._data.direccion_r_secundario});
             this.#btn_siguiente.textContent = 'Inscribir';
@@ -193,14 +193,16 @@ export default class Inscripcion_controller extends Utils {
 
    async #atras() {
       if (this.#cont == 2) {
-         this._data.antropometricos = Object.fromEntries(new FormData(document.getElementById('formulario-antropometricos')));
-         this._data.salud = Object.fromEntries(new FormData(document.getElementById('formulario-salud')));
-         this._data.extra_curriculares = Object.fromEntries(new FormData(document.getElementById('formulario-extra-curriculares')));
+         this._data.estudiante.antropometrico = Object.fromEntries(new FormData(document.getElementById('formulario-antropometrico')));
+         this._data.estudiante.salud = Object.fromEntries(new FormData(document.getElementById('formulario-salud')));
+         this._data.estudiante.extra_curricular = Object.fromEntries(new FormData(document.getElementById('formulario-extra-curricular')));
       } 
 
       if (this.#cont == 3) {
-         this._data.representante_principal = Object.fromEntries(new FormData(document.getElementById('formulario-representante-principal')));
-         this._data.direccion_r_principal = Object.fromEntries(new FormData(document.getElementById('formulario-direccion-r-principal')));
+         this._data.representante_principal.persona = Object.fromEntries(new FormData(document.getElementById('formulario-persona')));
+         this._data.representante_principal.persona_representante = Object.fromEntries(new FormData(document.getElementById('formulario-persona-representante')));
+         this._data.representante_principal.direccion = Object.fromEntries(new FormData(document.getElementById('formulario-direccion')));
+      
       }
 
       if (this.#cont == 4) {
@@ -212,15 +214,15 @@ export default class Inscripcion_controller extends Utils {
 
       if(this.#cont === 1) {
          this.#btn_atras.classList.add('d-none');
-         this.#seccion_1_controller.init({...this._data.estudiante,...this._data.inscripcion, ...this._data.periodo});
+         this.#seccion_1_controller.init({...this._data.estudiante.persona,...this._data.estudiante.persona_estudiante ,...this._data.inscripcion});
       }
 
       if (this.#cont == 2){
-         this.#seccion_2_controller.init({...this._data.antropometricos, ...this._data.salud, ...this._data.extra_curriculares});
+         this.#seccion_2_controller.init({...this._data.estudiante.antropometrico, ...this._data.estudiante.salud, ...this._data.estudiante.extra_curricular});
       }
 
       if (this.#cont == 3){
-         this.#seccion_3_controller.init({...this._data.representante_principal, ...this._data.direccion_r_principal});
+         this.#seccion_3_controller.init({...this._data.representante_principal.persona, ...this._data.representante_principal.persona_representante, ...this._data.representante_principal.direccion});
          this.#btn_siguiente.textContent = 'Siguiente';
       }
    }

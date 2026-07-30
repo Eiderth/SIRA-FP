@@ -23,7 +23,6 @@ export default class Seccion_1_controller extends Utils{
         this.#dar_eventos_select();
         this.#dar_eventos_busqueda(data);
 
-        
         if(data) this._llenar_inputs(data);
 
         const info = document.getElementById('info').classList.remove('d-none');
@@ -111,7 +110,7 @@ export default class Seccion_1_controller extends Utils{
 
             temp_cedula_identidad = setTimeout(async () => {
                 const valor = e.target.value.trim();
-                    if(valor === '' || Object.keys(data.estudiante).length != 0) return;
+                    if(valor === '' || Object.keys(data).length != 0) return;
 
                     const resp = await this._enviar_datos('./api.php?controller=inscripcion_controller&action=obtener_historial_estudiante', 
                     {'cedula_identidad': valor, 'cedula_escolar': null});
@@ -131,7 +130,7 @@ export default class Seccion_1_controller extends Utils{
 
             temp_cedula_escolar = setTimeout(async () => {
                 const valor = e.target.value.trim();
-                if(valor === '' || Object.keys(data.estudiante).length != 0) return;
+                if(valor === '' || Object.keys(data).length != 0) return;
 
                 const resp = await this._enviar_datos('./api.php?controller=inscripcion_controller&action=obtener_historial_estudiante', 
                    {'cedula_identidad': null, 'cedula_escolar': valor});
