@@ -95,16 +95,18 @@ export default class Inscripcion_controller extends Utils {
    }
 
    async #siguiente() {
-      // if(!this._validar_formulario(document.querySelectorAll('form'))) {
-      //    return;
-      // }
+      if(!this._validar_formulario(document.querySelectorAll('form'))) {
+         return;
+      }
 
       if (this.#cont == 1) {
 
          this._data.inscripcion = Object.fromEntries(new FormData(document.getElementById('formulario-inscripcion')));
          this._data.estudiante.persona = Object.fromEntries(new FormData(document.getElementById('formulario-persona')));
          this._data.estudiante.persona_estudiante = Object.fromEntries(new FormData(document.getElementById('formulario-persona-estudiante')));
-         
+         delete this._data.estudiante.persona_estudiante.estado_nacimiento_id;
+         delete this._data.estudiante.persona_estudiante.municipio_nacimiento_id;
+
          this.#btn_atras.classList.remove('d-none'); 
          // console.log(this._data)
       } 
@@ -121,15 +123,15 @@ export default class Inscripcion_controller extends Utils {
          this._data.representante_principal.persona_representante = Object.fromEntries(new FormData(document.getElementById('formulario-persona-representante')));         
          this._data.representante_principal.direccion = Object.fromEntries(new FormData(document.getElementById('formulario-direccion')));
          delete this._data.representante_principal.direccion.estado_id
-         console.log(this._data)   
+         // console.log(this._data)
       }
 
       if (this.#cont == 4) {
-         this._data.representante_secundario = Object.fromEntries(new FormData(document.getElementById('formulario-representante-secundario')));
-         this._data.direccion_r_secundario = Object.fromEntries(new FormData(document.getElementById('formulario-direccion-r-secundario')));
-         if(this._data.direccion_r_principal.parroquia_id){
-            this._data.direccion_r_principal.ciudad_id = null;
-         }
+         this._data.representante_secundario.persona = Object.fromEntries(new FormData(document.getElementById('formulario-persona')));
+         this._data.representante_secundario.persona_representante = Object.fromEntries(new FormData(document.getElementById('formulario-persona-representante')));         
+         this._data.representante_secundario.direccion = Object.fromEntries(new FormData(document.getElementById('formulario-direccion')));
+         delete this._data.representante_secundario.direccion.estado_id
+         // console.log(this._data)   
       }
 
       this.#cont ++;
@@ -139,37 +141,53 @@ export default class Inscripcion_controller extends Utils {
          if(this.#cont == 2) this.#seccion_2_controller.init({...this._data.estudiante.antropometrico, ...this._data.estudiante.salud, ...this._data.estudiante.extra_curricular});
          if(this.#cont == 3) this.#seccion_3_controller.init({...this._data.representante_principal.persona, ...this._data.representante_principal.persona_representante, ...this._data.representante_principal.direccion});
          if(this.#cont == 4) {
-            this.#seccion_4_controller.init({...this._data.representante_secundario, ...this._data.direccion_r_secundario});
+            this.#seccion_4_controller.init({...this._data.representante_secundario.persona, ...this._data.representante_secundario.persona_representante, ...this._data.representante_secundario.direccion});
             this.#btn_siguiente.textContent = 'Inscribir';
          }
 
       } else {
 
-         for (let clave in this._data) { 
-            this._limpiar_objeto(this._data[clave]);
+
+         // === Limpieza ===
+         this._limpiar_objeto(this._data.inscripcion);
+         
+         for (let clave in this._data.estudiante) { 
+          
+            this._limpiar_objeto(this._data.estudiante[clave]);
+            
          }
-         
+
+         for (let clave in this._data.representante_principal) { 
+          
+            this._limpiar_objeto(this._data.representante_principal[clave]);
+
+         }
+
+         for (let clave in this._data.representante_secundario) { 
+          
+            this._limpiar_objeto(this._data.representante_secundario[clave]);
+            
+         }
+
+
          const resp = await this._enviar_datos('./api.php?controller=inscripcion_controller&action=guardar_estudiante', this._data);
-         console.log(resp)
-         
+
          if(resp.estado !== 'error' ) {
             this.#seccion_exito.init(
-               {data_estudiante: this._data.estudiante, numero_inscripcion: resp.llave_inscripcion, cedula_escolar: resp.cedula_escolar},
-               () => this.#seccion_1_controller.init(this._data)
+               this._data.estudiante, 
+               resp.llave_inscripcion, 
+               resp.cedula_escolar,
+               () => {
+                  this.#seccion_1_controller.init({...this._data.estudiante.persona, ...this._data.estudiante.persona_estudiante, ...this._data.inscripcion});
+                  this.#cont = 1;
+                  this.#btn_siguiente.textContent = 'Siguiente';
+                  this.#reset();
+               }  
             );
-
-            Object.assign(this._data, {
-               periodo: {}, inscripcion: {}, estudiante: {}, antropometricos: {},
-               salud : {}, extra_curriculares: {}, representante_principal: {},
-               direccion_r_principal: {}, representante_secundario: {}, direccion_r_secundario: {},
-            });
-
-            this.#cont = 1;
-            this.#btn_siguiente.textContent = 'Siguiente';
 
          } else {
             
-            this.#seccion_error.init(resp.mensaje, () => this.#seccion_4_controller.init({...this._data.representante_secundario, ...this._data.direccion_r_secundario}));
+            this.#seccion_error.init(resp.mensaje, () => this.#seccion_4_controller.init({...this._data.representante_secundario.persona, ...this._data.representante_secundario.persona_representante, ...this._data.representante_secundario.direccion}));
             this.#cont --;
          }
 
@@ -178,17 +196,37 @@ export default class Inscripcion_controller extends Utils {
 
    #reset() {
       if (this.#cont == 1) {   
-         Object.assign(this._data, { 
-            periodo: {}, inscripcion: {}, estudiante: {}, antropometricos: {},
-            salud : {}, extra_curriculares: {}, representante_principal: {},
-            direccion_r_principal: {}, representante_secundario: {}, direccion_r_secundario: {},
-         });
+         Object.assign(this._data, {
+               inscripcion: {},
+               estudiante: {
+                  persona: {},
+                  persona_estudiante: {},
+                  antropometrico: {},
+                  salud : {},
+                  extra_curricular: {},
+               },
+               representante_principal: {
+                  persona: {},
+                  persona_representante: {},
+                  direccion: {},
+               },
+               representante_secundario: {
+                  persona: {},
+                  persona_representante: {},
+                  direccion: {},
+               },
+            }
+         );
       } 
 
-      document.getElementById('select-estado')?.parentElement.classList.remove('d-none');
-      document.getElementById('select-municipio')?.parentElement.classList.remove('d-none');
-      document.getElementById('select-ciudad')?.parentElement.classList.remove('d-none');
       document.querySelectorAll('form').forEach(form => form.reset());
+      if(this.#cont == 1) this.#seccion_1_controller.init({...this._data.estudiante.persona, ...this._data.estudiante.persona_estudiante, ...this._data.inscripcion});
+      if(this.#cont == 3) this.#seccion_3_controller.init({...this._data.representante_principal.persona, ...this._data.representante_principal.persona_representante, ...this._data.representante_principal.direccion});
+      if(this.#cont == 4) {
+         this.#seccion_4_controller.init({...this._data.representante_secundario.persona, ...this._data.representante_secundario.persona_representante, ...this._data.representante_secundario.direccion});
+         this.#btn_siguiente.textContent = 'Inscribir';
+      }
+
    }
 
    async #atras() {
@@ -206,8 +244,9 @@ export default class Inscripcion_controller extends Utils {
       }
 
       if (this.#cont == 4) {
-         this._data.representante_secundario = Object.fromEntries(new FormData(document.getElementById('formulario-representante-secundario')));
-         this._data.direccion_r_secundario = Object.fromEntries(new FormData(document.getElementById('formulario-direccion-r-secundario')));
+         this._data.representante_secundario.persona = Object.fromEntries(new FormData(document.getElementById('formulario-persona')));
+         this._data.representante_secundario.persona_representante = Object.fromEntries(new FormData(document.getElementById('formulario-persona-representante')));
+         this._data.representante_secundario.direccion = Object.fromEntries(new FormData(document.getElementById('formulario-direccion')));
       }
 
       this.#cont --;
@@ -224,6 +263,11 @@ export default class Inscripcion_controller extends Utils {
       if (this.#cont == 3){
          this.#seccion_3_controller.init({...this._data.representante_principal.persona, ...this._data.representante_principal.persona_representante, ...this._data.representante_principal.direccion});
          this.#btn_siguiente.textContent = 'Siguiente';
+      }
+
+      if (this.#cont == 4){
+         this.#seccion_4_controller.init({...this._data.representante_secundario.persona, ...this._data.representante_secundario.persona_representante, ...this._data.representante_secundario.direccion});
+         this.#btn_siguiente.textContent = 'Inscribir';
       }
    }
 

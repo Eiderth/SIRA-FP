@@ -44,20 +44,20 @@ class Inscripcion_controller {
 
             //=== Validaciones ===    
 
-        if(strlen($input['estudiante']['cedula_escolar'] ?? '') < 9) {
-            $input['estudiante']['cedula_escolar'] = null;
+        if(strlen($input['estudiante']['persona_estudiante']['cedula_escolar'] ?? '') < 9) {
+            $input['estudiante']['persona_estudiante']['cedula_escolar'] = null;
         }
 
-        if(strlen($input['estudiante']['cedula_identidad'] ?? '') < 6) {
-            $input['estudiante']['cedula_identidad'] = null;
+        if(strlen($input['estudiante']['persona']['cedula_identidad'] ?? '') < 6) {
+            $input['estudiante']['persona']['cedula_identidad'] = null;
         }
 
 
-        if(strlen($input['representante_secundario']['cedula'] ?? '') < 6) {
-            $input['representante_secundario']['cedula'] = null;
+        if(strlen($input['representante_secundario']['persona']['cedula_identidad'] ?? '') < 6) {
+            $input['representante_secundario']['persona']['cedula_identidad'] = null;
         }
 
-        if(strlen($input['representante_principal']['cedula'] ?? '') < 6) {
+        if(strlen($input['representante_principal']['persona']['cedula_identidad'] ?? '') < 6) {
             echo json_encode([
                 'estado' => 'error',
                 'mensaje' => "La cedula del representante principal no puede tener menos de 6 digitos"
@@ -68,145 +68,144 @@ class Inscripcion_controller {
 
         try {
 
-            $cedula_escolar = null;
-          
-            if($input['estudiante']['cedula_identidad']){
-    
-                $cedula_escolar = $this->modelo->buscar_valor(
-                    'cedula_escolar',
-                    'estudiantes',
-                    'cedula_identidad',
-                    $input['estudiante']['cedula_identidad']
-                )?: null;
-            }
+            $estudiante_id = null;
+            $representante_principal_id = null;
+            $representante_secundario_id = null;
 
-            if(strlen($cedula_escolar ?? '') != 0 && (
-                    $input['estudiante']['cedula_escolar']
-                        &&
-                    $this->modelo->existe(
-                        'estudiantes',
-                        'cedula_escolar',
-                        $input['estudiante']['cedula_escolar']
-                    )
-                )
-            ){
-                $cedula_escolar = $input['estudiante']['cedula_escolar'];
+
+            if (isset($input['estudiante']['persona']['cedula_identidad'])) {
                 
-            }
-
-            if (strlen($cedula_escolar ?? '') < 6) {
-                $cedula_escolar = $this->modelo->crear_cedula_escolar($input);
-            }
-
-            $existe_registro_periodo = $this->modelo->verificar_inscripcion(
-                $input['estudiante']['cedula_identidad'],
-                $cedula_escolar,
-                $input['periodo']['id']
-            );
-
-            // echo json_encode([
-            //     'estado' => 'error', 
-            //     'existe' => $existe_registro_periodo, 
-            //     'periodo_id' => $input['periodo']['id'],
-            //     'cedula_escolar' => $cedula_escolar
-            // ]);
-            // exit();
-
-            if ($existe_registro_periodo) {
-               
-                echo json_encode([
-                  'estado' => 'error',
-                  'mensaje' => "Es estudiante {$input['estudiante']['nombre_1']} {$input['estudiante']['apellido_1']} ya ha sido inscrito en el periodo <br>No se permite doble inscripcion en un mismo periodo"
-                ]);
+                $persona_id = $this->modelo->buscar_valor(
+                    'id', 
+                    'PERSONA', 
+                    'cedula_identidad', 
+                    $input['estudiante']['persona']['cedula_identidad'] 
+                ) ? : null;
                 
-                exit();
+                if (isset($persona_id)) {
+                    
+                    $estudiante_id = $this->modelo->buscar_valor(
+                        'id', 
+                        'PERSONA_ESTUDIANTE', 
+                        'persona_id', 
+                        $persona_id 
+                    ) ? : null;
+                }
+            }
+
+            if (!isset($estudiante_id) && isset($input['estudiante']['persona_estudiante']['cedula_escolar'])) {
+                
+                $estudiante_id = $this->modelo->buscar_valor(
+                    'id', 
+                    'PERSONA_ESTUDIANTE', 
+                    'cedula_escolar', 
+                    $input['estudiante']['persona_estudiante']['cedula_escolar']
+                ) ? : null;
+
+            }
+
+            if($estudiante_id) {      
+                $existe_registro_periodo = $this->modelo->verificar_inscripcion(
+                    $estudiante_id,
+                    $input['inscripcion']['periodo_academico_id']
+                );
+ 
+                if ($existe_registro_periodo) {
+                   
+                    echo json_encode([
+                      'estado' => 'error',
+                      'mensaje' => "Es estudiante {$input['estudiante']['persona']['nombre_1']} {$input['estudiante']['persona']['apellido_1']} ya ha sido inscrito en el periodo <br>No se permite doble inscripcion en un mismo periodo"
+                    ]);
+                
+                    exit();
+                }
             }
 
             $this->modelo->iniciar_transaccion();
 
-            $existe_r_principal = $this->modelo->existe(
-                'representantes',
-                'cedula',
-                $input['representante_principal']['cedula']
+            $persona_rep_principal_id = $this->modelo->buscar_valor(
+                'id',
+                'PERSONA',
+                'cedula_identidad',
+                $input['representante_principal']['persona']['cedula_identidad']
             );
 
-            if ($existe_r_principal) {
+            if ($persona_rep_principal_id) {
 
-                $this->modelo->actualizar_representante(
-                    $input['representante_principal'],
-                    $input['direccion_r_principal']
+                $representante_principal_id = $this->modelo->actualizar_representante(
+                    $input['representante_principal'], 
+                    $persona_rep_principal_id
                 );
 
             } else {
 
-                $this->modelo->guardar_representante(
-                    $input['representante_principal'],
-                    $input['direccion_r_principal']
+                $representante_principal_id = $this->modelo->guardar_representante(
+                    $input['representante_principal']
                 );
             }
-
-
-            if($input['representante_secundario']['cedula']){
-               
-                $existe_r_secundario = $this->modelo->existe(
-                    'representantes',
-                    'cedula',
-                    $input['representante_secundario']['cedula']
+            
+            if(isset($input['representante_secundario']['persona']['cedula_identidad'])) {
+                
+                $persona_rep_secundario_id = $this->modelo->buscar_valor(
+                    'id',
+                    'PERSONA',
+                    'cedula_identidad',
+                    $input['representante_secundario']['persona']['cedula_identidad']
                 );
                 
-                if($existe_r_secundario) {
+                if($persona_rep_secundario_id) {
                    
-                    $this->modelo->actualizar_representante(
+                    $representante_secundario_id = $this->modelo->actualizar_representante(
                         $input['representante_secundario'],
-                        $input['direccion_r_secundario']
+                        $persona_rep_secundario_id
                     );
 
                 } else {
 
-                    $this->modelo->guardar_representante(
+                    $representante_secundario_id = $this->modelo->guardar_representante(
                         $input['representante_secundario'],
-                        $input['direccion_r_secundario']
                     );
                 }
             }
 
 
-            $input['estudiante']['representante_principal_cedula'] = $input['representante_principal']['cedula'];
+            // $this->modelo->revertir_transaccion();
+            // echo json_encode([
+            //     'estado' => 'error',
+            //     'mensaje' => 'despues de rep 2',
+            //     'rep' => $representante_secundario_id,
+            // ]);
+            // exit();
+    
 
-            $input['estudiante']['representante_secundario_cedula'] = $input['representante_secundario']['cedula'];
-
-            $existe_estudiante = (
-                $input['estudiante']['cedula_identidad'] !== null
-                &&
-                $this->modelo->existe(
-                    'estudiantes',
-                    'cedula_identidad',
-                    $input['estudiante']['cedula_identidad']
-                )
-            ) || $this->modelo->existe('estudiantes', 'cedula_escolar', $cedula_escolar);
-
-
-            if($existe_estudiante){
-
-                $input['estudiante']['cedula_escolar'] = $cedula_escolar;
-
-                $this->modelo->actualizar_estudiante($input);
+            if (isset($estudiante_id)) {
+                
+                $this->modelo->actualizar_estudiante(
+                    $input['estudiante'], 
+                    $estudiante_id, 
+                    $representante_principal_id, 
+                    $representante_secundario_id
+                );
 
             } else {
 
-                $input['estudiante']['cedula_escolar'] = $cedula_escolar;
-
-                $this->modelo->guardar_estudiante($input);
-
+                $input['estudiante']['persona_estudiante']['cedula_escolar'] = $this->modelo->crear_cedula_escolar($input);
+                
+                $estudiante_id = $this->modelo->guardar_estudiante(
+                    $input['estudiante'], 
+                    $representante_principal_id, 
+                    $representante_secundario_id
+                );
             }
 
-            $llave_inscripcion = $this->modelo->procesar_periodo_inscripcion($input, $cedula_escolar);
+            $llave_inscripcion = $this->modelo->procesar_periodo_inscripcion($input['inscripcion'], $estudiante_id);
+
             $this->modelo->confirmar_transaccion();
 
             echo json_encode([
                 'estado' => 'completado',
                 'mensaje' => 'estudiante insertado con exito',
-                'cedula_escolar' => $cedula_escolar,
+                'cedula_escolar' => $input['estudiante']['persona_estudiante']['cedula_escolar'],
                 'llave_inscripcion' => $llave_inscripcion
             ]);
 

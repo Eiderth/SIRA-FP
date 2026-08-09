@@ -26,32 +26,29 @@ Class Usuario{
   	//=== Metodos para el manejo de inscripciones ===
 
 	public function crear_cedula_escolar($data) {
-		return "{$data['estudiante']['nacionalidad']}{$data['estudiante']['fecha_nacimiento'][2]}{$data['estudiante']['fecha_nacimiento'][3]}{$data['estudiante']['numero_hijo']}{$data['representante_principal']['cedula']}";
+		return "{$data['estudiante']['persona']['nacionalidad']}{$data['estudiante']['persona']['fecha_nacimiento'][2]}{$data['estudiante']['persona']['fecha_nacimiento'][3]}{$data['estudiante']['persona_estudiante']['numero_hijo']}{$data['representante_principal']['persona']['cedula_identidad']}";
 	}
 
-	public function procesar_periodo_inscripcion($data, $estudiante_cedula_escolar) {
+	public function procesar_periodo_inscripcion($data_inscripcion, $estudiante_id) {
 
-		return $this->insertar('inscripciones', [
-			...$data['inscripcion'],
-			'estudiante_cedula_escolar' => $estudiante_cedula_escolar,
-			'periodo_id' => $data['periodo']['id']
+		return $this->insertar('INSCRIPCION', [
+			...$data_inscripcion,
+			'estudiante_id' => $estudiante_id,
 		]);
 
 	}
 
-	public function verificar_inscripcion ($cedula_identidad, $cedula_escolar , $periodo_id) {
+	public function verificar_inscripcion ($estudiante_id, $periodo_id) {
 
 		$stmt = $this->db->prepare("
-			SELECT 1 FROM inscripciones i
-			JOIN estudiantes e ON i.estudiante_cedula_escolar = e.cedula_escolar
-			JOIN periodos_academicos p ON i.periodo_id = p.id
-			WHERE (e.cedula_identidad = :cedula_identidad OR e.cedula_escolar = :cedula_escolar)
-			AND p.id = :periodo_id LIMIT 1
+			SELECT 1 FROM INSCRIPCION i
+			JOIN PERSONA_ESTUDIANTE e ON i.estudiante_id = e.id
+			JOIN PERIODO_ACADEMICO p ON i.periodo_academico_id = p.id
+			WHERE e.id = :estudiante_id AND p.id = :periodo_id LIMIT 1
 		");
 
 		$stmt->execute([
-			'cedula_identidad' => $cedula_identidad,
-			'cedula_escolar' => $cedula_escolar,
+			'estudiante_id' => $estudiante_id,
 			'periodo_id' => $periodo_id
 		]);
 
@@ -75,42 +72,48 @@ Class Usuario{
 
 	//=== Metodos para el manejo de datos de estudiantes ===
 
-	public function guardar_estudiante ($data) {
+	public function guardar_estudiante ($data, $rep_principal_id, $rep_secundario_id) {
 
-		$llave_antropometricos = $this->insertar('antropometricos', $data['antropometricos']);
+		$llave_antropometricos = $this->insertar('ANTROPOMETRICO', $data['antropometrico']);
 
-		$llave_salud = $this->insertar('salud', $data['salud']);
+		$llave_salud = $this->insertar('SALUD', $data['salud']);
 
-		$llave_extra_curriculares = $this->insertar('extra_curriculares', $data['extra_curriculares']);
+		$llave_extra_curriculares = $this->insertar('EXTRA_CURRICULAR', $data['extra_curricular']);
 
-		return $this->insertar('estudiantes', [
-			...$data['estudiante'],
-			'antropometricos_id' => $llave_antropometricos,
+		$llave_persona = $this->insertar('PERSONA', $data['persona']);
+
+		return $this->insertar('PERSONA_ESTUDIANTE', [
+			...$data['persona_estudiante'],
+			'persona_id' => $llave_persona,
+			'antropometrico_id' => $llave_antropometricos,
 			'salud_id' => $llave_salud,
-			'extra_curriculares_id' => $llave_extra_curriculares
+			'extra_curricular_id' => $llave_extra_curriculares,
+			'representante_principal_id' => $rep_principal_id,
+			'representante_secundario_id' => $rep_secundario_id
 		]);
 	}
 
-	public function actualizar_estudiante($data) {
+	public function actualizar_estudiante($data, $id, $rep_principal_id, $rep_secundario_id) {
 
-		$cedula_escolar = $data['estudiante']['cedula_escolar'];
+		$antropometrico_id = $this->buscar_valor('antropometrico_id', 'PERSONA_ESTUDIANTE', 'id', $id);
+		$this->actualizar('ANTROPOMETRICO', $data['antropometrico'], 'id' , $antropometrico_id);
 
-		unset($data['estudiante']['cedula_escolar']);
-		unset($data['estudiante']['cedula_identidad']);
+		$salud_id = $this->buscar_valor('salud_id', 'PERSONA_ESTUDIANTE', 'id', $id);
+		$this->actualizar('SALUD', $data['salud'], 'id' , $salud_id);
 
-		$this->actualizar('estudiantes', $data['estudiante'], 'cedula_escolar', $cedula_escolar);
+		$extra_curricular_id = $this->buscar_valor('extra_curricular_id', 'PERSONA_ESTUDIANTE', 'id', $id);
+		$this->actualizar('EXTRA_CURRICULAR', $data['extra_curricular'], 'id' , $extra_curricular_id);
 
-		$antropometricos_id = $this->buscar_valor('antropometricos_id', 'estudiantes', 'cedula_escolar', $cedula_escolar);
-
-		$salud_id = $this->buscar_valor('salud_id', 'estudiantes', 'cedula_escolar', $cedula_escolar);
-
-		$extra_curriculares_id = $this->buscar_valor('extra_curriculares_id', 'estudiantes', 'cedula_escolar', $cedula_escolar);
-
-		$this->actualizar('antropometricos', $data['antropometricos'], 'id' , $antropometricos_id);
-
-		$this->actualizar('salud', $data['salud'], 'id', $salud_id);
-
-		$this->actualizar('extra_curriculares', $data['extra_curriculares'], 'id', $extra_curriculares_id);
+		$this->actualizar(
+			'PERSONA_ESTUDIANTE',
+			['representante_principal_id' => $rep_principal_id],
+			'id', 
+			$id
+		);
+		
+		if (isset($rep_secundario_id)) {
+			$this->actualizar('PERSONA_ESTUDIANTE', ['representante_secundario_id' => $rep_secundario_id], 'id', $id);
+		} 
 
 	}
 
@@ -131,24 +134,30 @@ Class Usuario{
 
 	//=== Metodos para el manejo de datos de representantes ===
 
-	public function guardar_representante($representante, $direccion) {
+	public function guardar_representante($representante) {
 
-		$llave_direccion = $this->insertar('direcciones', $direccion);
+		$llave_direccion = $this->insertar('DIRECCION', $representante['direccion']);
 
-		return $this->insertar('representantes', [...$representante, 'direccion_id' => $llave_direccion]);
+		$llave_persona = $this->insertar('PERSONA', [...$representante['persona'], 'direccion_id' => $llave_direccion]);
+
+		return $this->insertar('PERSONA_REPRESENTANTE', [
+				...$representante['persona_representante'],
+			 	'persona_id' => $llave_persona
+			]
+		);
 	}
 
-	public function actualizar_representante($representante, $direccion) {
+	public function actualizar_representante($representante, $id) {
 
-		$cedula = $representante['cedula'];
-		
-		unset($representante['cedula']);
+		$representante_id = $this->buscar_valor('id', 'PERSONA_REPRESENTANTE', 'persona_id', $id);
 
-		$this->actualizar('representantes', $representante, 'cedula', $cedula);
+		$direccion_id = $this->buscar_valor('direccion_id', 'PERSONA', 'id', $id);
 
-		$direccion_id = $this->buscar_valor('direccion_id', 'representantes', 'cedula', $cedula);
+		$this->actualizar('PERSONA_REPRESENTANTE', $representante['persona_representante'], 'id', $representante_id);
 
-		$this->actualizar('direcciones', $direccion, 'id', $direccion_id);
+		$this->actualizar('DIRECCION', $representante['direccion'], 'id', $direccion_id);
+
+		return $representante_id;
 
 	}
 
@@ -157,30 +166,55 @@ Class Usuario{
 
 	public function obtener_historial_estudiante ($cedula_identidad, $cedula_escolar) {
 
-		$estudiante = $cedula_identidad ? $this->buscar_todo('estudiantes', 'cedula_identidad', $cedula_identidad) :
-		$this->buscar_todo('estudiantes', 'cedula_escolar', $cedula_escolar);
+		$persona = null;
+		$estudiante = null;
+
+		if ($cedula_identidad) {
+		
+			$persona = $this->buscar_todo('PERSONA', 'cedula_identidad', $cedula_identidad);
+			$estudiante = $persona ? $this->buscar_todo('PERSONA_ESTUDIANTE', 'persona_id', $persona['id']): null; 
+		
+		} else {
+			
+			$estudiante = $this->buscar_todo('PERSONA_ESTUDIANTE', 'cedula_escolar', $cedula_escolar);
+			$persona = $estudiante ? $this->buscar_todo('PERSONA', 'id', $estudiante['persona_id']): null; 
+		}
 
 		if(!$estudiante) return null;
 
-		$antropometricos = $this->buscar_todo('antropometricos', 'id', $estudiante['antropometricos_id']);
-		$salud = $this->buscar_todo('salud', 'id', $estudiante['salud_id']);
-		$extra_curriculares = $this->buscar_todo('extra_curriculares', 'id', $estudiante['extra_curriculares_id']);
-		$representante_principal = $this->buscar_todo('representantes', 'cedula', $estudiante['representante_principal_cedula']);
-		$direccion_r_principal = $this->buscar_todo('direcciones', 'id', $representante_principal['direccion_id']);
+		$antropometrico = $this->buscar_todo('ANTROPOMETRICO', 'id', $estudiante['antropometrico_id']);
 
-		$representante_secundario = $estudiante['representante_secundario_cedula'] ? $this->buscar_todo('representantes', 'cedula', $estudiante['representante_secundario_cedula']): null;
+		$salud = $this->buscar_todo('SALUD', 'id', $estudiante['salud_id']);
+		$extra_curricular = $this->buscar_todo('EXTRA_CURRICULAR', 'id', $estudiante['extra_curricular_id']);
+		
+		$representante_principal = $this->buscar_todo('PERSONA_REPRESENTANTE', 'id', $estudiante['representante_principal_id']);
+		$persona_r_principal = $this->buscar_todo('PERSONA', 'id', $representante_principal['persona_id']);
+		$direccion_r_principal = $this->buscar_todo('DIRECCION', 'id', $persona_r_principal['direccion_id']);
 
-		$direccion_r_secundario = $representante_secundario ? $this->buscar_todo('direcciones', 'id', $representante_secundario['direccion_id']): null;
+		$representante_secundario = $estudiante['representante_secundario_id'] ? $this->buscar_todo('PERSONA_REPRESENTANTE', 'id', $estudiante['representante_secundario_id']): null;
+
+		$persona_r_secundario = $representante_secundario ? $this->buscar_todo('PERSONA', 'id', $representante_secundario['persona_id']): null;
+
+		$direccion_r_secundario = $persona_r_secundario ? $this->buscar_todo('DIRECCION', 'id', $persona_r_secundario['direccion_id']): null;
 
 		return [
-			'estudiante' => $estudiante,
-			'antropometricos' => $antropometricos,
-			'salud' => $salud,
-			'extra_curriculares' => $extra_curriculares,
-			'representante_principal' => $representante_principal,
-			'representante_secundario' => $representante_secundario,
-			'direccion_r_principal' => $direccion_r_principal,
-			'direccion_r_secundario' => $direccion_r_secundario
+			'estudiante' => [
+				'persona' => $persona,
+				'persona_estudiante' => $estudiante,
+				'antropometrico' => $antropometrico,
+				'salud' => $salud,
+				'extra_curricular' => $extra_curricular
+			], 
+			'representante_principal' => [
+				'persona' => $persona_r_principal,
+				'persona_representante' => $representante_principal,
+				'direccion' => $direccion_r_principal
+			],
+			'representante_secundario' => [
+				'persona' => $persona_r_secundario,
+				'persona_representante' => $representante_secundario,
+				'direccion' => $direccion_r_secundario
+			]  
 		];
 
 	}
@@ -249,7 +283,5 @@ Class Usuario{
 		$stmt->execute([...$datos, 'valor' => $valor]);
 	}
 
-
-	//=== Buscar ===
 
 }

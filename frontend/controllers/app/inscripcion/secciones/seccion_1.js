@@ -33,7 +33,6 @@ export default class Seccion_1_controller extends Utils{
         const select_pais = document.getElementById('select-pais');
         const select_estado = document.getElementById('select-estado');
         const select_municipio  = document.getElementById('select-municipio');
-        const select_ciudad = document.getElementById('select-ciudad');
         const select_parroquia = document.getElementById('select-parroquia');
 
         let estado_id; 
@@ -51,9 +50,6 @@ export default class Seccion_1_controller extends Utils{
             municipio_id = this.parametros_formulario.municipios.find(m=> m.nombre == 'Libertador')?.id ?? null;
         } 
 
-        if(select_ciudad) {
-            this._llenar_select(select_ciudad, this.parametros_formulario.ciudades.filter(c=> c.estado_id == estado_id), 'Valencia');
-        } 
 
         if(select_parroquia) {
             this._llenar_select(select_parroquia, this.parametros_formulario.parroquias.filter(p=> p.municipio_id == municipio_id), 'Rafael Urdaneta');
@@ -65,7 +61,7 @@ export default class Seccion_1_controller extends Utils{
 
         if(select_grado) this._llenar_select(select_grado, this.parametros_formulario.grados, '8VO');
         if(select_seccion) this._llenar_select(select_seccion, this.parametros_formulario.secciones, 'A');
-        if(select_periodo) this._llenar_select(select_periodo,this.parametros_formulario.periodos.reverse(), '');
+        if(select_periodo) this._llenar_select(select_periodo,this.parametros_formulario.periodos, '');
     }
 
     #dar_eventos_select() {
@@ -75,28 +71,29 @@ export default class Seccion_1_controller extends Utils{
             if(pais != 'Venezuela') {
                 document.getElementById('select-estado').parentElement.classList.add('d-none');
                 document.getElementById('select-municipio').parentElement.classList.add('d-none');
-                document.getElementById('select-ciudad').parentElement.classList.add('d-none');
+                document.getElementById('select-parroquia').parentElement.classList.add('d-none');
             } else {
                 document.getElementById('select-estado').parentElement.classList.remove('d-none');
                 document.getElementById('select-municipio').parentElement.classList.remove('d-none');
-                document.getElementById('select-ciudad').parentElement.classList.remove('d-none');
+                document.getElementById('select-parroquia').parentElement.classList.remove('d-none');
             }
         });
 
         document.getElementById('select-estado')?.addEventListener('change', (e) => {
             const id = e.target.value;
-            const municipios_filtrados = this.parametros_formulario.municipios.filter(m => m.estado_id == id);
-            const ciudades_filtradas = this.parametros_formulario.ciudades.filter(m => m.estado_id == id);
+            const select_municipio = document.getElementById('select-municipio');
+            const select_parroquia = document.getElementById('select-parroquia');
 
-            this._llenar_select(document.getElementById('select-municipio'), municipios_filtrados, '');
-            this._llenar_select(document.getElementById('select-ciudad'), ciudades_filtradas, '');
+            const municipios_filtrados = this.parametros_formulario.municipios.filter(m => m.estado_id == id);
+            this._llenar_select(select_municipio, municipios_filtrados, '');
+
+            const parroquias_filtradas = this.parametros_formulario.parroquias.filter(p => p.municipio_id == select_municipio.value);
+            this._llenar_select(select_parroquia, parroquias_filtradas, '');
         });
 
         document.getElementById('select-municipio')?.addEventListener('change', (e) => {
-            const select_parroquia = document.getElementById('select-parroquia');
-            if (!select_parroquia) return;
-
             const id = e.target.value;
+            const select_parroquia = document.getElementById('select-parroquia');
             const parroquias_filtradas = this.parametros_formulario.parroquias.filter(p => p.municipio_id == id);
             this._llenar_select(select_parroquia, parroquias_filtradas, '');
         });
@@ -111,12 +108,14 @@ export default class Seccion_1_controller extends Utils{
             temp_cedula_identidad = setTimeout(async () => {
                 const valor = e.target.value.trim();
                     if(valor === '' || Object.keys(data).length != 0) return;
-
+                    console.log(valor)
                     const resp = await this._enviar_datos('./api.php?controller=inscripcion_controller&action=obtener_historial_estudiante', 
                     {'cedula_identidad': valor, 'cedula_escolar': null});
+                    console.log(resp)
 
                     if(!resp.historial) return;
-                    this._llenar_inputs(resp.historial.estudiante);
+                    this._llenar_inputs({...resp.historial.estudiante.persona, ...resp.historial.estudiante.persona_estudiante, ...resp.historial.inscripcion});
+                    
                     
                     this.alterar_data(resp.historial);
 
@@ -131,13 +130,14 @@ export default class Seccion_1_controller extends Utils{
             temp_cedula_escolar = setTimeout(async () => {
                 const valor = e.target.value.trim();
                 if(valor === '' || Object.keys(data).length != 0) return;
-
+                console.log(valor)
                 const resp = await this._enviar_datos('./api.php?controller=inscripcion_controller&action=obtener_historial_estudiante', 
                    {'cedula_identidad': null, 'cedula_escolar': valor});
+                console.log(resp)
 
                 if(!resp.historial) return;
 
-                this._llenar_inputs(resp.historial.estudiante);
+                this._llenar_inputs({...resp.historial.estudiante.persona, ...resp.historial.estudiante.persona_estudiante, ...resp.historial.inscripcion});
                 this.alterar_data(resp.historial);
 
             }, 1500);
