@@ -97,7 +97,7 @@ export default class Reportes_controlller extends Utils {
 
                     if (rep) {
                         d.getElementById('pl-rep-nombre').textContent = `${rep.nombre_1} ${rep.apellido_1}`;
-                        d.getElementById('pl-rep-ci').textContent = `${rep.nacionalidad}-${rep.cedula}`;
+                        d.getElementById('pl-rep-ci').textContent = `${rep.nacionalidad}-${rep.cedula_identidad}`;
                         d.getElementById('pl-rep-parentesco').textContent = rep.parentesco;
                     }
 

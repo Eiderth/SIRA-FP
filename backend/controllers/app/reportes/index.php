@@ -51,13 +51,19 @@ class Reportes_controller {
 
             if ($inscripcion) {
             
-                $representante = $this->modelo->buscar_todo('representantes', 'cedula', $inscripcion['representante_principal_cedula']);
+                $parentesco = $this->modelo->buscar_valor('parentesco', 'PERSONA_REPRESENTANTE', 'id', $inscripcion['representante_principal_id']);
+                $persona_id = $this->modelo->buscar_valor('PERSONA_id', 'PERSONA_REPRESENTANTE', 'id', $inscripcion['representante_principal_id']);
+
+                $persona = $this->modelo->buscar_todo('PERSONA', 'id', $persona_id);
 
                 echo json_encode([
                     'estado' => 'completado',
                     'datos' => [
                         'inscripcion' => $inscripcion,
-                        'representante_principal' => $representante
+                        'representante_principal' => [
+                            'parentesco' => $parentesco,
+                            ...$persona
+                        ]
                     ]  
                 ]);
 

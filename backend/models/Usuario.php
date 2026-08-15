@@ -57,12 +57,15 @@ Class Usuario{
 
 	public function buscar_planilla_inscripcion($id){
 		$stmt = $this->db->prepare("
-	      SELECT i.*, e.*, g.nombre AS grado, s.nombre AS seccion, p.nombre AS periodo
-	      FROM inscripciones i
-	      INNER JOIN estudiantes e ON i.estudiante_cedula_escolar = e.cedula_escolar
-	      INNER JOIN grados g ON i.grado_asignado_id = g.id
-	      INNER JOIN secciones s ON i.seccion_asignada_id = s.id
-	      INNER JOIN periodos_academicos p ON i.periodo_id = p.id
+	      SELECT i.*, p.*, e.*, g.nombre AS grado, s.nombre AS seccion, pa.nombre AS periodo, na.nombre AS nivel_academico
+	      FROM INSCRIPCION i
+	      INNER JOIN PERSONA_ESTUDIANTE e ON i.estudiante_id = e.id
+	      INNER JOIN PERSONA p ON e.persona_id = p.id
+	      INNER JOIN GRADO_SECCION gs ON i.grado_seccion_id = gs.id
+	      INNER JOIN GRADO g ON gs.grado_id = g.id
+	      INNER JOIN NIVEL_ACADEMICO na ON g.nivel_academico_id = na.id
+	      INNER JOIN SECCION s ON gs.seccion_id = s.id
+	      INNER JOIN PERIODO_ACADEMICO pa ON i.periodo_academico_id = pa.id
 	      WHERE i.id = :id LIMIT 1
 	    ");
 	    $stmt->execute(['id' => $id]);
@@ -137,9 +140,10 @@ Class Usuario{
 		
 		$stmt = $this->db->query(
           "SELECT i.id AS id_inscripcion, i.fecha_inscripcion,
-          e.nombre_1, e.apellido_1, e.nacionalidad, e.cedula_identidad, e.cedula_escolar
-          FROM inscripciones i
-          INNER JOIN estudiantes e ON i.estudiante_cedula_escolar = e.cedula_escolar
+          p.nombre_1, p.apellido_1, p.nacionalidad, p.cedula_identidad, e.cedula_escolar
+          FROM INSCRIPCION i
+          INNER JOIN PERSONA_ESTUDIANTE e ON i.estudiante_id = e.id
+          INNER JOIN PERSONA p ON e.persona_id = p.id
           ORDER BY i.fecha_inscripcion DESC"
         );
         
