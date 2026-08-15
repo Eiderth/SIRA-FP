@@ -35,33 +35,32 @@ export default class Seccion_1_controller extends Utils{
         const select_municipio  = document.getElementById('select-municipio');
         const select_parroquia = document.getElementById('select-parroquia');
 
-        let estado_id; 
-        let municipio_id; 
+        this._llenar_select(select_pais, this.parametros_formulario.paises, 'Venezuela'); 
 
-        if(select_pais) this._llenar_select(select_pais, this.parametros_formulario.paises, 'Venezuela'); 
-
-        if(select_estado){
-            this._llenar_select(select_estado, this.parametros_formulario.estados, 'Carabobo');
-            estado_id = this.parametros_formulario.estados.find(e=> e.nombre == 'Carabobo')?.id ?? null;
-        } 
-
-        if(select_municipio){
-            this._llenar_select(select_municipio, this.parametros_formulario.municipios.filter(m=> m.estado_id == estado_id), 'Libertador');
-            municipio_id = this.parametros_formulario.municipios.find(m=> m.nombre == 'Libertador')?.id ?? null;
-        } 
-
-
-        if(select_parroquia) {
-            this._llenar_select(select_parroquia, this.parametros_formulario.parroquias.filter(p=> p.municipio_id == municipio_id), 'Rafael Urdaneta');
-        } 
-
+        this._llenar_select(select_estado, this.parametros_formulario.estados, 'Carabobo');
+        
+        this._llenar_select(select_municipio, this.parametros_formulario.municipios.filter(m=> m.estado_id == select_estado.value), 'Libertador');
+    
+        this._llenar_select(select_parroquia, this.parametros_formulario.parroquias.filter(p=> p.municipio_id == select_municipio.value), 'Rafael Urdaneta');
+        
+        const select_nivel_academico = document.getElementById('select-nivel-academico');
         const select_grado = document.getElementById('select-grado');
         const select_seccion = document.getElementById('select-seccion');
         const select_periodo = document.getElementById('select-periodo');
 
-        if(select_grado) this._llenar_select(select_grado, this.parametros_formulario.grados, '8VO');
-        if(select_seccion) this._llenar_select(select_seccion, this.parametros_formulario.secciones, 'A');
-        if(select_periodo) this._llenar_select(select_periodo,this.parametros_formulario.periodos, '');
+        this._llenar_select(select_periodo, this.parametros_formulario.periodos, '');
+
+        this._llenar_select(select_nivel_academico, this.parametros_formulario.niveles_academicos, 'Media General')
+
+        const grados_secciones_filtradas = this.parametros_formulario.grados_secciones.filter((gs) => gs.nivel_academico_id == select_nivel_academico.value);
+        const grados_filtrados = [...new Set(grados_secciones_filtradas.map((gs) => gs.grado_id))];
+        
+        this._llenar_select(select_grado, this.parametros_formulario.grados.filter((g) => grados_filtrados.includes(g.id) ), '1er año')
+
+        const secciones_filtradas = this.parametros_formulario.grados_secciones.filter((gs) => gs.grado_id == select_grado.value).map((gs) => gs.seccion_id);
+        
+        this._llenar_select(select_seccion, this.parametros_formulario.secciones.filter((s) => secciones_filtradas.includes(s.id) ), 'A')
+
     }
 
     #dar_eventos_select() {
@@ -97,6 +96,24 @@ export default class Seccion_1_controller extends Utils{
             const parroquias_filtradas = this.parametros_formulario.parroquias.filter(p => p.municipio_id == id);
             this._llenar_select(select_parroquia, parroquias_filtradas, '');
         });
+
+        document.getElementById('select-nivel-academico')?.addEventListener('change', (e) => {
+            const id = e.target.value;
+            const select_grado = document.getElementById('select-grado');
+            const grados_filtrados = [...new Set(this.parametros_formulario.grados_secciones.filter(gs => gs.nivel_academico_id == id).map(gs => gs.grado_id))] ;
+            this._llenar_select(select_grado, this.parametros_formulario.grados.filter(g => grados_filtrados.includes(g.id)) , '');
+
+            const select_seccion = document.getElementById('select-seccion');
+            const secciones_filtradas = [...new Set(this.parametros_formulario.grados_secciones.filter(gs => gs.grado_id == select_grado.value).map(gs => gs.seccion_id))] ;
+            this._llenar_select(select_seccion, this.parametros_formulario.secciones.filter(s => secciones_filtradas.includes(s.id)) , '');
+        });
+
+        document.getElementById('select-grado')?.addEventListener('change', (e) => {
+            const id = e.target.value;
+            const select_seccion = document.getElementById('select-seccion');
+            const secciones_filtradas = [...new Set(this.parametros_formulario.grados_secciones.filter(gs => gs.grado_id == id).map(gs => gs.seccion_id))] ;
+            this._llenar_select(select_seccion, this.parametros_formulario.secciones.filter(s => secciones_filtradas.includes(s.id)) , '');
+        });
     }
 
     #dar_eventos_busqueda(data) {
@@ -108,37 +125,14 @@ export default class Seccion_1_controller extends Utils{
             temp_cedula_identidad = setTimeout(async () => {
                 const valor = e.target.value.trim();
                     if(valor === '' || Object.keys(data).length != 0) return;
-                    console.log(valor)
                     const resp = await this._enviar_datos('./api.php?controller=inscripcion_controller&action=obtener_historial_estudiante', 
-                    {'cedula_identidad': valor, 'cedula_escolar': null});
-                    console.log(resp)
+                    {'cedula_identidad': valor});
 
                     if(!resp.historial) return;
                     this._llenar_inputs({...resp.historial.estudiante.persona, ...resp.historial.estudiante.persona_estudiante, ...resp.historial.inscripcion});
                     
                     
                     this.alterar_data(resp.historial);
-
-            }, 1500);
-        });
-
-        let temp_cedula_escolar;
-        document.getElementById('input-cedula-escolar-estudiante')?.addEventListener('input', (e) => {
-
-            clearTimeout(temp_cedula_escolar);
-
-            temp_cedula_escolar = setTimeout(async () => {
-                const valor = e.target.value.trim();
-                if(valor === '' || Object.keys(data).length != 0) return;
-                console.log(valor)
-                const resp = await this._enviar_datos('./api.php?controller=inscripcion_controller&action=obtener_historial_estudiante', 
-                   {'cedula_identidad': null, 'cedula_escolar': valor});
-                console.log(resp)
-
-                if(!resp.historial) return;
-
-                this._llenar_inputs({...resp.historial.estudiante.persona, ...resp.historial.estudiante.persona_estudiante, ...resp.historial.inscripcion});
-                this.alterar_data(resp.historial);
 
             }, 1500);
         });

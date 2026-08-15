@@ -95,6 +95,22 @@ Class Usuario{
 
 	public function actualizar_estudiante($data, $id, $rep_principal_id, $rep_secundario_id) {
 
+		if(isset($data['persona']['cedula_identidad'])){ //actualizar unicamente la cedula si no hay
+
+			$persona_id = $this->buscar_valor('persona_id', 'PERSONA_ESTUDIANTE', 'id', $id);
+			$cedula_identidad = $this->buscar_valor('cedula_identidad', 'PERSONA', 'id', $persona_id);
+			
+			if (empty($cedula_identidad)) {
+				$this->actualizar(
+					'PERSONA', 
+					['cedula_identidad' => $data['persona']['cedula_identidad']], 
+					'id', 
+					$persona_id
+				);
+			}
+
+		}
+
 		$antropometrico_id = $this->buscar_valor('antropometrico_id', 'PERSONA_ESTUDIANTE', 'id', $id);
 		$this->actualizar('ANTROPOMETRICO', $data['antropometrico'], 'id' , $antropometrico_id);
 
@@ -164,21 +180,10 @@ Class Usuario{
 
 	//=== Metodos ramdoms que no supe en que categoria meter (pero si sirven) ===
 
-	public function obtener_historial_estudiante ($cedula_identidad, $cedula_escolar) {
-
-		$persona = null;
-		$estudiante = null;
-
-		if ($cedula_identidad) {
+	public function obtener_historial_estudiante ($cedula_identidad) {
 		
-			$persona = $this->buscar_todo('PERSONA', 'cedula_identidad', $cedula_identidad);
-			$estudiante = $persona ? $this->buscar_todo('PERSONA_ESTUDIANTE', 'persona_id', $persona['id']): null; 
-		
-		} else {
-			
-			$estudiante = $this->buscar_todo('PERSONA_ESTUDIANTE', 'cedula_escolar', $cedula_escolar);
-			$persona = $estudiante ? $this->buscar_todo('PERSONA', 'id', $estudiante['persona_id']): null; 
-		}
+		$persona = $this->buscar_todo('PERSONA', 'cedula_identidad', $cedula_identidad);
+		$estudiante = $persona ? $this->buscar_todo('PERSONA_ESTUDIANTE', 'persona_id', $persona['id']): null; 
 
 		if(!$estudiante) return null;
 

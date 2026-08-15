@@ -104,34 +104,28 @@ export default class Inscripcion_controller extends Utils {
          this._data.inscripcion = Object.fromEntries(new FormData(document.getElementById('formulario-inscripcion')));
          this._data.estudiante.persona = Object.fromEntries(new FormData(document.getElementById('formulario-persona')));
          this._data.estudiante.persona_estudiante = Object.fromEntries(new FormData(document.getElementById('formulario-persona-estudiante')));
-         delete this._data.estudiante.persona_estudiante.estado_nacimiento_id;
-         delete this._data.estudiante.persona_estudiante.municipio_nacimiento_id;
+         
+         this._data.inscripcion.grado_seccion_id = this.#parametros_formulario.grados_secciones.find(gs => gs.grado_id == this._data.inscripcion.grado_id && gs.seccion_id == this._data.inscripcion.seccion_id).id;
 
          this.#btn_atras.classList.remove('d-none'); 
-         // console.log(this._data)
       } 
 
       if (this.#cont == 2) {
          this._data.estudiante.antropometrico = Object.fromEntries(new FormData(document.getElementById('formulario-antropometrico')));
          this._data.estudiante.salud = Object.fromEntries(new FormData(document.getElementById('formulario-salud')));
          this._data.estudiante.extra_curricular = Object.fromEntries(new FormData(document.getElementById('formulario-extra-curricular')));
-         // console.log(this._data)
       } 
 
       if (this.#cont == 3) {
          this._data.representante_principal.persona = Object.fromEntries(new FormData(document.getElementById('formulario-persona')));
          this._data.representante_principal.persona_representante = Object.fromEntries(new FormData(document.getElementById('formulario-persona-representante')));         
          this._data.representante_principal.direccion = Object.fromEntries(new FormData(document.getElementById('formulario-direccion')));
-         delete this._data.representante_principal.direccion.estado_id
-         // console.log(this._data)
       }
 
       if (this.#cont == 4) {
          this._data.representante_secundario.persona = Object.fromEntries(new FormData(document.getElementById('formulario-persona')));
          this._data.representante_secundario.persona_representante = Object.fromEntries(new FormData(document.getElementById('formulario-persona-representante')));         
          this._data.representante_secundario.direccion = Object.fromEntries(new FormData(document.getElementById('formulario-direccion')));
-         delete this._data.representante_secundario.direccion.estado_id
-         // console.log(this._data)   
       }
 
       this.#cont ++;
@@ -147,6 +141,17 @@ export default class Inscripcion_controller extends Utils {
 
       } else {
 
+         delete this._data.estudiante.persona_estudiante.estado_nacimiento_id;
+         delete this._data.estudiante.persona_estudiante.municipio_nacimiento_id;
+         
+         delete this._data.inscripcion.nivel_academico_id;
+         delete this._data.inscripcion.grado_id;
+         delete this._data.inscripcion.seccion_id;
+
+         delete this._data.representante_principal.direccion.estado_id;
+         delete this._data.representante_secundario.direccion.estado_id;
+         delete this._data.representante_principal.direccion.municipio_id;
+         delete this._data.representante_secundario.direccion.municipio_id;
 
          // === Limpieza ===
          this._limpiar_objeto(this._data.inscripcion);

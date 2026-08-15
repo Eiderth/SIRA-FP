@@ -10,9 +10,19 @@ class Sistema {
     public function obtener_parametros_formulario() {
         return [
             'periodos' => $this->db->query('SELECT nombre, id FROM PERIODO_ACADEMICO ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC),
-            'secciones' => $this->db->query('SELECT nombre, id FROM SECCION')->fetchAll(PDO::FETCH_ASSOC),
-            'grados'  => $this->db->query('SELECT nombre, id FROM GRADO')->fetchAll(PDO::FETCH_ASSOC),
-            'paises'  => $this->db->query('SELECT nombre, id FROM PAIS')->fetchAll(PDO::FETCH_ASSOC),
+
+            'secciones' => $this->db->query('SELECT * FROM SECCION')->fetchAll(PDO::FETCH_ASSOC),
+            'grados'  => $this->db->query('SELECT * FROM GRADO')->fetchAll(PDO::FETCH_ASSOC),
+            'niveles_academicos'  => $this->db->query('SELECT * FROM NIVEL_ACADEMICO')->fetchAll(PDO::FETCH_ASSOC),
+
+            'grados_secciones' => $this->db->query('
+                SELECT gs.id, gs.grado_id, gs.seccion_id, na.id AS nivel_academico_id FROM GRADO_SECCION gs
+                JOIN GRADO g ON gs.grado_id = g.id
+                JOIN NIVEL_ACADEMICO na ON g.nivel_academico_id = na.id
+                ORDER BY gs.id ASC
+            ')->fetchAll(PDO::FETCH_ASSOC),
+
+            'paises'  => $this->db->query('SELECT * FROM PAIS')->fetchAll(PDO::FETCH_ASSOC),
             'estados'  => $this->db->query('SELECT * FROM ESTADO')->fetchAll(PDO::FETCH_ASSOC),
             'municipios' => $this->db->query('SELECT * FROM MUNICIPIO')->fetchAll(PDO::FETCH_ASSOC),
             'ciudades' => $this->db->query('SELECT * FROM CIUDAD')->fetchAll(PDO::FETCH_ASSOC),

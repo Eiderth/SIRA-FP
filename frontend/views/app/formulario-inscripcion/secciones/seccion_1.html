@@ -33,22 +33,20 @@
 
                 <div class="col-md-4">
                     <label class="form-label fw-semibold small text-secondary">Nivel Académico *</label>
-                    <select name="nivel_academico" class="form-select bg-light border-0 py-2 rounded-3" required>
-                        <option value="Inicial">Inicial</option>
-                        <option value="Primaria">Primaria</option>
-                        <option value="Media General" selected>Media General</option>
+                    <select id="select-nivel-academico" name="nivel_academico_id" class="form-select bg-light border-0 py-2 rounded-3" required>
+             
                     </select>
                 </div>
 
                 <div class="col-md-4">
                     <label class="form-label fw-semibold small text-secondary">Grado Asignado *</label>
-                    <select id="select-grado" name="grado_asignado_id" class="form-select bg-light border-0 py-2 rounded-3" required>
+                    <select id="select-grado" name="grado_id" class="form-select bg-light border-0 py-2 rounded-3" required>
                     </select>
                 </div>
 
                 <div class="col-md-4">
                     <label class="form-label fw-semibold small text-secondary">Sección Asignada *</label>
-                    <select id="select-seccion" name="seccion_asignada_id" class="form-select bg-light border-0 py-2 rounded-3" required>
+                    <select id="select-seccion" name="seccion_id" class="form-select bg-light border-0 py-2 rounded-3" required>
                     </select>
                 </div>
             </div>
@@ -128,17 +126,17 @@
             </div>
 
             <div class="row g-3">
-                <div class="col-md-6">
+   <!--              <div class="col-md-6">
                     <label class="form-label fw-semibold small text-secondary">Cédula Escolar *</label>
                     <input id="input-cedula-escolar-estudiante" type="text" name="cedula_escolar" class="form-control bg-light border-0 py-2 rounded-3" placeholder="Dejar vacío si no tiene" autocomplete="off">
-                </div>
+                </div> -->
 
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <label class="form-label fw-semibold small text-secondary">Nº de Hijo *</label>
                     <input type="number" name="numero_hijo" class="form-control bg-light border-0 py-2 rounded-3" value="1" min="1" autocomplete="off">
                 </div>
 
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <label class="form-label fw-semibold small text-secondary">Lateralidad *</label>
                     <select name="lateralidad" class="form-select bg-light border-0 py-2 rounded-3">
                         <option value="Derecha" selected>Derecha</option>

@@ -44,9 +44,7 @@ class Inscripcion_controller {
 
             //=== Validaciones ===    
 
-        if(strlen($input['estudiante']['persona_estudiante']['cedula_escolar'] ?? '') < 9) {
-            $input['estudiante']['persona_estudiante']['cedula_escolar'] = null;
-        }
+        $input['estudiante']['persona_estudiante']['cedula_escolar'] = $this->modelo->crear_cedula_escolar($input);
 
         if(strlen($input['estudiante']['persona']['cedula_identidad'] ?? '') < 6) {
             $input['estudiante']['persona']['cedula_identidad'] = null;
@@ -72,7 +70,6 @@ class Inscripcion_controller {
             $representante_principal_id = null;
             $representante_secundario_id = null;
 
-
             if (isset($input['estudiante']['persona']['cedula_identidad'])) {
                 
                 $persona_id = $this->modelo->buscar_valor(
@@ -93,8 +90,9 @@ class Inscripcion_controller {
                 }
             }
 
-            if (!isset($estudiante_id) && isset($input['estudiante']['persona_estudiante']['cedula_escolar'])) {
-                
+
+            if (empty($estudiante_id)) {
+
                 $estudiante_id = $this->modelo->buscar_valor(
                     'id', 
                     'PERSONA_ESTUDIANTE', 
@@ -168,16 +166,6 @@ class Inscripcion_controller {
                 }
             }
 
-
-            // $this->modelo->revertir_transaccion();
-            // echo json_encode([
-            //     'estado' => 'error',
-            //     'mensaje' => 'despues de rep 2',
-            //     'rep' => $representante_secundario_id,
-            // ]);
-            // exit();
-    
-
             if (isset($estudiante_id)) {
                 
                 $this->modelo->actualizar_estudiante(
@@ -188,8 +176,6 @@ class Inscripcion_controller {
                 );
 
             } else {
-
-                $input['estudiante']['persona_estudiante']['cedula_escolar'] = $this->modelo->crear_cedula_escolar($input);
                 
                 $estudiante_id = $this->modelo->guardar_estudiante(
                     $input['estudiante'], 
@@ -222,13 +208,12 @@ class Inscripcion_controller {
 
 
     private function obtener_historial_estudiante($input) {
-        if(empty($input['cedula_identidad']) && empty($input['cedula_escolar'])) {
+        if(empty($input['cedula_identidad'])) {
             exit();
         }
 
         $historial = $this->modelo->obtener_historial_estudiante(
             $input['cedula_identidad'],
-            $input['cedula_escolar']
         );
 
         if ($historial) {
