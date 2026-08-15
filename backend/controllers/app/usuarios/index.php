@@ -37,6 +37,9 @@ class Usuarios_controller {
     }
 
     private function listar() {
+        // echo json_encode(['estado' => 'error', 'mensaje' => 'llegaste al controlador']);
+                    
+        // exit();
         try {
             $usuarios = $this->modelo->listar_usuarios();
             echo json_encode(['estado' => 'completado', 'usuarios' => $usuarios]);
@@ -58,7 +61,7 @@ class Usuarios_controller {
 
         try {
 
-            if ($this->modelo->existe('usuarios', 'nombre', $nombre)) {
+            if ($this->modelo->existe('USUARIO', 'nombre', $nombre)) {
                 echo json_encode(['estado' => 'error', 'mensaje' => 'El nombre de usuario ya existe']);
                 return;
             }

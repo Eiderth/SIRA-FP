@@ -32,8 +32,10 @@ class Router {
 
             if (session_status() === PHP_SESSION_NONE) session_start();
 
-            
             $this->usuario = $_SESSION['rol'] == 'Administrador' ? new Administrador(Database::get_instance()) : $this->usuario = new Usuario(Database::get_instance());
+
+            // echo json_encode(['estado' => 'error', 'mensaje' => $this->usuario->type ]);
+            // exit();
 
             switch ($controlador) {
                 case 'inscripcion_controller':
