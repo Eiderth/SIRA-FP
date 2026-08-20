@@ -1,55 +1,106 @@
 <div class="vh-100 vw-100 d-flex bg-dark-subtle p-2 gap-2 overflow-hidden">
     
     <!-- Sidebar / Menú Lateral -->
-    <nav 
-     class="h-100 p-3 rounded-4 d-flex flex-column gap-3 flex-shrink-0 bg-dark text-white shadow-sm" 
-     style="width: 220px;"
-    > 
+    <nav class="h-100 p-3 d-flex flex-column flex-shrink-0 bg-dark text-white shadow-sm rounded-4" style="width: 240px;"> 
+        
         <!-- Header / Título -->
-        <div class="d-flex align-items-center gap-2 px-2 py-1 mb-2 border-bottom border-secondary border-opacity-25">
-            <i class="bi bi-mortarboard-fill text-warning fs-5"></i>
-            <h1 class="text-white fs-6 fw-bold m-0 tracking-wide text-truncate">
+        <div class="d-flex align-items-center justify-content-center gap-2 py-2 mb-3 border-bottom border-secondary border-opacity-25">
+            <i class="bi bi-mortarboard-fill text-warning fs-4"></i>
+            <h1 class="text-white fs-6 fw-bold m-0 text-truncate">
                 Sistema Peñalver
             </h1>
         </div>
 
-        <!-- Lista de Navegación -->
-        <div class="d-flex flex-column gap-1">
+        <!-- Lista de Navegación Alineada Arriba -->
+        <div class="d-flex flex-column gap-1 flex-grow-1">
             
+            <!-- SECCIÓN 1: OPERACIONES -->
             <button 
              type="button" 
              id="btn-dashboard" 
-             class="btn btn-dark text-start border-0 fw-medium fs-6 py-2 px-3 rounded-3 active-style"
+             class="btn btn-dark text-start border-0 fw-medium fs-6 py-2 px-3 rounded-3 active-style d-flex align-items-center"
             >
-                <i class="bi bi-grid-1x2-fill me-2 opacity-75"></i>
-                Dashboard
+                <i class="bi bi-grid-1x2-fill me-3 opacity-75"></i>
+                <span>Dashboard</span>
             </button>
             
             <button 
              type="button" 
              id="btn-registro" 
-             class="btn btn-dark text-start border-0 fw-medium fs-6 py-2 px-3 rounded-3"
+             class="btn btn-dark text-start border-0 fw-medium fs-6 py-2 px-3 rounded-3 d-flex align-items-center"
             >
-                <i class="bi bi-journal-plus me-2 opacity-75"></i>
-                Registro
+                <i class="bi bi-journal-plus me-3 opacity-75"></i>
+                <span>Inscripción</span>
+            </button>
+
+            <button 
+             type="button" 
+             id="btn-buscar-persona" 
+             class="btn btn-dark text-start border-0 fw-medium fs-6 py-2 px-3 rounded-3 d-flex align-items-center"
+            >
+                <i class="bi bi-search me-3 opacity-75"></i>
+                <span>Buscar Persona</span>
             </button>
 
             <button 
              type="button" 
              id="btn-reporte" 
-             class="btn btn-dark text-start border-0 fw-medium fs-6 py-2 px-3 rounded-3"
+             class="btn btn-dark text-start border-0 fw-medium fs-6 py-2 px-3 rounded-3 d-flex align-items-center"
             >
-                <i class="bi bi-file-earmark-bar-graph me-2 opacity-75"></i>
-                Reportes
+                <i class="bi bi-file-earmark-bar-graph me-3 opacity-75"></i>
+                <span>Reportes</span>
+            </button>
+
+            <!-- SECCIÓN 2: CONFIGURACIÓN ACADÉMICA -->
+            <hr class="my-2 border-secondary border-opacity-25">
+            <span class="text-body-secondary text-uppercase fw-bold px-3 py-1" style="font-size: 0.65rem; letter-spacing: 0.8px;">
+                Académico
+            </span>
+
+            <button 
+             type="button" 
+             id="btn-periodos" 
+             class="btn btn-dark text-start border-0 fw-medium fs-6 py-2 px-3 rounded-3 d-flex align-items-center"
+            >
+                <i class="bi bi-calendar-range me-3 opacity-75"></i>
+                <span>Períodos</span>
             </button>
 
             <button 
              type="button" 
-             id="btn-usuarios" 
-             class="btn btn-outline-warning text-start border-0 fw-medium fs-6 py-2 px-3 rounded-3 d-none"
+             id="btn-grados" 
+             class="btn btn-dark text-start border-0 fw-medium fs-6 py-2 px-3 rounded-3 d-flex align-items-center"
             >
-                <i class="bi bi-people-fill me-2 opacity-75"></i>
-                Gestionar Usuarios
+                <i class="bi bi-award me-3 opacity-75"></i>
+                <span>Grados</span>
+            </button>
+
+            <button 
+             type="button" 
+             id="btn-secciones" 
+             class="btn btn-dark text-start border-0 fw-medium fs-6 py-2 px-3 rounded-3 d-flex align-items-center"
+            >
+                <i class="bi bi-grid-3x3-gap me-3 opacity-75"></i>
+                <span>Secciones</span>
+            </button>
+
+            <button 
+             type="button" 
+             id="btn-asignar-seccion" 
+             class="btn btn-dark text-start border-0 fw-medium fs-6 py-2 px-3 rounded-3 d-flex align-items-center"
+            >
+                <i class="bi bi-link-45deg me-3 opacity-75"></i>
+                <span>Asignar Sección</span>
+            </button>
+
+            <!-- Módulo Administrador -->
+            <button 
+             type="button" 
+             id="btn-usuarios" 
+             class="btn btn-outline-warning text-start border-0 fw-medium fs-6 py-2 px-3 rounded-3 d-none d-flex align-items-center"
+            >
+                <i class="bi bi-people-fill me-3 opacity-75"></i>
+                <span>Gestionar Usuarios</span>
             </button>
 
         </div>
@@ -59,16 +110,16 @@
             <button 
              type="button"
              id="btn-salir" 
-             class="btn btn-outline-danger w-100 fw-medium rounded-3 py-2 fs-6 border-0 text-start px-3"
+             class="btn btn-outline-danger w-100 fw-medium rounded-3 py-2 fs-6 border-0 d-flex align-items-center justify-content-center"
             >
                 <i class="bi bi-box-arrow-left me-2"></i>
-                Cerrar Sesión
+                <span>Cerrar Sesión</span>
             </button>
         </div>
 
     </nav>
 
-    <!-- Main encargado de renderizar las vistas -->
+    <!-- Main encargado de renderizar las vistas dinámicas -->
     <main 
      id="root-app" 
      class="flex-grow-1 h-100 d-flex flex-column overflow-auto rounded-4 bg-body border border-secondary-subtle shadow-sm p-4"

@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../controllers/app/dashboard/index.php';
 require_once __DIR__ . '/../controllers/login/index.php';
 require_once __DIR__ . '/../controllers/app/inscripcion/index.php';
 require_once __DIR__ . '/../controllers/app/reportes/index.php';
@@ -34,10 +35,11 @@ class Router {
 
             $this->usuario = $_SESSION['rol'] == 'Administrador' ? new Administrador(Database::get_instance()) : $this->usuario = new Usuario(Database::get_instance());
 
-            // echo json_encode(['estado' => 'error', 'mensaje' => $this->usuario->type ]);
-            // exit();
-
             switch ($controlador) {
+                case 'dashboard_controller':
+                    $dashboard_controller = new Dashboard_controller($this->usuario);
+                    $dashboard_controller->init($action, $input);
+                    break;
                 case 'inscripcion_controller':
                     $inscripcion_controller = new Inscripcion_controller($this->usuario, $this->sistema);
                     $inscripcion_controller->init($action, $input);

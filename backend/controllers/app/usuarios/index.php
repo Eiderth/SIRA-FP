@@ -37,9 +37,6 @@ class Usuarios_controller {
     }
 
     private function listar() {
-        // echo json_encode(['estado' => 'error', 'mensaje' => 'llegaste al controlador']);
-                    
-        // exit();
         try {
             $usuarios = $this->modelo->listar_usuarios();
             echo json_encode(['estado' => 'completado', 'usuarios' => $usuarios]);

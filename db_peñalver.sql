@@ -211,7 +211,7 @@ CREATE TABLE SECCION (
 CREATE TABLE PERIODO_ACADEMICO (
     id INT(11) PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(20) NOT NULL UNIQUE,
-    ESTADO ENUM('Activo', 'Cerrado') NOT NULL DEFAULT 'Activo',
+    ESTADO ENUM('Activo', 'Cerrado') NOT NULL DEFAULT 'Cerrado',
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -2590,10 +2590,10 @@ INSERT INTO PARROQUIA (id, municipio_id, nombre) VALUES
 -- (522, 25, 'Islas Los Hermanos');
 
 
-INSERT INTO PERIODO_ACADEMICO (nombre) VALUES 
-    ('2025-2026'),
-    ('2026-2027'),
-    ('2027-2028');
+INSERT INTO PERIODO_ACADEMICO (nombre, estado) VALUES 
+    ('2025-2026', 'Cerrado'),
+    ('2026-2027', 'Activo' ),
+    ('2027-2028', 'Cerrado');
 
 INSERT INTO SECCION (nombre) VALUES 
     ('A'),

@@ -24,7 +24,7 @@ export default class App_controller extends Utils {
         this.cambiar_interfaz = cambiar_interfaz;
         this.#root = document.getElementById('root'); 
 
-        this.#dashboard_controller = new Dashboard_controller();
+        this.#dashboard_controller = new Dashboard_controller((interfaz) =>this._cambiar_interfaz_app(interfaz));
         this.#inscripcion_controller = new Inscripcion_controller();
         this.#reportes_controller = new Reportes_controller();
         this.#usuarios_controller = new Usuarios_controller();
@@ -37,7 +37,7 @@ export default class App_controller extends Utils {
 
         this.#dar_permiso_admin(JSON.parse(localStorage.getItem('sesion')));
         document.getElementById('btn-registro').addEventListener('click', () => this.#iniciar_inscripcion());
-        document.getElementById('btn-reporte').addEventListener('click', () => this.#iniciar_reporte());
+        document.getElementById('btn-reporte').addEventListener('click', () => this.#iniciar_reportes());
         document.getElementById('btn-dashboard').addEventListener('click', () => this.#iniciar_dashboard());
         document.getElementById('btn-usuarios').addEventListener('click', () => this.#iniciar_usuarios());
         document.getElementById('btn-salir').addEventListener('click', () => this.#cerrar_sesion());
@@ -56,12 +56,12 @@ export default class App_controller extends Utils {
         this.#seccion_app = 'registro';
     }
 
-    async #iniciar_reporte(){
-        if (this.#seccion_app == 'reporte') return;
+    async #iniciar_reportes(){
+        if (this.#seccion_app == 'reportes') return;
 
         this.#reportes_controller.init();
         
-        this.#seccion_app = 'reporte';
+        this.#seccion_app = 'reportes';
     }
 
     async #iniciar_dashboard() {
@@ -85,6 +85,30 @@ export default class App_controller extends Utils {
             document.getElementById('btn-usuarios').classList.remove('d-none');
         }
     }
+
+    async _cambiar_interfaz_app(interfaz){
+
+        switch(interfaz) {
+            case 'buscar':
+                this._notificacion('buscar')
+                this.#seccion_app = 'buscar';
+                break;
+            case 'periodos':
+                this._notificacion('periodos')
+                this.#seccion_app = 'periodos';
+                break;
+            case 'reportes':
+                this.#iniciar_reportes()
+                break;
+            case 'grados_secciones':
+                this._notificacion('grados_secciones')
+                this.#seccion_app = 'grados_secciones';
+                break;
+
+            default: this._notificacion('esa interfaz no existe');
+        }
+    }
+
 
     async #cerrar_sesion(){
         const resp = await this._traer_datos('./api.php?controller=login_controller&action=cerrar_sesion');

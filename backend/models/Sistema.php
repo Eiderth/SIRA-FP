@@ -21,11 +21,9 @@ class Sistema {
                 JOIN NIVEL_ACADEMICO na ON g.nivel_academico_id = na.id
                 ORDER BY gs.id ASC
             ')->fetchAll(PDO::FETCH_ASSOC),
-
             'paises'  => $this->db->query('SELECT * FROM PAIS')->fetchAll(PDO::FETCH_ASSOC),
             'estados'  => $this->db->query('SELECT * FROM ESTADO')->fetchAll(PDO::FETCH_ASSOC),
             'municipios' => $this->db->query('SELECT * FROM MUNICIPIO')->fetchAll(PDO::FETCH_ASSOC),
-            'ciudades' => $this->db->query('SELECT * FROM CIUDAD')->fetchAll(PDO::FETCH_ASSOC),
             'parroquias' => $this->db->query('SELECT * FROM PARROQUIA')->fetchAll(PDO::FETCH_ASSOC),
         ];
     }
@@ -53,7 +51,7 @@ class Sistema {
     public function buscar_usuario($nombre, $pass) {
         $stmt = $this->db->prepare("SELECT id, nombre, rol FROM USUARIO WHERE nombre = :nombre AND pass = :pass");
         $stmt->execute(['nombre' => $nombre, 'pass' => $pass]);
-        return $stmt->fetch();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
 }

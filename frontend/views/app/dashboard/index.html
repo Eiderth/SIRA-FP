@@ -1,153 +1,104 @@
-
-<div class="bg-light">
-
-    <!-- 1. BARRA DE NAVEGACIÓN SUPERIOR -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-        <div class="container-fluid">
-            <div class="navbar-brand fw-bold text-info" href="#">
-                <h1 class="h3 fw-normal">Panel de Control Administrativo</h1>
-                <span class="navbar-text text-white-50 me-auto">
-                    | U.E. Fernando Peñalver
-                </span>
+<!-- ENCABEZADO DE LA VISTA -->
+<div class="d-flex justify-content-between align-items-center pb-3 mb-4 border-bottom">
+    <div>
+        <h1 class="h3 fw-bold mb-1 text-dark">Panel Principal</h1>
+        <p class="text-body-secondary small mb-0">Resumen operativo y métricas del sistema escolar</p>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center gap-2 bg-body-tertiary px-3 py-2 rounded-pill border border-secondary-subtle shadow-sm">
+            <div id="info-letra-usuario" class="rounded-circle bg-primary text-white fw-bold d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; font-size: 0.85rem;">
+                -
             </div>
-   
-            <div class="align-self-start pt-2" >
-                <span class="text-light">¡Bienvenido, Administrador!</span>
+            <div class="lh-1 pe-1">
+                <span id="info-usuario" class="fw-bold d-block text-dark" style="font-size: 0.85rem;">Cargando...</span>
+                <small id="info-rol" class="text-body-secondary" style="font-size: 0.7rem;"></small>
             </div>
         </div>
-    </nav>
+    </div>
+</div>
 
-    <!-- 2. CONTENIDO PRINCIPAL -->
-    <div class="container-fluid my-4">
-        <div class="row">
-            
-            <!-- TITULAR -->
-            <div class="col-12 mb-4">
-                <p class="text-muted">Resumen general del período escolar actual.</p>
-                <hr>
-            </div>
-
-            <!-- TARJETAS DE ESTADÍSTICAS (Métricas principales) -->
-            <div class="col-12 col-sm-6 col-lg-3 mb-4">
-                <div class="card border-0 shadow-sm bg-primary text-white h-100">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <div class="mb-3">
-                            <h6 class="text-uppercase text-white-50 small">Total Estudiantes</h6>
-                            <h2 class="display-6 fw-bold">1,240</h2>
-                        </div>
-                        <small class="text-white-50">Inscritos este año</small>
-                    </div>
+<!-- 1. TARJETAS DE MÉTRICAS (Ajustadas a col-md-4 para llenar el ancho) -->
+<div class="row g-3 mb-4">
+    <!-- Total Inscritos -->
+    <div role="button" id="cont-estudiantes-activos" class="col-12 col-md-4 p">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-body-tertiary">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-body-secondary fw-semibold small d-block mb-1">Estudiantes Activos</span>
+                    <h2 class="fw-bold mb-0 text-dark" id="estudiantes-activos">--</h2>
+                </div>
+                <div class="rounded-3 bg-primary bg-opacity-10 text-primary p-3 d-inline-flex align-items-center justify-content-center">
+                    <i class="bi bi-people-fill fs-3"></i>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="col-12 col-sm-6 col-lg-3 mb-4">
-                <div class="card border-0 shadow-sm bg-success text-white h-100">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <div class="mb-3">
-                            <h6 class="text-uppercase text-white-50 small">Nuevos Ingresos</h6>
-                            <h2 class="display-6 fw-bold">345</h2>
-                        </div>
-                        <small class="text-white-50">+12% respecto al anterior</small>
-                    </div>
+    <!-- Período Activo -->
+    <div role="button" id="cont-periodo-activo" class="col-12 col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-body-tertiary">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-body-secondary fw-semibold small d-block mb-1">Período Activo</span>
+                    <h4 class="fw-bold mb-0 text-success" id="periodo-activo">--</h4>
+                </div>
+                <div class="rounded-3 bg-success bg-opacity-10 text-success p-3 d-inline-flex align-items-center justify-content-center">
+                    <i class="bi bi-calendar-check-fill fs-3"></i>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="col-12 col-sm-6 col-lg-3 mb-4">
-                <div class="card border-0 shadow-sm bg-warning text-dark h-100">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <div class="mb-3">
-                            <h6 class="text-uppercase text-dark-50 small">Secciones Activas</h6>
-                            <h2 class="display-6 fw-bold">24</h2>
-                        </div>
-                        <small class="text-dark-50">Desde 1er a 5to año</small>
-                    </div>
+    <!-- Secciones Activas -->
+    <div role="button" id="cont-grados-secciones-activas" class="col-12 col-md-4">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-body-tertiary">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-body-secondary fw-semibold small d-block mb-1">Secciones Activas</span>
+                    <h2 class="fw-bold mb-0 text-dark" id="grados-secciones-activas">--</h2>
+                </div>
+                <div class="rounded-3 bg-info bg-opacity-10 text-info p-3 d-inline-flex align-items-center justify-content-center">
+                    <i class="bi bi-diagram-3-fill fs-3"></i>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
 
-            <div class="col-12 col-sm-6 col-lg-3 mb-4">
-                <div class="card border-0 shadow-sm bg-info text-white h-100">
-                    <div class="card-body d-flex flex-column justify-content-between">
-                        <div class="mb-3">
-                            <h6 class="text-uppercase text-white-50 small">Por Registrar</h6>
-                            <h2 class="display-6 fw-bold">18</h2>
-                        </div>
-                        <small class="text-white-50">Inscripciones pendientes</small>
-                    </div>
-                </div>
-            </div>
-
-        </div> <!-- /row -->
-
-        <!-- 3. SECCIÓN DE ACCIONES Y TABLAS -->
-        <div class="row mt-2">
-            
-            <!-- COLUMNA IZQUIERDA: Inscripciones Recientes -->
-            <div class="col-12 col-xl-8 mb-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
-                        <h5 class="card-title mb-0 fw-bold text-secondary">Últimos Estudiantes Registrados</h5>
-                        <button class="btn btn-sm btn-outline-primary">Ver todos</button>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Cédula</th>
-                                        <th>Estudiante</th>
-                                        <th>Año / Sección</th>
-                                        <th>Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>V-31.234.567</td>
-                                        <td class="fw-semibold">Carlos Mendoza</td>
-                                        <td>4to Año - Sección A</td>
-                                        <td><span class="badge bg-success-subtle text-success border border-success-subtle">Completo</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>V-32.890.123</td>
-                                        <td class="fw-semibold">Ana Valentina Gómez</td>
-                                        <td>1er Año - Sección B</td>
-                                        <td><span class="badge bg-success-subtle text-success border border-success-subtle">Completo</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>V-30.456.789</td>
-                                        <td class="fw-semibold">Luis Alejandro Tovar</td>
-                                        <td>5to Año - Sección C</td>
-                                        <td><span class="badge bg-warning-subtle text-warning border border-warning-subtle">Pendiente</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- COLUMNA DERECHA: Accesos Rápidos (Acciones directas) -->
-            <div class="col-12 col-xl-4 mb-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white py-3">
-                        <h5 class="card-title mb-0 fw-bold text-secondary">Operaciones Rápidas</h5>
-                    </div>
-                    <div class="card-body d-grid gap-3">
-                        <button class="btn btn-primary py-3 text-start d-flex align-items-center justify-content-between">
-                            <span>📝 Registrar Nuevo Estudiante</span>
-                            <span class="badge bg-white text-primary rounded-circle">&rarr;</span>
-                        </button>
-                        <button class="btn btn-outline-dark py-3 text-start d-flex align-items-center justify-content-between">
-                            <span>🔍 Buscar Expediente / Matrícula</span>
-                            <span>📂</span>
-                        </button>
-                        <button class="btn btn-outline-dark py-3 text-start d-flex align-items-center justify-content-between">
-                            <span>📊 Generar Reporte de Matrícula</span>
-                            <span>🖨️</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-        </div> <!-- /row -->
-    </div> <!-- /container-fluid -->
+<!-- 2. TABLA TRADICIONAL DE ACTIVIDAD RECIENTE -->
+<div class="card border-0 shadow-sm rounded-4 bg-body-tertiary overflow-hidden">
+    <div class="card-header bg-transparent py-3 px-4 border-0 d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="card-title fw-bold mb-0 text-dark">
+                <i class="bi bi-clock-history me-2 text-primary"></i>Últimas Inscripciones
+            </h5>
+            <span class="text-body-secondary small">Registros recientes procesados en el sistema</span>
+        </div>
+        <button type="button" id="btn-table-reportes" class="btn btn-sm btn-outline-primary rounded-3 px-3">
+            Ver Todos los Reportes
+        </button>
+    </div>
+    
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 border-top">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Estudiante</th>
+                        <th>Cédula</th>
+                        <th>Grado y Sección</th>
+                        <th>Fecha de Registro</th>
+                    </tr>
+                </thead>
+                <tbody id="resumen-reportes">
+                    <tr>
+                        <td colspan="4" class="text-center py-4 text-body-secondary">
+                            <i class="bi bi-inbox fs-2 d-block mb-2 text-opacity-50"></i>
+                            Cargando la data reciente del servidor...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>

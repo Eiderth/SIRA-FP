@@ -70,7 +70,7 @@ class Inscripcion_controller {
             $representante_principal_id = null;
             $representante_secundario_id = null;
 
-            if (isset($input['estudiante']['persona']['cedula_identidad'])) {
+            if (!empty($input['estudiante']['persona']['cedula_identidad'])) {
                 
                 $persona_id = $this->modelo->buscar_valor(
                     'id', 
@@ -79,7 +79,7 @@ class Inscripcion_controller {
                     $input['estudiante']['persona']['cedula_identidad'] 
                 ) ? : null;
                 
-                if (isset($persona_id)) {
+                if (!empty($persona_id)) {
                     
                     $estudiante_id = $this->modelo->buscar_valor(
                         'id', 
@@ -142,7 +142,7 @@ class Inscripcion_controller {
                 );
             }
             
-            if(isset($input['representante_secundario']['persona']['cedula_identidad'])) {
+            if(!empty($input['representante_secundario']['persona']['cedula_identidad'])) {
                 
                 $persona_rep_secundario_id = $this->modelo->buscar_valor(
                     'id',
@@ -166,7 +166,7 @@ class Inscripcion_controller {
                 }
             }
 
-            if (isset($estudiante_id)) {
+            if (!empty($estudiante_id)) {
                 
                 $this->modelo->actualizar_estudiante(
                     $input['estudiante'], 

@@ -39,9 +39,9 @@ export default class Seccion_1_controller extends Utils{
 
         this._llenar_select(select_estado, this.parametros_formulario.estados, 'Carabobo');
         
-        this._llenar_select(select_municipio, this.parametros_formulario.municipios.filter(m=> m.estado_id == select_estado.value), 'Libertador');
+        this._llenar_select(select_municipio, this.parametros_formulario.municipios.filter(m=> m.estado_id == select_estado.value), 'Valencia');
     
-        this._llenar_select(select_parroquia, this.parametros_formulario.parroquias.filter(p=> p.municipio_id == select_municipio.value), 'Rafael Urdaneta');
+        this._llenar_select(select_parroquia, this.parametros_formulario.parroquias.filter(p=> p.municipio_id == select_municipio.value), 'Miguel Peña');
         
         const select_nivel_academico = document.getElementById('select-nivel-academico');
         const select_grado = document.getElementById('select-grado');

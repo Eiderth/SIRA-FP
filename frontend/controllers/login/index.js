@@ -41,7 +41,6 @@ export default class Login_controller extends Utils  {
         const resp = await this._enviar_datos('./api.php?controller=login_controller&action=iniciar_sesion', this.#data);
 
         if (resp.acceso == true) {
-            // localStorage.setItem('user_rol', resp.usuario.rol);
             localStorage.setItem("sesion", JSON.stringify(resp.usuario));
             this._notificacion("Bienvenido nuevo usuario");
             this.cambio_interfaz('app');

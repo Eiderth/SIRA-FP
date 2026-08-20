@@ -98,7 +98,7 @@ Class Usuario{
 
 	public function actualizar_estudiante($data, $id, $rep_principal_id, $rep_secundario_id) {
 
-		if(isset($data['persona']['cedula_identidad'])){ //actualizar unicamente la cedula si no hay
+		if(!empty($data['persona']['cedula_identidad'])){ //actualizar unicamente la cedula si no hay
 
 			$persona_id = $this->buscar_valor('persona_id', 'PERSONA_ESTUDIANTE', 'id', $id);
 			$cedula_identidad = $this->buscar_valor('cedula_identidad', 'PERSONA', 'id', $persona_id);
@@ -130,22 +130,30 @@ Class Usuario{
 			$id
 		);
 		
-		if (isset($rep_secundario_id)) {
+		if (!empty($rep_secundario_id)) {
 			$this->actualizar('PERSONA_ESTUDIANTE', ['representante_secundario_id' => $rep_secundario_id], 'id', $id);
 		} 
 
 	}
 
-	public function listar_estudiantes() {
-		
-		$stmt = $this->db->query(
-          "SELECT i.id AS id_inscripcion, i.fecha_inscripcion,
-          p.nombre_1, p.apellido_1, p.nacionalidad, p.cedula_identidad, e.cedula_escolar
+	public function listar_estudiantes($limit = '') {
+		$consulta =  "SELECT i.id AS id_inscripcion, i.fecha_inscripcion,
+          p.nombre_1, p.apellido_1, p.nacionalidad, p.cedula_identidad,
+          e.cedula_escolar, s.nombre AS seccion, g.nombre AS grado
           FROM INSCRIPCION i
+          INNER JOIN GRADO_SECCION gs ON i.grado_seccion_id = gs.id
+          INNER JOIN GRADO g ON gs.grado_id = g.id
+          INNER JOIN SECCION s ON gs.seccion_id = s.id
           INNER JOIN PERSONA_ESTUDIANTE e ON i.estudiante_id = e.id
           INNER JOIN PERSONA p ON e.persona_id = p.id
-          ORDER BY i.fecha_inscripcion DESC"
-        );
+
+          ORDER BY i.fecha_inscripcion DESC";
+
+        if (!empty($limit)) {
+         	$consulta = $consulta . " LIMIT {$limit}";
+        }
+
+		$stmt = $this->db->query($consulta);
         
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 

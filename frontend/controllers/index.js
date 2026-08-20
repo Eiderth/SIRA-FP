@@ -1,6 +1,6 @@
-import Utils from "./utils.js";
-import Login_controller from "../controllers/login/index.js";
-import App_controller from "../controllers/app/index.js";
+import Utils from "../core/utils.js";
+import Login_controller from "./login/index.js";
+import App_controller from "./app/index.js";
 
 
 export default class Enrutador extends Utils {
@@ -22,7 +22,7 @@ export default class Enrutador extends Utils {
 
         switch(interfaz) {
             case 'login':
-                this.#login_controller.init();
+                window.location.reload();
                 break;
             case 'app':
                 this.#app_controller.init();
