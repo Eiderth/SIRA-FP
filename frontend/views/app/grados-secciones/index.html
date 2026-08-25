@@ -1,0 +1,228 @@
+<!-- ENCABEZADO COMPACTO -->
+<div class="d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom border-2 border-dark-subtle">
+    <div>
+        <h1 class="h3 fw-bold mb-0 text-dark">Estructura Académica</h1>
+        <p class="text-secondary small mb-0 fw-medium">Configuración general de la institución</p>
+    </div>
+</div>
+
+<!-- NAVEGACIÓN PRINCIPAL POR PESTAÑAS (SECCIONES) -->
+<ul class="nav nav-tabs border-bottom border-2 border-dark-subtle mb-3 fs-6" id="estructuraTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link fw-bold text-dark px-3 py-2" id="tab-gestion-niveles" data-bs-toggle="tab" data-bs-target="#panel-gestion-niveles" type="button" role="tab">
+            <i class="bi bi-layers-fill me-2 text-warning"></i>Niveles
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link fw-bold text-dark px-3 py-2" id="tab-gestion-grados" data-bs-toggle="tab" data-bs-target="#panel-gestion-grados" type="button" role="tab">
+            <i class="bi bi-journal-bookmark-fill me-2 text-primary"></i>Grados / Años
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link fw-bold text-dark px-3 py-2" id="tab-gestion-secciones" data-bs-toggle="tab" data-bs-target="#panel-gestion-secciones" type="button" role="tab">
+            <i class="bi bi-alphabet-uppercase me-2 text-info"></i>Secciones
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active fw-bold text-dark px-3 py-2" id="tab-vincular-aula" data-bs-toggle="tab" data-bs-target="#panel-vincular-aula" type="button" role="tab">
+            <i class="bi bi-diagram-3-fill me-2 text-success"></i>Aulas Vinculadas
+        </button>
+    </li>
+</ul>
+
+<!-- CONTENIDO DE LAS PESTAÑAS -->
+<div class="tab-content" id="estructuraTabsContent">
+
+    <!-- ==================== PESTAÑA 1: GESTIÓN DE NIVELES ==================== -->
+    <div class="tab-pane fade" id="panel-gestion-niveles" role="tabpanel">
+        <div class="row g-3">
+            <div class="col-12 col-lg-4">
+                <div class="card border border-2 border-dark-subtle shadow-sm rounded-3 bg-white p-3">
+                    <h6 class="fw-bold text-dark mb-2"><i class="bi bi-plus-circle-fill me-1 text-warning"></i>Crear Nivel</h6>
+                    <form id="form-crear-nivel-academico" class="border-top border-2 pt-2">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-dark mb-1">Nombre del Nivel</label>
+                            <input type="text" name="nombre" class="form-control fs-6 rounded-2 border-2" placeholder="Ej: Educ. Media General" required>
+                        </div>
+                        <button type="button" id="btn-crear-nivel-academico"  class="btn btn-warning text-dark fs-6 fw-bold w-100 rounded-2 shadow-sm py-2">
+                            <i class="bi bi-plus-circle-fill me-1"></i> Guardar Nivel
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-12 col-lg-8">
+                <div class="card border border-2 border-dark-subtle shadow-sm rounded-3 bg-white p-3">
+                    <h6 class="fw-bold text-dark mb-2 pb-2 border-bottom border-2">Niveles Educativos</h6>
+                    <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light text-secondary text-uppercase small position-sticky top-0">
+                                <tr class="border-bottom border-2">
+                                    <th class="ps-3 py-2 fw-bold" style="background:#f8f9fa;">Nombre del Nivel</th>
+                                    <th class="text-end pe-3 py-2 fw-bold" style="background:#f8f9fa;">Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fs-6" id="tbody-niveles-academicos">
+                                <!-- Filas dinámicas por JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PESTAÑA 2: GESTIÓN DE GRADOS ==================== -->
+    <div class="tab-pane fade" id="panel-gestion-grados" role="tabpanel">
+        <div class="row g-3">
+            <div class="col-12 col-lg-4">
+                <div class="card border border-2 border-dark-subtle shadow-sm rounded-3 bg-white p-3">
+                    <h6 class="fw-bold text-dark mb-2"><i class="bi bi-plus-circle-fill me-1 text-primary"></i>Crear Grado / Año</h6>
+                    <form id="form-crear-grado" class="border-top border-2 pt-2">
+                        <div class="mb-2">
+                            <label class="form-label small fw-bold text-dark mb-1">Pertenece al Nivel</label>
+                            <select id="select-nivel-academico" name="nivel_academico_id" class="form-select fs-6 rounded-2 border-2" required>
+                                <option value="">Seleccione Nivel...</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-dark mb-1">Nombre del Grado</label>
+                            <input type="text" name="nombre" class="form-control fs-6 rounded-2 border-2" placeholder="Ej: 1er Año" required>
+                        </div>
+                        <button type="button" id="btn-crear-grado" class="btn btn-primary fs-6 fw-bold w-100 rounded-2 shadow-sm py-2">
+                            <i class="bi bi-plus-circle-fill me-1"></i> Guardar Grado
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-12 col-lg-8">
+                <div class="card border border-2 border-dark-subtle shadow-sm rounded-3 bg-white p-3">
+                    <h6 class="fw-bold text-dark mb-2 pb-2 border-bottom border-2">Grados Registrados</h6>
+                    <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light text-secondary text-uppercase small position-sticky top-0">
+                                <tr class="border-bottom border-2">
+                                    <th class="ps-3 py-2 fw-bold" style="background:#f8f9fa;">Grado</th>
+                                    <th class="py-2 fw-bold" style="background:#f8f9fa;">Nivel</th>
+                                    <th class="text-end pe-3 py-2 fw-bold" style="background:#f8f9fa;">Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fs-6" id="tbody-grados">
+                                <!-- Filas dinámicas por JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PESTAÑA 3: GESTIÓN DE SECCIONES ==================== -->
+    <div class="tab-pane fade" id="panel-gestion-secciones" role="tabpanel">
+        <div class="row g-3">
+            <div class="col-12 col-lg-4">
+                <div class="card border border-2 border-dark-subtle shadow-sm rounded-3 bg-white p-3">
+                    <h6 class="fw-bold text-dark mb-2"><i class="bi bi-plus-circle-fill me-1 text-info"></i>Crear Sección</h6>
+                    <form id="form-crear-seccion" class="border-top border-2 pt-2">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-dark mb-1">Nombre de la Sección</label>
+                            <input type="text" name="nombre" class="form-control fs-6 rounded-2 border-2" placeholder="Ej: A" required>
+                        </div>
+                        <button type="button" id="btn-crear-seccion" class="btn btn-info text-white fs-6 fw-bold w-100 rounded-2 shadow-sm py-2">
+                            <i class="bi bi-plus-circle-fill me-1"></i> Guardar Sección
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="col-12 col-lg-8">
+                <div class="card border border-2 border-dark-subtle shadow-sm rounded-3 bg-white p-3">
+                    <h6 class="fw-bold text-dark mb-2 pb-2 border-bottom border-2">Secciones Registradas</h6>
+                    <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light text-secondary text-uppercase small position-sticky top-0">
+                                <tr class="border-bottom border-2">
+                                    <th class="ps-3 py-2 fw-bold" style="background:#f8f9fa;">Nombre Sección</th>
+                                    <th class="text-end pe-3 py-2 fw-bold" style="background:#f8f9fa;">Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fs-6" id="tbody-secciones">
+                                <tr class="border-bottom">
+                                    <td class="ps-3 py-2 fw-bold text-dark">Sección A</td>
+                                    <td class="text-end pe-3 py-2">
+                                        <button class="btn btn-outline-primary btn-sm py-0 px-2 me-1 rounded-2" title="Editar"><i class="bi bi-pencil-fill small"></i></button>
+                                        <button class="btn btn-outline-danger btn-sm py-0 px-2 rounded-2" title="Eliminar"><i class="bi bi-trash-fill small"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PESTAÑA 4: AULAS VINCULADAS ==================== -->
+    <div class="tab-pane fade show active" id="panel-vincular-aula" role="tabpanel">
+        <div class="row g-3">
+            <!-- Formulario Vincular -->
+            <div class="col-12 col-lg-4">
+                <div class="card border border-2 border-dark-subtle shadow-sm rounded-3 bg-white p-3">
+                    <h6 class="fw-bold text-dark mb-2"><i class="bi bi-link-45deg me-1 fs-5 text-success"></i>Vincular Aula</h6>
+                    <form id="form-crear-grado-seccion" class="border-top border-2 pt-2">
+                        <div class="mb-2">
+                            <label class="form-label small fw-bold text-dark mb-1">Grado / Año</label>
+                            <select id="select-grado" name="grado_id" class="form-select fs-6 rounded-2 border-2" required>
+                                <option value="">Cargando grados...</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-dark mb-1">Sección</label>
+                            <select id="select-seccion" name="seccion_id" class="form-select fs-6 rounded-2 border-2" required>
+                                <option value="">Cargando secciones...</option>
+                            </select>
+                        </div>
+                        <button type="button" id="btn-crear-grado-seccion" class="btn btn-success fs-6 fw-bold w-100 rounded-2 shadow-sm py-2">
+                            <i class="bi bi-plus-circle-fill me-1"></i> Guardar Aula
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <!-- Tabla Aulas Vinculadas -->
+            <div class="col-12 col-lg-8">
+                <div class="card border border-2 border-dark-subtle shadow-sm rounded-3 bg-white p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-2">
+                        <h6 class="fw-bold mb-0 text-dark">Aulas Registradas</h6>
+                        <!-- <input type="text" class="form-control form-control-sm border-2" style="max-width: 180px;" placeholder="Buscar aula..."> -->
+                    </div>
+                    <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light text-secondary text-uppercase small position-sticky top-0">
+                                <tr class="border-bottom border-2">
+                                    <th class="ps-3 py-2 fw-bold" style="background:#f8f9fa;">Grado</th>
+                                    <th class="py-2 fw-bold" style="background:#f8f9fa;">Nivel</th>
+                                    <th class="text-end pe-3 py-2  fw-bold" style="background:#f8f9fa;">Secciones</th>
+                                </tr>
+                            </thead>
+                            <tbody class="fs-6" id="tbody-grados-secciones">
+                       
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="menu-vinculacion" class="dropdown-menu shadow-sm" style="display: none; position: fixed; z-index: 9999;">
+    
+    <button type="button" id="btn-alternar-estado-vinculacion" class="dropdown-item small text-warning">
+        <i class="bi bi-slash-circle me-2"></i><span id="texto-btn-alternar-vinculacion"></span>
+    </button>
+
+    <div class="dropdown-divider"></div>
+
+    <button type="button" id="btn-eliminar-vinculacion" class="dropdown-item text-danger small">
+        <i class="bi bi-trash-fill me-2"></i>Eliminar vinculación
+    </button>
+
+</div>

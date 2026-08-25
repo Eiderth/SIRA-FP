@@ -5,7 +5,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once __DIR__. '/backend/core/Router.php';
+require_once __DIR__. '/backend/controllers/index.php';
 
 $input = json_decode(file_get_contents('php://input'), true) ?? [];
 

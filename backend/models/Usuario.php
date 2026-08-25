@@ -236,6 +236,58 @@ Class Usuario{
 
 	}
 
+	public function crear_nivel_academico($nivel_academico) {
+		return $this->insertar('NIVEL_ACADEMICO', $nivel_academico);
+	}
+
+	public function eliminar_nivel_academico($id) {
+		$stmt = $this->db->prepare('DELETE FROM NIVEL_ACADEMICO WHERE id = :id');
+		$stmt->execute(['id' => $id]);
+		return true;
+	}
+
+	public function crear_grado($data) {
+		return $this->insertar('GRADO', $data);
+	}
+
+	public function eliminar_grado($id) {
+		$stmt = $this->db->prepare('DELETE FROM GRADO WHERE id = :id');
+		$stmt->execute(['id' => $id]);
+		return true;
+	}
+
+	public function crear_seccion($data) {
+		return $this->insertar('SECCION', $data);
+	}
+
+	public function eliminar_seccion($id) {
+		$stmt = $this->db->prepare('DELETE FROM SECCION WHERE id = :id');
+		$stmt->execute(['id' => $id]);
+		return true;
+	}
+
+	public function crear_grado_seccion($data) {
+		return $this->insertar('GRADO_SECCION', $data);
+	}
+
+	public function eliminar_grado_seccion($id) {
+		$stmt = $this->db->prepare('DELETE FROM GRADO_SECCION WHERE id = :id');
+		$stmt->execute(['id' => $id]);
+		return true;
+	}
+	
+	public function alternar_estado_grado_seccion($id) {
+		$estado_actual = $this->buscar_valor('estado', 'GRADO_SECCION', 'id', $id);
+		$nuevo_estado = $estado_actual == 'Activo' ? 'Inactivo': 'Activo';
+		$stmt = $this->db->prepare("UPDATE GRADO_SECCION SET estado = :nuevo_estado WHERE id = :id");
+		$stmt->execute([
+			'nuevo_estado' => $nuevo_estado,
+			'id' => $id
+		]);
+		return true;
+	}
+
+
 	public function buscar_valor($columna, $tabla, $clave, $valor) {
 		$stmt = $this->db->prepare("SELECT $columna FROM $tabla WHERE $clave = :valor LIMIT 1");
 
@@ -254,13 +306,30 @@ Class Usuario{
 		return $stmt->fetch(PDO::FETCH_ASSOC);
 	} 
 
-	public function existe($tabla, $clave, $valor) {
+	public function existe($tabla, $campo, $valor) {
 
-		$stmt = $this->db->prepare("SELECT 1 FROM $tabla WHERE $clave = :valor LIMIT 1");
+	    if (!is_array($valor)) {
+	        $valor = [$valor];
+	    }
 
-		$stmt->execute(['valor' => $valor]);
+	    $campos = array_map('trim', explode(',', $campo));
 
-		return (int )$stmt->fetchColumn() === 1;
+	    $clausulas = [];
+	    $params = [];
+
+	    foreach ($campos as $index => $nombreCampo) {
+	        $paramKey = ":valor_{$index}";
+	        $clausulas[] = "{$nombreCampo} = {$paramKey}";
+	        $params[$paramKey] = $valor[$index];
+	    }
+
+	    $whereSQL = implode(' AND ', $clausulas);
+	    $sql = "SELECT COUNT(*) FROM {$tabla} WHERE {$whereSQL}";
+
+	    $stmt = $this->db->prepare($sql);
+	    $stmt->execute($params);
+
+	    return $stmt->fetchColumn() > 0;
 	}
 
 

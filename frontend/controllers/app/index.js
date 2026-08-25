@@ -2,6 +2,7 @@ import Utils from "../../core/utils.js";
 import Inscripcion_controller from "./inscripcion/index.js";
 import Dashboard_controller from "./dashboard/index.js";
 import Reportes_controller from "./reportes/index.js";
+import Grados_secciones_controller from "./grados-secciones/index.js";
 import Usuarios_controller from "./usuarios/index.js";
 
 
@@ -12,6 +13,7 @@ export default class App_controller extends Utils {
     #dashboard_controller;
     #inscripcion_controller;
     #reportes_controller;
+    #grados_secciones_controller;
     #usuarios_controller;
     
     cambiar_interfaz;
@@ -27,6 +29,7 @@ export default class App_controller extends Utils {
         this.#dashboard_controller = new Dashboard_controller((interfaz) =>this._cambiar_interfaz_app(interfaz));
         this.#inscripcion_controller = new Inscripcion_controller();
         this.#reportes_controller = new Reportes_controller();
+        this.#grados_secciones_controller = new Grados_secciones_controller();
         this.#usuarios_controller = new Usuarios_controller();
 
     }
@@ -39,6 +42,11 @@ export default class App_controller extends Utils {
         document.getElementById('btn-registro').addEventListener('click', () => this.#iniciar_inscripcion());
         document.getElementById('btn-reporte').addEventListener('click', () => this.#iniciar_reportes());
         document.getElementById('btn-dashboard').addEventListener('click', () => this.#iniciar_dashboard());
+        document.getElementById('btn-grados').addEventListener('click', () => this.#iniciar_grados());
+        document.getElementById('btn-secciones').addEventListener('click', () => this.#iniciar_secciones());
+        document.getElementById('btn-vincular').addEventListener('click', () => this.#iniciar_vinculaciones());
+
+
         document.getElementById('btn-usuarios').addEventListener('click', () => this.#iniciar_usuarios());
         document.getElementById('btn-salir').addEventListener('click', () => this.#cerrar_sesion());
 
@@ -48,7 +56,7 @@ export default class App_controller extends Utils {
 
     }
 
-    async #iniciar_inscripcion() {
+    #iniciar_inscripcion() {
         if (this.#seccion_app == 'registro') return;
 
         this.#inscripcion_controller.init();
@@ -56,7 +64,7 @@ export default class App_controller extends Utils {
         this.#seccion_app = 'registro';
     }
 
-    async #iniciar_reportes(){
+    #iniciar_reportes(){
         if (this.#seccion_app == 'reportes') return;
 
         this.#reportes_controller.init();
@@ -64,7 +72,7 @@ export default class App_controller extends Utils {
         this.#seccion_app = 'reportes';
     }
 
-    async #iniciar_dashboard() {
+    #iniciar_dashboard() {
         if (this.#seccion_app == 'dashboard') return;
 
         this.#dashboard_controller.init();
@@ -72,7 +80,33 @@ export default class App_controller extends Utils {
         this.#seccion_app = 'dashboard';
     }
 
-    async #iniciar_usuarios() {
+
+    #iniciar_grados() {
+        if (this.#seccion_app == 'grados') return;
+
+        this.#grados_secciones_controller.init('grados');
+        
+        this.#seccion_app = 'grados';
+    }
+
+    #iniciar_secciones() {
+        if (this.#seccion_app == 'secciones') return;
+
+        this.#grados_secciones_controller.init('secciones');
+        
+        this.#seccion_app = 'secciones';
+    }
+
+    #iniciar_vinculaciones() {
+        if (this.#seccion_app == 'vinculaciones') return;
+
+        this.#grados_secciones_controller.init('vinculaciones');
+        
+        this.#seccion_app = 'vinculaciones';
+    }
+
+
+    #iniciar_usuarios() {
         if (this.#seccion_app == 'gestion_usuarios') return;
 
         this.#usuarios_controller.init();
@@ -86,7 +120,7 @@ export default class App_controller extends Utils {
         }
     }
 
-    async _cambiar_interfaz_app(interfaz){
+    _cambiar_interfaz_app(interfaz){
 
         switch(interfaz) {
             case 'buscar':

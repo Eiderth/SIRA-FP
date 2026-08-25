@@ -8,7 +8,7 @@ export default class Utils {
         this.#notificacion.style.transform = 'translate(-50%, 0%)'
         setTimeout(()=> {
             this.#notificacion.style.transform = 'translate(-50%, -200%)'
-        }, 2000)
+        }, 3000)
     }
 
     async _enviar_datos(url, objeto){

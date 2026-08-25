@@ -7,7 +7,7 @@ class Inscripcion_controller {
 
     public function __construct($modelo, $sistema) {
         $this->modelo = $modelo;
-        $this->sistema       = $sistema; 
+        $this->sistema = $sistema; 
     }
 
     public function init($action, $input) {

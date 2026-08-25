@@ -1,9 +1,10 @@
 <?php
-require_once __DIR__ . '/../controllers/app/dashboard/index.php';
-require_once __DIR__ . '/../controllers/login/index.php';
-require_once __DIR__ . '/../controllers/app/inscripcion/index.php';
-require_once __DIR__ . '/../controllers/app/reportes/index.php';
-require_once __DIR__ . '/../controllers/app/usuarios/index.php';
+require_once __DIR__ . '/./app/dashboard/index.php';
+require_once __DIR__ . '/./login/index.php';
+require_once __DIR__ . '/./app/inscripcion/index.php';
+require_once __DIR__ . '/./app/reportes/index.php';
+require_once __DIR__ . '/./app/grados-secciones/index.php';
+require_once __DIR__ . '/./app/usuarios/index.php';
 require_once __DIR__ . '/../config/Database.php';
 
 require_once __DIR__ . '/../models/Sistema.php';
@@ -40,6 +41,7 @@ class Router {
                     $dashboard_controller = new Dashboard_controller($this->usuario);
                     $dashboard_controller->init($action, $input);
                     break;
+                    
                 case 'inscripcion_controller':
                     $inscripcion_controller = new Inscripcion_controller($this->usuario, $this->sistema);
                     $inscripcion_controller->init($action, $input);
@@ -49,6 +51,12 @@ class Router {
                     $reportes_controller = new Reportes_controller($this->usuario);
                     $reportes_controller->init($action, $input);
                     break;
+
+                case 'grados_secciones_controller':
+                    $grados_secciones_controller = new Grados_secciones_controller($this->usuario, $this->sistema);
+                    $grados_secciones_controller->init($action, $input);
+                    break;
+
                 
                 case 'usuarios_controller':
                     $usuarios_controller = new Usuarios_controller($this->usuario);
