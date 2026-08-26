@@ -42,9 +42,10 @@ export default class App_controller extends Utils {
         document.getElementById('btn-registro').addEventListener('click', () => this.#iniciar_inscripcion());
         document.getElementById('btn-reporte').addEventListener('click', () => this.#iniciar_reportes());
         document.getElementById('btn-dashboard').addEventListener('click', () => this.#iniciar_dashboard());
+        document.getElementById('btn-periodos').addEventListener('click', () => this.#iniciar_periodos());
+        document.getElementById('btn-vincular').addEventListener('click', () => this.#iniciar_vinculaciones());
         document.getElementById('btn-grados').addEventListener('click', () => this.#iniciar_grados());
         document.getElementById('btn-secciones').addEventListener('click', () => this.#iniciar_secciones());
-        document.getElementById('btn-vincular').addEventListener('click', () => this.#iniciar_vinculaciones());
 
 
         document.getElementById('btn-usuarios').addEventListener('click', () => this.#iniciar_usuarios());
@@ -80,6 +81,21 @@ export default class App_controller extends Utils {
         this.#seccion_app = 'dashboard';
     }
 
+    #iniciar_periodos() {
+        if (this.#seccion_app == 'periodos_academicos') return;
+
+        this.#grados_secciones_controller.init('periodos_academicos');
+        
+        this.#seccion_app = 'periodos_academicos';
+    }
+
+    #iniciar_vinculaciones() {
+        if (this.#seccion_app == 'vinculaciones') return;
+
+        this.#grados_secciones_controller.init('vinculaciones');
+        
+        this.#seccion_app = 'vinculaciones';
+    }
 
     #iniciar_grados() {
         if (this.#seccion_app == 'grados') return;
@@ -97,13 +113,6 @@ export default class App_controller extends Utils {
         this.#seccion_app = 'secciones';
     }
 
-    #iniciar_vinculaciones() {
-        if (this.#seccion_app == 'vinculaciones') return;
-
-        this.#grados_secciones_controller.init('vinculaciones');
-        
-        this.#seccion_app = 'vinculaciones';
-    }
 
 
     #iniciar_usuarios() {

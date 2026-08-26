@@ -236,6 +236,27 @@ Class Usuario{
 
 	}
 
+	public function crear_periodo_academico($periodo_academico) {
+		return $this->insertar('PERIODO_ACADEMICO', $periodo_academico);
+	}
+
+	public function eliminar_periodo_academico($id) {
+		$stmt = $this->db->prepare('DELETE FROM PERIODO_ACADEMICO WHERE id = :id');
+		$stmt->execute(['id' => $id]);
+		return true;
+	}
+
+	public function alternar_estado_periodo_academico($id) {
+		$estado_actual = $this->buscar_valor('estado', 'PERIODO_ACADEMICO', 'id', $id);
+		$nuevo_estado = $estado_actual == 'Activo' ? 'Cerrado': 'Activo';
+		$stmt = $this->db->prepare("UPDATE PERIODO_ACADEMICO SET estado = :nuevo_estado WHERE id = :id");
+		$stmt->execute([
+			'nuevo_estado' => $nuevo_estado,
+			'id' => $id
+		]);
+		return true;
+	}
+
 	public function crear_nivel_academico($nivel_academico) {
 		return $this->insertar('NIVEL_ACADEMICO', $nivel_academico);
 	}

@@ -9,7 +9,7 @@ class Sistema {
 
     public function obtener_parametros_formulario() {
         return [
-            'periodos' => $this->db->query('SELECT nombre, id FROM PERIODO_ACADEMICO ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC),
+            'periodos' => $this->db->query('SELECT * FROM PERIODO_ACADEMICO ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC),
 
             'secciones' => $this->db->query('SELECT * FROM SECCION')->fetchAll(PDO::FETCH_ASSOC),
             'grados'  => $this->db->query('SELECT * FROM GRADO')->fetchAll(PDO::FETCH_ASSOC),
@@ -28,6 +28,25 @@ class Sistema {
         ];
     }
 
+    public function obtener_periodos_academicos() {
+        return $this->db->query('SELECT * FROM PERIODO_ACADEMICO ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtener_niveles_academicos() {
+        return $this->db->query('SELECT * FROM NIVEL_ACADEMICO ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtener_grados() {
+        return [
+            'grados'  => $this->db->query('SELECT * FROM GRADO ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC),
+            'niveles_academicos'  => $this->db->query('SELECT * FROM NIVEL_ACADEMICO ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC)
+        ];
+    }
+    
+    public function obtener_secciones() {
+        return  $this->db->query('SELECT * FROM SECCION ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function obtener_grados_secciones() {
         return [
             'secciones' => $this->db->query('SELECT * FROM SECCION ORDER BY id ASC')->fetchAll(PDO::FETCH_ASSOC),
@@ -40,21 +59,6 @@ class Sistema {
                 ORDER BY gs.id DESC
             ')->fetchAll(PDO::FETCH_ASSOC),
         ];
-    }
-
-
-    public function obtener_niveles_academicos() {
-        return $this->db->query('SELECT * FROM NIVEL_ACADEMICO ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function obtener_grados() {
-        return [
-            'grados'  => $this->db->query('SELECT * FROM GRADO ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC),
-            'niveles_academicos'  => $this->db->query('SELECT * FROM NIVEL_ACADEMICO ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC)
-        ];
-    }
-    
-    public function obtener_secciones() {
-        return  $this->db->query('SELECT * FROM SECCION ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC);
     }
 
 

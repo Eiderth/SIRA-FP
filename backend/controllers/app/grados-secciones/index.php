@@ -14,6 +14,19 @@ class Grados_secciones_controller
 
 		switch ($action) {
 
+			case 'obtener_periodos_academicos': 
+				$this->obtener_periodos_academicos();
+				break;	
+			case 'crear_periodo_academico':
+				$this->crear_periodo_academico($input);
+				break;
+			case 'eliminar_periodo_academico': 
+				$this->eliminar_periodo_academico($input);
+				break;
+			case 'alternar_estado_periodo_academico': 
+				$this->alternar_estado_periodo_academico($input);
+				break;
+
 			case 'obtener_niveles_academicos': 
 				$this->obtener_niveles_academicos();
 				break;
@@ -62,7 +75,73 @@ class Grados_secciones_controller
 	            echo json_encode(['estado' => 'error', 'mensaje' => 'acción no válida']);
 				break;
 		}
+	} 
+
+	// === PERIODOS ===
+	private function obtener_periodos_academicos(){
+		$periodos = $this->sistema->obtener_periodos_academicos();
+		
+		if (empty($periodos)){
+			echo json_encode(['estado' => 'error', 'mensaje' => 'error al traer periodos academicos']);
+			exit();
+		}
+
+		echo json_encode(['estado' => 'completado', 'periodos_academicos' => $periodos]);
 	}
+
+	private function crear_periodo_academico($input){
+
+		if ($this->modelo->existe('PERIODO_ACADEMICO', 'nombre', $input['nombre'])) {
+			echo json_encode(['estado' => 'error', 'mensaje' => 'Ya existe este periodo academico']);
+			exit();
+		} 
+
+		$nivel_id = $this->modelo->crear_periodo_academico($input);
+		
+		if (empty($nivel_id)){
+			echo json_encode(['estado' => 'error', 'mensaje' => 'Error al guardar']);
+			exit();
+		}
+		echo json_encode(['estado' => 'completado', 'periodo_academico_id' => $nivel_id]);
+		 
+	}
+
+	private function eliminar_periodo_academico($input){
+
+		if ($this->modelo->existe('INSCRIPCION', 'periodo_academico_id', $input['id'])) {
+			echo json_encode([
+				'estado' => 'error',
+				'mensaje' => 'no se puede eliminar, hay inscripciones que dependen de este periodo'
+			]);
+			exit();
+		} 
+
+		$eliminado = $this->modelo->eliminar_periodo_academico($input['id']);
+		
+		if (empty($eliminado)){
+			echo json_encode([
+				'estado' => 'error',
+				'mensaje' => 'algo ha salido mal intente de nuevo'
+			]);
+			exit();
+		}
+		echo json_encode(['estado' => 'completado', 'mensaje' => 'periodo academico eliminado con exito']);
+	}
+
+	private function alternar_estado_periodo_academico($input){
+
+		$alternado = $this->modelo->alternar_estado_periodo_academico($input['id']);
+		
+		if (empty($alternado)){
+			echo json_encode([
+				'estado' => 'error',
+				'mensaje' => 'algo ha salido mal'
+			]);		 
+			exit();
+		}
+		echo json_encode(['estado' => 'completado', 'mensaje' => 'estado cambiado']);
+	}
+
 
 	// === NIVELES ACADEMICOS ===
 

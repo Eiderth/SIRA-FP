@@ -101,7 +101,7 @@ export default class Vincular_grados_secciones_controller extends Utils {
 					        .filter(gs => gs.grado_id == g.id)
 					        .map(gs => {
 					        	const secNombre = resp.data.secciones.find(s => s.id == gs.seccion_id)?.nombre;
-					            return `<span title="${gs.estado}" class="badge ${gs.estado !== 'Activo'? 'bg-light opacity-50 text-muted': 'bg-primary-subtle text-primary'} border border-primary-subtle small px-2 py-1 rounded-pill badge-vinculacion user-select-none" style="cursor: pointer;" data-id="${gs.id}" style="cursor: context-menu;">${secNombre}<i class="bi bi-three-dots-vertical ms-1 small"></i></span>`;
+					            return `<span title="${gs.estado}"  data-id="${gs.id}" class="badge ${gs.estado !== 'Activo'? 'bg-light opacity-50 text-muted': 'bg-primary-subtle text-primary'} border border-primary-subtle small px-2 py-1 rounded-pill badge-vinculacion user-select-none" style="cursor: pointer;">${secNombre}<i class="bi bi-three-dots-vertical ms-1 small"></i></span>`;
 					        }).join(' ') 
 					    }
 	                </td>

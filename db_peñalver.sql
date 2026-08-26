@@ -139,7 +139,7 @@ CREATE TABLE PERSONA_REPRESENTANTE (
     direccion_empresa TEXT,
 
     persona_id INT(11) NOT NULL,
-    ESTADO ENUM('Activo', 'Inactivo') DEFAULT 'Activo',
+    estado ENUM('Activo', 'Inactivo') DEFAULT 'Activo',
 
     FOREIGN KEY (persona_id) REFERENCES PERSONA(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -161,7 +161,7 @@ CREATE TABLE PERSONA_ESTUDIANTE (
     representante_principal_id INT(11) NOT NULL, 
     representante_secundario_id INT(11) DEFAULT NULL,
 
-    ESTADO ENUM('Activo', 'Retirado', 'Egresado') DEFAULT 'Activo',  
+    estado ENUM('Activo', 'Retirado', 'Egresado') DEFAULT 'Activo',  
 
     FOREIGN KEY (persona_id) REFERENCES PERSONA(id),
     FOREIGN KEY (pais_nacimiento_id) REFERENCES PAIS(id),
@@ -204,14 +204,14 @@ CREATE TABLE SECCION (
 --     id INT(11) PRIMARY KEY AUTO_INCREMENT,
 --     tipo_nivel ENUM('Primaria', 'Secundaria'),
 --     persona_id INT(11) NOT NULL,
---     ESTADO ENUM('Activo', 'Inactivo') NOT NULL DEFAULT 'Activo',
+--     estado ENUM('Activo', 'Inactivo') NOT NULL DEFAULT 'Activo',
 --     FOREIGN KEY (persona_id) REFERENCES PERSONA(id) ON DELETE RESTRICT
 -- ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE PERIODO_ACADEMICO (
     id INT(11) PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(20) NOT NULL UNIQUE,
-    ESTADO ENUM('Activo', 'Cerrado') NOT NULL DEFAULT 'Cerrado',
+    estado ENUM('Activo', 'Cerrado') NOT NULL DEFAULT 'Activo',
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -330,7 +330,7 @@ CREATE TABLE USUARIO (
     nombre VARCHAR(100) NOT NULL,
     rol ENUM('Administrador', 'Secretaria', 'Docente') NOT NULL,
     pass VARCHAR(255) NOT NULL,
-    ESTADO ENUM('Activo', 'Inactivo') DEFAULT 'Activo',
+    estado ENUM('Activo', 'Inactivo') DEFAULT 'Activo',
     create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     update_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
