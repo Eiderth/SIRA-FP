@@ -1,6 +1,7 @@
 import Utils from "../../core/utils.js";
 import Inscripcion_controller from "./inscripcion/index.js";
 import Dashboard_controller from "./dashboard/index.js";
+import Busqueda_controller from "./busqueda/index.js";
 import Reportes_controller from "./reportes/index.js";
 import Grados_secciones_controller from "./grados-secciones/index.js";
 import Usuarios_controller from "./usuarios/index.js";
@@ -12,6 +13,7 @@ export default class App_controller extends Utils {
 
     #dashboard_controller;
     #inscripcion_controller;
+    #busqueda_controller;
     #reportes_controller;
     #grados_secciones_controller;
     #usuarios_controller;
@@ -28,6 +30,7 @@ export default class App_controller extends Utils {
 
         this.#dashboard_controller = new Dashboard_controller((interfaz) =>this._cambiar_interfaz_app(interfaz));
         this.#inscripcion_controller = new Inscripcion_controller();
+        this.#busqueda_controller = new Busqueda_controller();
         this.#reportes_controller = new Reportes_controller();
         this.#grados_secciones_controller = new Grados_secciones_controller();
         this.#usuarios_controller = new Usuarios_controller();
@@ -40,6 +43,7 @@ export default class App_controller extends Utils {
 
         this.#dar_permiso_admin(JSON.parse(localStorage.getItem('sesion')));
         document.getElementById('btn-registro').addEventListener('click', () => this.#iniciar_inscripcion());
+        document.getElementById('btn-busqueda').addEventListener('click', () => this.#iniciar_busqueda());
         document.getElementById('btn-reporte').addEventListener('click', () => this.#iniciar_reportes());
         document.getElementById('btn-dashboard').addEventListener('click', () => this.#iniciar_dashboard());
         document.getElementById('btn-periodos').addEventListener('click', () => this.#iniciar_periodos());
@@ -63,6 +67,15 @@ export default class App_controller extends Utils {
         this.#inscripcion_controller.init();
 
         this.#seccion_app = 'registro';
+    }
+
+
+    #iniciar_busqueda(){
+        if (this.#seccion_app == 'busqueda') return;
+
+        this.#busqueda_controller.init();
+        
+        this.#seccion_app = 'busqueda';
     }
 
     #iniciar_reportes(){

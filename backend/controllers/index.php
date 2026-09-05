@@ -2,6 +2,7 @@
 require_once __DIR__ . '/./app/dashboard/index.php';
 require_once __DIR__ . '/./login/index.php';
 require_once __DIR__ . '/./app/inscripcion/index.php';
+require_once __DIR__ . '/./app/busqueda/index.php';
 require_once __DIR__ . '/./app/reportes/index.php';
 require_once __DIR__ . '/./app/grados-secciones/index.php';
 require_once __DIR__ . '/./app/usuarios/index.php';
@@ -47,6 +48,11 @@ class Router {
                     $inscripcion_controller->init($action, $input);
                     break;
 
+                case 'busqueda_controller':
+                    $busqueda_controller = new Busqueda_controller($this->usuario, $this->sistema);
+                    $busqueda_controller->init($action, $input);
+                    break;
+
                 case 'reportes_controller':
                     $reportes_controller = new Reportes_controller($this->usuario);
                     $reportes_controller->init($action, $input);
@@ -68,7 +74,7 @@ class Router {
             }
             
         } catch (PDOException $e) {
-            echo json_encode(['estado' => 'error', 'mensaje' => 'Error interno del servidor']);
+            echo json_encode(['estado' => 'error', 'mensaje' => 'Error interno del servidor', 'error' => $e->getMessage()]);
         }
     }
 }

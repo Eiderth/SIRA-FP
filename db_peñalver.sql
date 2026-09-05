@@ -131,7 +131,6 @@ CREATE TABLE PERSONA_REPRESENTANTE (
     estado_civil ENUM('Soltera/o', 'Casada/o', 'Divorciada/o', 'Viuda/o', 'Concubinato') NOT NULL,
     ingreso_mensual DECIMAL(10,2),
     telefono_movil VARCHAR(20),
-    telefono_habitacion VARCHAR(20),
     correo_electronico VARCHAR(100),
     profesion VARCHAR(100),
     empresa_trabajo VARCHAR(150),

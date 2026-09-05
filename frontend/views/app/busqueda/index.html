@@ -1,0 +1,478 @@
+<div class="container-fluid px-4 py-3 d-flex flex-column overflow-hidden">
+    
+    <!-- CONTENEDOR SUPERIOR (Encabezado + Formulario) -->
+    <div id="seccion-superior" class="collapse show">
+        
+        <!-- Encabezado de Sección -->
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+                <h4 class="fw-bold mb-0 text-dark">Directorio Académico de Estudiantes</h4>
+                <small class="text-muted">Consulte expedientes académicos e información de contacto.</small>
+            </div>
+        </div>
+
+        <!-- Tarjeta Principal de Búsqueda -->
+        <div class="card border-0 shadow-sm rounded-3 mb-3">
+            <div class="card-body p-3">
+                <form id="form-busqueda">
+                    
+                    <!-- BARRA PRINCIPAL -->
+                    <div class="row g-2 align-items-center">
+                        
+                        <!-- Select Estado -->
+                        <div class="col-12 col-sm-4 col-md-3 col-lg-2">
+                            <select id="select-estado" name="estado" class="form-select py-2">
+                                <option value="">Todos</option>
+                                <option value="activo" selected>Solo Activos</option>
+                                <option value="retirado">Solo Retirados</option>
+                                <option value="egresado">Solo Egresados</option>
+                            </select>
+                        </div>
+
+                        <!-- Input de Búsqueda General -->
+                        <div class="col-12 col-sm-8 col-md">
+                            <div class="input-group">
+                                <span class="input-group-text bg-white text-muted border-end-0"><i class="bi bi-search"></i></span>
+                                <input type="text" id="input-busqueda-general" name="busqueda_general" class="form-control border-start-0 py-2" placeholder="Buscar por Cédula, Nombre o Apellido...">
+                                <button type="submit" id="btn-buscar" class="btn btn-primary px-4 fw-bold">
+                                    Buscar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Botón Filtros Avanzados -->
+                        <div class="col-12 col-md-auto">
+                            <button class="btn btn-light border text-secondary w-100 py-2 d-flex align-items-center justify-content-center" type="button" data-bs-toggle="collapse" data-bs-target="#panelFiltrosAvanzados" aria-expanded="false" aria-controls="panelFiltrosAvanzados">
+                                <i class="bi bi-sliders me-2"></i>Filtros <i class="bi bi-chevron-down ms-1 fs-7"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- PANEL COLAPSABLE: Filtros Académicos -->
+                    <div class="collapse mt-3 pt-3 border-top" id="panelFiltrosAvanzados">
+                        <div class="row g-3">
+                            <div class="col-12 col-sm-6 col-md-3">
+                                <label class="form-label fw-bold text-muted fs-7 mb-1">Período Académico</label>
+                                <select id="select-periodo" name="periodo_academico_id" class="form-select form-select-sm">
+                                    <option value="">Todos los períodos</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 col-sm-6 col-md-3">
+                                <label class="form-label fw-bold text-muted fs-7 mb-1">Grado / Año</label>
+                                <select id="select-grado" name="grado_id" class="form-select form-select-sm">
+                                    <option value="">Todos los grados</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 col-sm-6 col-md-3">
+                                <label class="form-label fw-bold text-muted fs-7 mb-1">Sección</label>
+                                <select id="select-seccion" name="seccion_id" class="form-select form-select-sm">
+                                    <option value="">Todas las secciones</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 col-sm-6 col-md-3 d-flex align-items-end">
+                                <button id="btn-limpiar-filtros" type="button" class="btn btn-outline-secondary btn-sm w-100">
+                                    <i class="bi bi-x-circle me-1"></i>Limpiar Filtros
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TARJETA DE RESULTADOS -->
+    <div id="tarjeta-resultados" class="card border-0 shadow-sm rounded-3 d-flex flex-column overflow-hidden flex-grow-1">
+        
+        <!-- HEADER DE LA TABLA -->
+        <div class="card-header bg-white border-bottom py-2 px-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            
+            <!-- Indicador Directo -->
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-primary text-white p-2 rounded-2">
+                    <i class="bi bi-mortarboard-fill fs-6"></i>
+                </span>
+                <span class="fw-bold text-dark fs-7">Listado de Estudiantes</span>
+            </div>
+
+            <!-- Botón Maximizar / Restaurar + Badge -->
+            <div class="d-flex align-items-center gap-2">
+                
+                <span id="badge-total-resultados" class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1-5 fs-7">
+                    0 Registros
+                </span>
+
+                <button type="button" 
+                        id="btn-expandir-tabla" 
+                        class="btn btn-light border btn-sm px-2 py-1 text-secondary d-inline-flex align-items-center gap-1 fs-7 fw-semibold" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#seccion-superior" 
+                        aria-expanded="true" 
+                        aria-controls="seccion-superior"
+                        title="Ampliar tabla a pantalla completa">
+                    <i class="bi bi-arrows-angle-expand fs-6" id="icono-expandir"></i>
+                    <span id="texto-expandir" class="d-none d-sm-inline">Maximizar</span>
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- CONTENIDO DE LA TABLA -->
+        <div class="card-body p-0 flex-grow-1 overflow-auto" id="contenedorResultados" style="max-height: 260px;">
+            <div class="table-responsive h-100 overflow-auto">
+                <table class="table table-hover align-middle mb-0" style="font-size: 0.875rem; table-layout: fixed;">
+                    <thead class="bg-light border-bottom text-muted text-uppercase fs-7 fw-semibold sticky-top">
+                        <tr>
+                            <th class="ps-3 py-2" style="width: 15%;">Cédula</th>
+                            <th class="py-2" style="width: 30%;">Estudiante</th>
+                            <th class="py-2" style="width: 30%;">Representante / Tel.</th>
+                            <th class="py-2 text-center" style="width: 15%;">Estado</th>
+                            <th class="pe-3 py-2 text-end" style="width: 10%;">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-resultados-estudiantes">
+                        <tr>
+                            <td colspan="5" class="text-center py-3 text-muted">
+                                <i class="bi bi-search fs-4 d-block mb-1 opacity-50"></i>
+                                <span class="fs-7">Ingrese un término o active un filtro para consultar estudiantes.</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE EXPEDIENTE DEL ESTUDIANTE -->
+<div class="modal fade" id="modalExpedienteEstudiante" tabindex="-1" aria-labelledby="modalExpedienteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg rounded-3">
+            
+            <!-- HEADER DEL MODAL -->
+            <div class="modal-header bg-light border-bottom py-3 px-4">
+                <div class="d-flex align-items-center gap-3 me-2">
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 45px; height: 45px; font-size: 1.2rem;" id="expediente-avatar-iniciales">
+                        --
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-dark mb-0" data-field="estudiante_nombre_completo">Cargando Nombre...</h5>
+                        <small class="text-muted fs-7">
+                            Cédula: <span data-field="estudiante_cedula_completa">--</span> | 
+                            Cédula Escolar: <span data-field="estudiante_cedula_escolar">--</span>
+                        </small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill fs-7" data-field="estudiante_estado">Activo</span>
+                </div>
+            </div>
+
+            <!-- NAVEGACIÓN POR PESTAÑAS -->
+            <div class="bg-white border-bottom px-4 pt-2">
+                <ul class="nav nav-tabs card-header-tabs border-0 gap-2" id="expedienteTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active fw-semibold fs-7 py-2 px-3" id="tab-personales" data-bs-toggle="tab" data-bs-target="#pane-personales" type="button" role="tab">
+                            <i class="bi bi-person-fill me-1"></i>Datos Personales
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-semibold fs-7 py-2 px-3" id="tab-salud" data-bs-toggle="tab" data-bs-target="#pane-salud" type="button" role="tab">
+                            <i class="bi bi-heart-pulse-fill me-1"></i>Salud y Antropometría
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-semibold fs-7 py-2 px-3" id="tab-extracurricular" data-bs-toggle="tab" data-bs-target="#pane-extracurricular" type="button" role="tab">
+                            <i class="bi bi-laptop me-1"></i>Extracurricular / Canaima
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link fw-semibold fs-7 py-2 px-3" id="tab-representante" data-bs-toggle="tab" data-bs-target="#pane-representante" type="button" role="tab">
+                            <i class="bi bi-person-badge-fill me-1"></i>Rep. Principal
+                        </button>
+                    </li>
+                    <!-- Pestaña Opcional: Representante Secundario -->
+                    <li class="nav-item" role="presentation" id="item-tab-rep-secundario">
+                        <button class="nav-link fw-semibold fs-7 py-2 px-3" id="tab-representante-secundario" data-bs-toggle="tab" data-bs-target="#pane-representante-secundario" type="button" role="tab">
+                            <i class="bi bi-person-badge me-1"></i>Rep. Secundario
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- CUERPO DEL MODAL -->
+            <div class="modal-body p-4 bg-light-subtle tab-content" id="expedienteTabsContent">
+                
+                <!-- PANEL 1: DATOS PERSONALES -->
+                <div class="tab-pane fade show active" id="pane-personales" role="tabpanel">
+                    <div class="card border-0 shadow-sm rounded-3 mb-3">
+                        <div class="card-body p-3 p-md-4">
+                            <h6 class="fw-bold text-primary mb-3 border-bottom pb-2"><i class="bi bi-info-circle me-2"></i>Información Básica del Estudiante</h6>
+                            <div class="row g-3 fs-7">
+                                <div class="col-6 col-md-3">
+                                    <span class="text-muted d-block">Primer Nombre:</span>
+                                    <strong class="text-dark" data-field="persona.nombre_1">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <span class="text-muted d-block">Segundo Nombre:</span>
+                                    <strong class="text-dark" data-field="persona.nombre_2">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <span class="text-muted d-block">Primer Apellido:</span>
+                                    <strong class="text-dark" data-field="persona.apellido_1">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <span class="text-muted d-block">Segundo Apellido:</span>
+                                    <strong class="text-dark" data-field="persona.apellido_2">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <span class="text-muted d-block">Fecha de Nacimiento:</span>
+                                    <strong class="text-dark" data-field="persona.fecha_nacimiento">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <span class="text-muted d-block">Sexo:</span>
+                                    <strong class="text-dark" data-field="persona.sexo">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <span class="text-muted d-block">Lateralidad:</span>
+                                    <strong class="text-dark" data-field="estudiante.lateralidad">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <span class="text-muted d-block">Número de Hijo:</span>
+                                    <strong class="text-dark" data-field="estudiante.numero_hijo">--</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL 2: SALUD Y ANTROPOMETRÍA -->
+                <div class="tab-pane fade" id="pane-salud" role="tabpanel">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <div class="card border-0 shadow-sm rounded-3 h-100">
+                                <div class="card-body p-3 p-md-4">
+                                    <h6 class="fw-bold text-primary mb-3 border-bottom pb-2"><i class="bi bi-ruler me-2"></i>Medidas Antropométricas</h6>
+                                    <ul class="list-group list-group-flush fs-7">
+                                        <li class="list-group-item px-0 d-flex justify-content-between">
+                                            <span class="text-muted">Estatura:</span>
+                                            <strong data-field="antropometricos.estatura">--</strong>
+                                        </li>
+                                        <li class="list-group-item px-0 d-flex justify-content-between">
+                                            <span class="text-muted">Peso:</span>
+                                            <strong data-field="antropometricos.peso">--</strong>
+                                        </li>
+                                        <li class="list-group-item px-0 d-flex justify-content-between">
+                                            <span class="text-muted">Talla Camisa:</span>
+                                            <strong data-field="antropometricos.talla_camisa">--</strong>
+                                        </li>
+                                        <li class="list-group-item px-0 d-flex justify-content-between">
+                                            <span class="text-muted">Talla Pantalón:</span>
+                                            <strong data-field="antropometricos.talla_pantalon">--</strong>
+                                        </li>
+                                        <li class="list-group-item px-0 d-flex justify-content-between">
+                                            <span class="text-muted">Talla Calzado:</span>
+                                            <strong data-field="antropometricos.talla_zapato">--</strong>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-8">
+                            <div class="card border-0 shadow-sm rounded-3 h-100">
+                                <div class="card-body p-3 p-md-4">
+                                    <h6 class="fw-bold text-primary mb-3 border-bottom pb-2"><i class="bi bi-file-medical me-2"></i>Condición Médica y Atención</h6>
+                                    <div class="row g-3 fs-7">
+                                        <div class="col-6 col-md-4">
+                                            <span class="text-muted d-block">Reacciones Alérgicas:</span>
+                                            <strong class="text-dark" data-field="salud.reacciones_alergicas">--</strong>
+                                        </div>
+                                        <div class="col-6 col-md-8">
+                                            <span class="text-muted d-block">Alergias Conocidas:</span>
+                                            <strong class="text-dark" data-field="salud.cuales_alergias">--</strong>
+                                        </div>
+                                        <div class="col-12 border-top pt-2">
+                                            <span class="text-muted d-block">Enfermedades Padecidas:</span>
+                                            <strong class="text-dark" data-field="salud.enfermedades_padecidas">--</strong>
+                                        </div>
+                                        <div class="col-6 col-md-4 border-top pt-2">
+                                            <span class="text-muted d-block">Atención Especial:</span>
+                                            <strong class="text-dark" data-field="salud.atencion_especial">--</strong>
+                                        </div>
+                                        <div class="col-6 col-md-4 border-top pt-2">
+                                            <span class="text-muted d-block">Atendido por Especialista:</span>
+                                            <strong class="text-dark" data-field="salud.atendido_por_especialista">--</strong>
+                                        </div>
+                                        <div class="col-12 col-md-4 border-top pt-2">
+                                            <span class="text-muted d-block">Nombre Especialista:</span>
+                                            <strong class="text-dark" data-field="salud.nombre_especialista">--</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL 3: EXTRACURRICULAR Y CANAIMA -->
+                <div class="tab-pane fade" id="pane-extracurricular" role="tabpanel">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <div class="card border-0 shadow-sm rounded-3 h-100">
+                                <div class="card-body p-3 p-md-4">
+                                    <h6 class="fw-bold text-primary mb-3 border-bottom pb-2"><i class="bi bi-trophy me-2"></i>Deportes y Actividades</h6>
+                                    <div class="fs-7 mb-2">
+                                        <span class="text-muted d-block">Realiza Deportes:</span>
+                                        <strong class="text-dark" data-field="extra_curriculares.realiza_deportes">--</strong>
+                                    </div>
+                                    <div class="fs-7">
+                                        <span class="text-muted d-block">Deportes que Practica:</span>
+                                        <strong class="text-dark" data-field="extra_curriculares.cuales_deportes">--</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="card border-0 shadow-sm rounded-3 h-100">
+                                <div class="card-body p-3 p-md-4">
+                                    <h6 class="fw-bold text-primary mb-3 border-bottom pb-2"><i class="bi bi-display me-2"></i>Proyecto Canaima</h6>
+                                    <div class="row g-2 fs-7">
+                                        <div class="col-6">
+                                            <span class="text-muted d-block">Posee Canaima:</span>
+                                            <strong class="text-dark" data-field="extra_curriculares.posee_canaima">--</strong>
+                                        </div>
+                                        <div class="col-6">
+                                            <span class="text-muted d-block">Estado Equipo:</span>
+                                            <strong class="text-dark" data-field="extra_curriculares.estado_canaima">--</strong>
+                                        </div>
+                                        <div class="col-12 border-top pt-2">
+                                            <span class="text-muted d-block">Serial Equipo:</span>
+                                            <strong class="text-dark" data-field="extra_curriculares.serial_canaima">--</strong>
+                                        </div>
+                                        <div class="col-6 border-top pt-2">
+                                            <span class="text-muted d-block">Posee Cargador:</span>
+                                            <strong class="text-dark" data-field="extra_curriculares.posee_cargador">--</strong>
+                                        </div>
+                                        <div class="col-6 border-top pt-2">
+                                            <span class="text-muted d-block">Estado Cargador:</span>
+                                            <strong class="text-dark" data-field="extra_curriculares.estado_cargador">--</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL 4: REPRESENTANTE PRINCIPAL -->
+                <div class="tab-pane fade" id="pane-representante" role="tabpanel">
+                    <div class="card border-0 shadow-sm rounded-3">
+                        <div class="card-body p-3 p-md-4">
+                            <h6 class="fw-bold text-primary mb-3 border-bottom pb-2"><i class="bi bi-person-vcard me-2"></i>Información del Representante Legal Principal</h6>
+                            <div class="row g-3 fs-7">
+                                <div class="col-12 col-md-6">
+                                    <span class="text-muted d-block">Nombre Completo:</span>
+                                    <strong class="text-dark fs-6" data-field="rep_nombre_completo">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <span class="text-muted d-block">Cédula:</span>
+                                    <strong class="text-dark" data-field="rep_cedula_completa">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <span class="text-muted d-block">Parentesco:</span>
+                                    <strong class="text-dark" data-field="representante_principal.persona.parentesco">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3 border-top pt-2">
+                                    <span class="text-muted d-block">Teléfono Móvil:</span>
+                                    <strong class="text-dark" data-field="representante_principal.persona.telefono_movil">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3 border-top pt-2">
+                                    <span class="text-muted d-block">Teléfono Habitación:</span>
+                                    <strong class="text-dark" data-field="representante_principal.persona.telefono_habitacion">--</strong>
+                                </div>
+                                <div class="col-12 col-md-6 border-top pt-2">
+                                    <span class="text-muted d-block">Correo Electrónico:</span>
+                                    <strong class="text-dark" data-field="representante_principal.persona.correo_electronico">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3 border-top pt-2">
+                                    <span class="text-muted d-block">Profesión:</span>
+                                    <strong class="text-dark" data-field="representante_principal.persona.profesion">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3 border-top pt-2">
+                                    <span class="text-muted d-block">Estado Civil:</span>
+                                    <strong class="text-dark" data-field="representante_principal.persona.estado_civil">--</strong>
+                                </div>
+                                <div class="col-12 col-md-6 border-top pt-2">
+                                    <span class="text-muted d-block">Empresa donde Labora:</span>
+                                    <strong class="text-dark" data-field="representante_principal.persona.empresa_trabajo">--</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL 5: REPRESENTANTE SECUNDARIO (OPCIONAL) -->
+                <div class="tab-pane fade" id="pane-representante-secundario" role="tabpanel">
+                    <div class="card border-0 shadow-sm rounded-3">
+                        <div class="card-body p-3 p-md-4">
+                            <h6 class="fw-bold text-secondary mb-3 border-bottom pb-2"><i class="bi bi-person-vcard me-2"></i>Información del Representante Secundario</h6>
+                            <div class="row g-3 fs-7">
+                                <div class="col-12 col-md-6">
+                                    <span class="text-muted d-block">Nombre Completo:</span>
+                                    <strong class="text-dark fs-6" data-field="rep_secundario_nombre_completo">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <span class="text-muted d-block">Cédula:</span>
+                                    <strong class="text-dark" data-field="rep_secundario_cedula_completa">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <span class="text-muted d-block">Parentesco:</span>
+                                    <strong class="text-dark" data-field="representante_secundario.persona.parentesco">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3 border-top pt-2">
+                                    <span class="text-muted d-block">Teléfono Móvil:</span>
+                                    <strong class="text-dark" data-field="representante_secundario.persona.telefono_movil">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3 border-top pt-2">
+                                    <span class="text-muted d-block">Teléfono Habitación:</span>
+                                    <strong class="text-dark" data-field="representante_secundario.persona.telefono_habitacion">--</strong>
+                                </div>
+                                <div class="col-12 col-md-6 border-top pt-2">
+                                    <span class="text-muted d-block">Correo Electrónico:</span>
+                                    <strong class="text-dark" data-field="representante_secundario.persona.correo_electronico">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3 border-top pt-2">
+                                    <span class="text-muted d-block">Profesión:</span>
+                                    <strong class="text-dark" data-field="representante_secundario.persona.profesion">--</strong>
+                                </div>
+                                <div class="col-6 col-md-3 border-top pt-2">
+                                    <span class="text-muted d-block">Estado Civil:</span>
+                                    <strong class="text-dark" data-field="representante_secundario.persona.estado_civil">--</strong>
+                                </div>
+                                <div class="col-12 col-md-6 border-top pt-2">
+                                    <span class="text-muted d-block">Empresa donde Labora:</span>
+                                    <strong class="text-dark" data-field="representante_secundario.persona.empresa_trabajo">--</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- FOOTER DEL MODAL -->
+            <div class="modal-footer bg-light border-top py-2 px-4">
+                <button type="button" class="btn btn-secondary btn-sm px-4 fw-semibold" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
