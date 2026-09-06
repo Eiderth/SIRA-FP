@@ -47,7 +47,6 @@ export default class Busqueda_controller extends Utils {
             this.#btn_buscar.disabled = true;
             const data = Object.fromEntries(new FormData(this.#form_busqueda));
             this._limpiar_objeto(data)
-            console.log(data)
             const { resultados } = await this._enviar_datos('./api.php?controller=busqueda_controller&action=buscar_coincidencias', data);
             
             this.#llenar_tablas(resultados.estudiantes);
@@ -90,7 +89,6 @@ export default class Busqueda_controller extends Utils {
             document.querySelectorAll('.btn-buscar-data-estudiante').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const id = e.currentTarget.getAttribute('data-id');
-                    console.log(id);
                     if(!id) return;
 
                     const resp = await this._enviar_datos('./api.php?controller=busqueda_controller&action=buscar_datos_estudiante', {'estudiante_id': id});
