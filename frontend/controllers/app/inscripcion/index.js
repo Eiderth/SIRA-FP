@@ -82,15 +82,13 @@ export default class Inscripcion_controller extends Utils {
       if(json != null) {
          return JSON.parse(json);
       } else {
-         const resp = await this._traer_datos('./api.php?controller=inscripcion_controller&action=traer_parametros');
+         const {parametros} = await this._traer_datos('./api.php?controller=inscripcion_controller&action=traer_parametros');
 
-         if (resp.estado !== 'completado') {
-            this._notificacion('Error al conectar con la Base de datos');
-            return;
+         if (parametros) {  
+            localStorage.setItem('parametros_formulario', JSON.stringify(parametros));     
+            return parametros;
          }
 
-         localStorage.setItem('parametros_formulario', JSON.stringify(resp.parametros));     
-         return resp.parametros;
       }
    }
 

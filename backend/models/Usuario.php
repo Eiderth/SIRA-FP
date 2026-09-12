@@ -6,9 +6,12 @@ Class Usuario{
 	protected $db;
 
 	public $type = 'Usuario';
+	public $id; 
 
-	function __construct($db){
+	function __construct($db, $id){
 		$this->db = $db;
+		$this->id = $id;
+
 	}
 
 

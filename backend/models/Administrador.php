@@ -3,10 +3,10 @@ require_once __DIR__. '/Usuario.php';
 
 class Administrador extends Usuario {
 
-    public $type = 'Administrador'; 
+    public $type = 'Administrador';
 
-    public function __construct($db){
-        parent::__construct($db);
+    public function __construct($db,$id){
+        parent::__construct($db, $id);
     }
 
     public function listar_usuarios() {

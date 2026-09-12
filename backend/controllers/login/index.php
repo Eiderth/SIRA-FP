@@ -2,103 +2,115 @@
 
 class Login_controller {
 
-    private $modelo;
+    private $sistema;
 
-    public function __construct($modelo) {
-        $this->modelo = $modelo;
+    public function __construct($sistema) {
+        $this->sistema = $sistema;
     }
 
     public function init($action, $input) {
 
         switch ($action) {
+            case 'existen_usuarios':
+                $this->existen_usuarios($input);
+                break;
+
+            case 'crear_cuenta':
+                $this->crear_cuenta($input);
+                break;
 
             case 'iniciar_sesion':
                 $this->iniciar_sesion($input);
                 break;
 
-            case 'cerrar_sesion':
-                $this->cerrar_sesion();
-                break;
-
             default:
                 http_response_code(404);
-                echo json_encode(["estado" => "error", "mensaje" => "Acción no encontrada en el Login"]);
+                echo json_encode(["estado" => "error", "error" => "accion_no_encontrada"]);
                 break;
 
         }
     }
 
-    private function iniciar_sesion($data) {
+    private function existen_usuarios() {
+        $existen_usuarios = $this->sistema->existe_registro_usuario();
+        http_response_code(200);
+        echo json_encode(['estado' => 'completado', 'existen_usuarios' => $existen_usuarios]);
+    }
 
-        if (empty($data['nombre']) || empty($data['pass'])) {
-            echo json_encode(['estado' => 'error', 'mensaje' => 'Debe llenar ambos campos']);
-            return;
+    private function crear_cuenta($input) {
+            
+        if (empty($input['nombre'])|| empty($input['pass']) ||  empty($input['confirmar_pass'])
+            || $input['pass'] !== $input['confirmar_pass']) 
+        {
+            http_response_code(400);
+            echo json_encode(['estado' => 'error', 'error' => 'campos_incompletos']);
         }
 
         try {
-            $usuario_encontrado = $this->modelo->buscar_usuario($data['nombre'], $data['pass']) ?? null;
+            $admin_id = $this->sistema->crear_primer_admin($input['nombre'], $input['pass']);
             
-            $response = null;
+            if ($admin_id) {
+                $usuario = [
+                    'id'     => $admin_id,
+                    'nombre' => $input['nombre'],
+                    'rol'    => 'Administrador',
+                ];
 
-            if ($usuario_encontrado) {
-                $response = $usuario_encontrado;
-            } else {
-
-                $admin_id = $this->modelo->crear_primer_admin($data['nombre'], $data['pass']);
-                if ($admin_id) {
-                    $response = [
-                        'id'     => $admin_id,
-                        'nombre' => $data['nombre'],
-                        'rol'    => 'Administrador'
-                    ];
-                }
-            }
-
-            if ($response) {
-
-                if (session_status() === PHP_SESSION_NONE) {
-                    session_start();
-                }
-                
-                $_SESSION['usuario_id'] = $response['id'];
-                $_SESSION['nombre'] = $response['nombre'];
-                $_SESSION['rol'] = $response['rol'];
-
+                http_response_code(201);
                 echo json_encode([
-                    'estado'  => 'completado',
-                    'acceso'  => true,
-                    'mensaje' => 'Bienvenido',
-                    'usuario' =>  $response
+                    'estado' => 'completado',
+                    'usuario' => $usuario,
+                    'acceso' => true 
                 ]);
 
             } else {
+                http_response_code(403);
+                echo json_encode(['estado' => 'error', 'acceso' => false, 'error' => 'no_autorizado']);
+            }
+        } catch(PDOException $e) {
+            http_response_code(500);
+            echo json_encode(['estado' => 'error', 'acceso' => false, 'error' => 'error_en_db']);
+            var_dump($e);
+        } 
+    }
+
+    private function iniciar_sesion($input) {
+
+        if (empty($input['nombre']) || empty($input['pass'])) {
+            http_response_code(400);
+            echo json_encode(['estado' => 'error', 'error' => 'campos_incompletos']);
+            return;
+        }
+        
+        try {
+            
+            $usuario_encontrado = $this->sistema->buscar_usuario($input['nombre'], $input['pass']) ?? null;
+            
+            if ($usuario_encontrado) {
+                
+                http_response_code(200);
+                echo json_encode([
+                    'estado'  => 'completado',
+                    'acceso'  => true,
+                    'usuario' => $usuario_encontrado
+                ]);
+
+            } else {
+
+                http_response_code(404);
                 echo json_encode([
                     'estado'  => 'completado',
                     'acceso'  => false,
-                    'mensaje' => 'Usuario o contraseña incorrectos',
+                    'error' => 'credenciales_invalidas',
                 ]);
             }
 
         } catch (PDOException $e) {
-            
-            echo json_encode([
-                'estado'  => 'error', 
-                'mensaje' => 'Error interno del servidor en el proceso de Login', 
-                'error'   => $e->getMessage()
-            ]);
+            http_response_code(500);
+            echo json_encode(['estado' => 'error', 'acceso' => false, 'error' => 'error_en_db']);
+            var_dump($e);
         }
+
     }
 
-    private function cerrar_sesion() {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-        session_unset();
-        session_destroy();
-
-        echo json_encode([
-            'estado'  => 'completado',
-            'mensaje' => 'Sesión cerrada correctamente'
-        ]);
-    }
 }

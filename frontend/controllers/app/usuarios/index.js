@@ -19,7 +19,6 @@ export default class Usuarios_controller extends Utils {
         this.#tbody = document.getElementById('tabla-usuarios-body');
         this.#formulario = document.getElementById('formulario-crear-usuario');
         this.#btn_crear_usuario = document.getElementById('btn-crear-usuario');
-        this.#mensaje = document.getElementById('mensaje-admin');
         this.#cargar_usuarios();
         this.#btn_crear_usuario.addEventListener('click', () => this.#crear_usuario());
 
@@ -35,26 +34,46 @@ export default class Usuarios_controller extends Utils {
                 </td>
             </tr>`;
 
-        const resp = await this._traer_datos('./api.php?controller=usuarios_controller&action=listar');
+        const {usuarios} = await this._traer_datos('./api.php?controller=usuarios_controller&action=listar_usuarios');
 
-        if (resp.estado !== 'completado') {
+        if (!usuarios) {
             this.#tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-danger">Error al cargar usuarios</td></tr>`;
             return;
         }
 
-        if (resp.usuarios.length === 0) {
+        if (usuarios && usuarios.length === 0) {
             this.#tbody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-secondary">No hay usuarios registrados</td></tr>`;
             return;
         }
-
-        this.#tbody.innerHTML = resp.usuarios.map(u => `
+        
+        this.#tbody.innerHTML = usuarios.map(u => `
             <tr>
                 <td class="ps-4 py-3">${u.id}</td>
                 <td class="py-3">${u.nombre}</td>
                 <td class="py-3"><span class="badge ${u.rol === 'Administrador' ? 'bg-warning text-dark' : u.rol === 'Secretaria' ? 'bg-info text-dark' : 'bg-secondary'}">${u.rol}</span></td>
-                <td class="pe-4 py-3 text-end"><span class="badge ${u.estado === 'Activo' ? 'bg-success' : 'bg-danger'}">${u.estado}</span></td>
+                <td class="py-3"><span class="badge ${u.estado === 'Activo' ? 'bg-success' : 'bg-danger'}">${u.estado}</span></td>
+                <td class="text-end pe-3 py-2">
+                    <button type="button" data-id=${u.id} title="Eliminar" class="btn-eliminar-usuario btn btn-outline-danger btn-sm py-0 px-2 rounded-2"><i class="bi bi-trash-fill fs-7"></i></button>
+                </td>
             </tr>`
         ).join('');
+
+        document.querySelectorAll('.btn-eliminar-usuario').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = e.currentTarget.getAttribute('data-id');
+                this.#eliminar_usuario(id);
+            })
+        });
+
+    }
+
+    async #eliminar_usuario(id) {
+        const {eliminado} = await this._enviar_datos('./api.php?controller=usuarios_controller&action=eliminar_usuario', {'id': id}); 
+        if (eliminado) {
+            this._notificacion('Usuario eliminado con exito', 'Usuario eliminado');
+            this.#cargar_usuarios();
+            return;
+        } 
 
     }
 
@@ -62,15 +81,13 @@ export default class Usuarios_controller extends Utils {
 
         const data = Object.fromEntries(new FormData(this.#formulario));
 
-        const resp = await this._enviar_datos('./api.php?controller=usuarios_controller&action=crear', data);
+        const {usuario} = await this._enviar_datos('./api.php?controller=usuarios_controller&action=crear_usuario', data);
 
-        if (resp.estado === 'completado') {
-            this.#mensaje.innerHTML = `<div class="alert alert-success py-2 m-0">${resp.mensaje}</div>`;
+        if (usuario && Object.keys(usuario) !== 0) {
+            this._notificacion(`Se agrego al usuario ${usuario.nombre} al sistema`, 'Usuario creado')
             this.#formulario.reset();
             await this.#cargar_usuarios();
-        } else {
-            this.#mensaje.innerHTML = `<div class="alert alert-danger py-2 m-0">${resp.mensaje}</div>`;
-        }
+        } 
 
         setTimeout(() => this.#mensaje.innerHTML = '', 4000);
     }

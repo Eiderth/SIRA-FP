@@ -1,45 +1,106 @@
 export default class Utils {
 
+    static ERRORES = {
+        'error_en_db': 'ha ocurrido un error en la base de datos',
+        'error_al_eliminar' : 'Parece que ha ocurrido un error al eliminar',
+        'error_al_cerrar_session': 'No se pudo cerrar la sesión correctamente.',
+        'no_autorizado': 'Usted no esta autorizado a esta accion',
+        'credenciales_invalidas': 'Usuario o contraseña incorrectos.',
+        'usuario_ya_registrado': 'El usuario ya se encuentra registrado.',
+        'session_expirada': 'Tu sesión ha expirado.',
+        'campos_incompletos': 'Por favor llena todos los campos.',
+        'error_de_servidor': 'Ocurrió un error en el servidor.',
+        'accion_no_encontrada' : 'Parece que esta accion esta en desarrollo',
+        'error_desconocido': 'Parece que ha ocurrido un error imprevisto.'
+    };
+
     #notificacion;
+    #notificacion_ocupada = false;
+
+    constructor() {
+        if (new.target === Utils) {
+            throw new Error("La clase 'Utils' no se puede instanciar directamente. Debe ser heredada.");
+        }
+    }
     
-    async _notificacion(text) {
+    async _notificacion(text, titulo = 'Mensaje', time = 3000) {
+        if (this.#notificacion_ocupada) return;
         if (!this.#notificacion) this.#notificacion = document.getElementById('notificacion');
-        this.#notificacion.textContent = text;
-        this.#notificacion.style.transform = 'translate(-50%, 0%)'
-        setTimeout(()=> {
-            this.#notificacion.style.transform = 'translate(-50%, -200%)'
-        }, 3000)
+
+        this.#notificacion_ocupada = true;
+        this.#notificacion.innerHTML = `
+            <div class="d-flex flex-column text-start">
+                <span class="fw-bold ${titulo == 'Error'? 'text-danger' : 'text-success'} fs-6">${titulo}</span>
+                <span class="text-dark small">${text}</span>
+            </div>
+        `;
+
+        this.#notificacion.style.transform = 'translate(-50%, 0%)';
+        setTimeout(() => {
+            this.#notificacion.style.transform = 'translate(-50%, -200%)';
+            this.#notificacion_ocupada = false;
+        }, time);
+    }
+
+    _manejar_sesion_expirada() {
+        setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('sesion:expirada'));
+        }, 0);
     }
 
     async _enviar_datos(url, objeto){
         try {
             const json = await fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(objeto), 
-            headers: { 'Content-type' : 'application/json'} 
-            })
-            if(!json.ok) throw new Error(`Error ${json.status}: ${json.statusText}`);
+                method: 'POST',
+                body: JSON.stringify(objeto), 
+                headers: { 'Content-type' : 'application/json'} 
+            });
             const data = await json.json();
-            if (data.estado !== 'completado') throw new Error(data.mensaje || 'Error desconocido', {cause: data.Error});
+
+            if (json.status === 401 && data.error === 'session_expirada') {
+                this._manejar_sesion_expirada();
+                return;
+            } 
+
+            if (!json.ok || data.estado !== 'completado') {   
+                const mensaje_error =  this.ERRORES[data.error] || this.ERRORES['error_desconocido'];
+                throw new Error( mensaje_error , { cause: data.error });
+            }
+
+            delete data.estado;
             return data;
+
         } catch(e) {
-            console.error('Mensaje: ', e.message);
-            if(e.cause) console.error('Causa: ', e.cause);
-            return {'estado': 'error', 'mensaje': e.message};
+            const mensaje_error = (e instanceof TypeError) ? 'Sin conexión con el servidor.' : e.message;
+            this._notificacion(mensaje_error, 'Error');
+            console.error(`Mensaje: ${e.message} ${e.cause? `Causa: ${e.cause}`: ''}`);
+            return null;        
         }
     }
 
     async _traer_datos (ruta) {
         try {
             const json = await fetch(ruta);
-            if (!json.ok) throw new Error(`Error ${json.status}: ${json.statusText}`);
-            const data = await json.json()
-            if(data.estado != 'completado') throw new Error(data.mensaje || 'Error desconocido', {cause: data.Error});
+            const data = await json.json();
+
+            if (json.status === 401 && data.error === 'session_expirada') {
+                this._manejar_sesion_expirada();
+                return;
+            } 
+
+            if (!json.ok || data.estado !== 'completado') {   
+                const mensaje_error =  this.ERRORES[data.error] || this.ERRORES['error_desconocido'];
+                throw new Error( mensaje_error , { cause: data.error });
+            }
+
+            delete data.estado;
             return data;
+
         }catch(e) {
-            console.error('Mensaje: ', e.message);
-            if(e.cause) console.error('Causa: ', e.cause);
-            return {'estado': 'error', 'mensaje': e.message};
+            const mensaje_error = (e instanceof TypeError) ? 'Sin conexión con el servidor.' : e.message;
+            this._notificacion(mensaje_error, 'Error');
+            console.error(`Mensaje: ${e.message} ${e.cause? `Causa: ${e.cause}`: ''}`);
+            return null;         
         } 
     }
 
