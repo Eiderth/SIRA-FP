@@ -6,9 +6,12 @@ Class Usuario{
 	protected $db;
 
 	public $type = 'Usuario';
+	public $id; 
 
-	function __construct($db){
+	function __construct($db, $id){
 		$this->db = $db;
+		$this->id = $id;
+
 	}
 
 
@@ -388,6 +391,8 @@ Class Usuario{
 		$stmt = $this->db->prepare("UPDATE {$tabla} SET {$columnas} WHERE $clave = :valor");
 
 		$stmt->execute([...$datos, 'valor' => $valor]);
+
+		return (int )$stmt->rowCount() > 0;
 	}
 
 

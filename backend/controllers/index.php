@@ -25,17 +25,81 @@ class Router {
     }
 
     public function run($controlador, $action, $input) {
+
+        // limpiar la entrada
+        array_walk_recursive($input, function(&$item){
+            if(is_string($item)) {
+                $item = trim($item);
+            } 
+        });
         
         try {
-            if($controlador == 'login_controller') {
+
+            $usuario_session = $this->sistema->verificar_sesion();
+            
+            if ($controlador == 'router') {
+                switch ($action) {
+                    case 'validar_session':
+                        http_response_code(200);
+                        echo json_encode([
+                            'estado' => 'completado', 
+                            'acceso' => !empty($usuario_session), 
+                            'usuario' => $usuario_session, 
+                        ]);
+                        break;
+
+                    case 'cerrar_session':
+
+                        try {
+
+                            $this->sistema->cerrar_sesion();
+                            http_response_code(200);
+                            echo json_encode([
+                                'estado'  => 'completado',
+                                'cerrada' => true
+                            ]);
+
+                        } catch (PDOException $e) {
+                            
+                            http_response_code(500);
+                            echo json_encode([
+                                'estado'  => 'error',
+                                'error' => 'error_cerrar_session'
+                            ]);
+
+                        }
+
+                        break;  
+                
+                }
+
+                return;
+            }
+
+            if( $controlador == 'login_controller') {
                 $login_controller = new Login_controller($this->sistema); 
                 $login_controller->init($action, $input);
                 return;
             }    
 
-            if (session_status() === PHP_SESSION_NONE) session_start();
+            if(empty($usuario_session)) {
+                http_response_code(401);
+                echo json_encode([
+                    'estado' => 'error', 
+                    'error' => 'session_expirada',
+                ]);
+                return;
+            }
 
-            $this->usuario = $_SESSION['rol'] == 'Administrador' ? new Administrador(Database::get_instance()) : $this->usuario = new Usuario(Database::get_instance());
+            if ($usuario_session['rol'] == 'Administrador') {
+            
+                $this->usuario = new Administrador(Database::get_instance(), $usuario_session['id']);
+            
+            } else {
+
+                $this->usuario = new Usuario(Database::get_instance(), $usuario_session['id']);
+                
+            }
 
             switch ($controlador) {
                 case 'dashboard_controller':
@@ -65,16 +129,26 @@ class Router {
 
                 
                 case 'usuarios_controller':
+
+                    if ($usuario_session['rol'] !== 'Administrador') {
+                        http_response_code(401);
+                        echo json_encode(['estado' == 'error', 'error' => 'no_autorizado']);
+                        break;
+                    }
+
                     $usuarios_controller = new Usuarios_controller($this->usuario);
                     $usuarios_controller->init($action, $input);
                     break;
+
                 default:
-                    echo json_encode(['estado' => 'error', 'mensaje' => 'ruta no encontrada']);
+                    echo json_encode(['estado' => 'error', 'error' => 'accion_no_encontrada']);
                     break;
             }
             
         } catch (PDOException $e) {
-            echo json_encode(['estado' => 'error', 'mensaje' => 'Error interno del servidor', 'error' => $e->getMessage()]);
+            http_response_code(404);
+            echo json_encode(['estado' => 'error', 'error' => "error_servidor"]);
+            // var_dump($e->getMessage());
         }
     }
 }

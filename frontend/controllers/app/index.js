@@ -59,6 +59,11 @@ export default class App_controller extends Utils {
         this.#dashboard_controller.init();
         this.#seccion_app = 'dashboard';
 
+        window.addEventListener('sesion:expirada', () => {
+            this._notificacion('Tu sesión ha expirado por inactividad. Por favor, vuelve a iniciar sesión.', 'Mensaje');
+            this.#cerrar_sesion(); 
+        });
+
     }
 
     #iniciar_inscripcion() {
@@ -167,11 +172,11 @@ export default class App_controller extends Utils {
 
 
     async #cerrar_sesion(){
-        const resp = await this._traer_datos('./api.php?controller=login_controller&action=cerrar_sesion');
-        if (resp) {
-            this._notificacion(resp.mensaje);
+        const {cerrada = null} = await this._traer_datos('./api.php?controller=router&action=cerrar_session');
+        if (cerrada) {
+            this._notificacion('hasta pronto amigo', 'Session cerrada');
             localStorage.clear();
             this.cambiar_interfaz('login');
-        }
+        } 
     }
 }
