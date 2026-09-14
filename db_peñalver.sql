@@ -223,7 +223,7 @@ CREATE TABLE INSCRIPCION (
 CREATE TABLE USUARIO (
     id INT(11) PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(100) NOT NULL,
-    rol ENUM('Administrador', 'Secretaria', 'Docente') NOT NULL,
+    rol ENUM('Administrador', 'Secretaria', 'Usuario') DEFAULT 'Usuario',
     pass VARCHAR(255) NOT NULL,
     estado ENUM('Activo', 'Inactivo') DEFAULT 'Activo',
     session_token CHAR(65) DEFAULT NULL, 

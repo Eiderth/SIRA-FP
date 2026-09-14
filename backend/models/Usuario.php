@@ -391,6 +391,8 @@ Class Usuario{
 		$stmt = $this->db->prepare("UPDATE {$tabla} SET {$columnas} WHERE $clave = :valor");
 
 		$stmt->execute([...$datos, 'valor' => $valor]);
+
+		return (int )$stmt->rowCount() > 0;
 	}
 
 

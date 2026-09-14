@@ -2,16 +2,22 @@ export default class Utils {
 
     static ERRORES = {
         'error_en_db': 'ha ocurrido un error en la base de datos',
-        'error_al_eliminar' : 'Parece que ha ocurrido un error al eliminar',
+        'error_al_iniciar_sesion': 'No se pudo iniciar la sesión.',
         'error_al_cerrar_session': 'No se pudo cerrar la sesión correctamente.',
-        'no_autorizado': 'Usted no esta autorizado a esta accion',
+        'datos_invalidos' : 'Algo salio mal verifique los datos ingresados',
+        'campos_incompletos': 'Por favor llena todos los campos.',
         'credenciales_invalidas': 'Usuario o contraseña incorrectos.',
         'usuario_ya_registrado': 'El usuario ya se encuentra registrado.',
+        'no_autorizado': 'Usted no esta autorizado a esta accion',
         'session_expirada': 'Tu sesión ha expirado.',
-        'campos_incompletos': 'Por favor llena todos los campos.',
         'error_de_servidor': 'Ocurrió un error en el servidor.',
         'accion_no_encontrada' : 'Parece que esta accion esta en desarrollo',
-        'error_desconocido': 'Parece que ha ocurrido un error imprevisto.'
+        'error_desconocido': 'Parece que ha ocurrido un error imprevisto.',
+
+        'error_al_crear_usuario' : 'Parece que ha ocurrido un error al crear',
+        'error_al_eliminar_usuario' : 'Parece que ha ocurrido un error al eliminar',
+        'usuario_no_encontrado' : 'No se encontro en el sistema, verifique sus datos',
+
     };
 
     #notificacion;
@@ -63,7 +69,9 @@ export default class Utils {
             } 
 
             if (!json.ok || data.estado !== 'completado') {   
-                const mensaje_error =  this.ERRORES[data.error] || this.ERRORES['error_desconocido'];
+                const claveError = data.error || 'error_desconocido';
+                const mensaje_error = Utils.ERRORES[claveError] || Utils.ERRORES['error_desconocido'];
+
                 throw new Error( mensaje_error , { cause: data.error });
             }
 
@@ -71,10 +79,10 @@ export default class Utils {
             return data;
 
         } catch(e) {
-            const mensaje_error = (e instanceof TypeError) ? 'Sin conexión con el servidor.' : e.message;
-            this._notificacion(mensaje_error, 'Error');
+            // const mensaje_error = (e instanceof TypeError) ? 'Sin conexión con el servidor.' : e.message;
+            this._notificacion(e.message, 'Error');
             console.error(`Mensaje: ${e.message} ${e.cause? `Causa: ${e.cause}`: ''}`);
-            return null;        
+            return {};        
         }
     }
 
@@ -89,7 +97,9 @@ export default class Utils {
             } 
 
             if (!json.ok || data.estado !== 'completado') {   
-                const mensaje_error =  this.ERRORES[data.error] || this.ERRORES['error_desconocido'];
+                const claveError = data.error || 'error_desconocido';
+                const mensaje_error = Utils.ERRORES[claveError] || Utils.ERRORES['error_desconocido'];
+            
                 throw new Error( mensaje_error , { cause: data.error });
             }
 
@@ -97,10 +107,10 @@ export default class Utils {
             return data;
 
         }catch(e) {
-            const mensaje_error = (e instanceof TypeError) ? 'Sin conexión con el servidor.' : e.message;
-            this._notificacion(mensaje_error, 'Error');
+            // const mensaje_error = (e instanceof TypeError) ? 'Sin conexión con el servidor.' : e.message;
+            this._notificacion(e.message, 'Error');
             console.error(`Mensaje: ${e.message} ${e.cause? `Causa: ${e.cause}`: ''}`);
-            return null;         
+            return {};         
         } 
     }
 

@@ -82,7 +82,7 @@ export default class Inscripcion_controller extends Utils {
       if(json != null) {
          return JSON.parse(json);
       } else {
-         const {parametros} = await this._traer_datos('./api.php?controller=inscripcion_controller&action=traer_parametros');
+         const {parametros = null} = await this._traer_datos('./api.php?controller=inscripcion_controller&action=traer_parametros');
 
          if (parametros) {  
             localStorage.setItem('parametros_formulario', JSON.stringify(parametros));     
@@ -173,13 +173,13 @@ export default class Inscripcion_controller extends Utils {
          }
 
 
-         const resp = await this._enviar_datos('./api.php?controller=inscripcion_controller&action=guardar_estudiante', this._data);
+         const {llave_inscripcion = null, cedula_escolar = null, mensaje = null} = await this._enviar_datos('./api.php?controller=inscripcion_controller&action=guardar_estudiante', this._data);
 
-         if(resp.estado !== 'error' ) {
+         if(llave_inscripcion && cedula_escolar ) {
             this.#seccion_exito.init(
                this._data.estudiante, 
-               resp.llave_inscripcion, 
-               resp.cedula_escolar,
+               llave_inscripcion, 
+               cedula_escolar,
                () => {
                   this.#seccion_1_controller.init({...this._data.estudiante.persona, ...this._data.estudiante.persona_estudiante, ...this._data.inscripcion});
                   this.#cont = 1;
@@ -190,7 +190,7 @@ export default class Inscripcion_controller extends Utils {
 
          } else {
             
-            this.#seccion_error.init(resp.mensaje, () => this.#seccion_4_controller.init({...this._data.representante_secundario.persona, ...this._data.representante_secundario.persona_representante, ...this._data.representante_secundario.direccion}));
+            this.#seccion_error.init(mensaje, () => this.#seccion_4_controller.init({...this._data.representante_secundario.persona, ...this._data.representante_secundario.persona_representante, ...this._data.representante_secundario.direccion}));
             this.#cont --;
          }
 

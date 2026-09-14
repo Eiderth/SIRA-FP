@@ -39,11 +39,16 @@ class Login_controller {
 
     private function crear_cuenta($input) {
             
-        if (empty($input['nombre'])|| empty($input['pass']) ||  empty($input['confirmar_pass'])
-            || $input['pass'] !== $input['confirmar_pass']) 
-        {
+        if (empty(array_filter($input))) {
+        
             http_response_code(400);
             echo json_encode(['estado' => 'error', 'error' => 'campos_incompletos']);
+        
+        } else if($input['pass'] !== $input['confirmar_pass']) {
+
+            http_response_code(401);
+            echo json_encode(['estado' => 'error', 'error' => 'datos_invalidos']);
+
         }
 
         try {
@@ -64,9 +69,10 @@ class Login_controller {
                 ]);
 
             } else {
-                http_response_code(403);
+                http_response_code(401);
                 echo json_encode(['estado' => 'error', 'acceso' => false, 'error' => 'no_autorizado']);
             }
+            
         } catch(PDOException $e) {
             http_response_code(500);
             echo json_encode(['estado' => 'error', 'acceso' => false, 'error' => 'error_en_db']);
@@ -76,40 +82,33 @@ class Login_controller {
 
     private function iniciar_sesion($input) {
 
-        if (empty($input['nombre']) || empty($input['pass'])) {
+        if (empty(array_filter($input) )) {
             http_response_code(400);
             echo json_encode(['estado' => 'error', 'error' => 'campos_incompletos']);
             return;
         }
+            
+        $usuario_encontrado = $this->sistema->buscar_usuario($input['nombre'], $input['pass']) ?? null;
         
-        try {
+        if ($usuario_encontrado) {
             
-            $usuario_encontrado = $this->sistema->buscar_usuario($input['nombre'], $input['pass']) ?? null;
-            
-            if ($usuario_encontrado) {
-                
-                http_response_code(200);
-                echo json_encode([
-                    'estado'  => 'completado',
-                    'acceso'  => true,
-                    'usuario' => $usuario_encontrado
-                ]);
+            http_response_code(201);
+            echo json_encode([
+                'estado'  => 'completado',
+                'acceso'  => true,
+                'usuario' => $usuario_encontrado
+            ]);
 
-            } else {
+        } else {
 
-                http_response_code(404);
-                echo json_encode([
-                    'estado'  => 'completado',
-                    'acceso'  => false,
-                    'error' => 'credenciales_invalidas',
-                ]);
-            }
-
-        } catch (PDOException $e) {
-            http_response_code(500);
-            echo json_encode(['estado' => 'error', 'acceso' => false, 'error' => 'error_en_db']);
-            var_dump($e);
+            http_response_code(404);
+            echo json_encode([
+                'estado'  => 'error',
+                'acceso'  => false,
+                'error' => 'usuario_no_encontrado',
+            ]);
         }
+
 
     }
 

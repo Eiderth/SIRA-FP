@@ -217,12 +217,13 @@ class Sistema {
     public function buscar_usuario($nombre, $pass) {
         if (empty($nombre) || empty($pass)) return;
 
-        $stmt = $this->db->prepare("SELECT id, nombre, rol, pass FROM USUARIO WHERE nombre = :nombre");
+        $stmt = $this->db->prepare(
+            "SELECT id, nombre, rol, pass FROM USUARIO WHERE nombre = :nombre AND estado = 'Activo'"
+        );
+
         $stmt->execute(['nombre' => $nombre]);
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-
         if (empty($usuario)) return null;
-        
         if(!password_verify($pass, $usuario['pass'])) return null; //contraseña incorrecta
 
         $this->crear_cookie($usuario['id']);
@@ -261,7 +262,10 @@ class Sistema {
 
         $token = $_COOKIE['session_token'];
 
-        $stmt = $this->db->prepare("SELECT id, nombre, rol FROM USUARIO WHERE session_token = :token LIMIT 1");
+        $stmt = $this->db->prepare(
+            "SELECT id, nombre, rol FROM USUARIO WHERE session_token = :token AND estado = 'Activo' LIMIT 1 "
+        );
+        
         $stmt->execute(['token' => $token]);
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -275,6 +279,7 @@ class Sistema {
             $this->db->beginTransaction();
             $stmt = $this->db->prepare("UPDATE USUARIO SET session_token = NULL WHERE session_token = :token");
             $stmt->execute(['token' => $token]);
+            $this->db->commit();
 
             setcookie('session_token', '', [
                 'expires'  => time() - 3600,
@@ -284,10 +289,7 @@ class Sistema {
                 'httponly' => true,
                 'samesite' => 'Lax'
             ]);
-            $this->db->commit();
-
-            return true;
-        } 
+        }
     }
 
 

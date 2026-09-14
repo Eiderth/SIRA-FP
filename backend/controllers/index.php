@@ -50,24 +50,27 @@ class Router {
 
                     case 'cerrar_session':
 
-                        $cerrada = $this->sistema->cerrar_sesion();
+                        try {
 
-                        if ($cerrada) {       
+                            $this->sistema->cerrar_sesion();
                             http_response_code(200);
                             echo json_encode([
                                 'estado'  => 'completado',
-                                'cerrada' => $cerrada
+                                'cerrada' => true
                             ]);
 
-                        } else {
+                        } catch (PDOException $e) {
+                            
                             http_response_code(500);
                             echo json_encode([
                                 'estado'  => 'error',
-                                'cerrada' => false,
                                 'error' => 'error_cerrar_session'
                             ]);
+
                         }
+
                         break;  
+                
                 }
 
                 return;
@@ -145,7 +148,7 @@ class Router {
         } catch (PDOException $e) {
             http_response_code(404);
             echo json_encode(['estado' => 'error', 'error' => "error_servidor"]);
-            var_dump($e->getMessage());//borrar para produccion
+            // var_dump($e->getMessage());
         }
     }
 }

@@ -172,7 +172,7 @@ export default class App_controller extends Utils {
 
 
     async #cerrar_sesion(){
-        const {cerrada} = await this._traer_datos('./api.php?controller=router&action=cerrar_session');
+        const {cerrada = null} = await this._traer_datos('./api.php?controller=router&action=cerrar_session');
         if (cerrada) {
             this._notificacion('hasta pronto amigo', 'Session cerrada');
             localStorage.clear();

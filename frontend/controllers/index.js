@@ -15,7 +15,7 @@ export default class Enrutador extends Utils {
     }
 
     async init() {
-        const {acceso, usuario} = await this._traer_datos('./api.php?controller=router&action=validar_session');
+        const {acceso, usuario = null} = await this._traer_datos('./api.php?controller=router&action=validar_session');
         
         if (acceso && usuario && Object.keys(usuario).length !== 0) {
             localStorage.setItem("sesion", JSON.stringify(usuario));
