@@ -1,25 +1,5 @@
 export default class Utils {
 
-    static ERRORES = {
-        'error_en_db': 'ha ocurrido un error en la base de datos',
-        'error_al_iniciar_sesion': 'No se pudo iniciar la sesión.',
-        'error_al_cerrar_session': 'No se pudo cerrar la sesión correctamente.',
-        'datos_invalidos' : 'Algo salio mal verifique los datos ingresados',
-        'campos_incompletos': 'Por favor llena todos los campos.',
-        'credenciales_invalidas': 'Usuario o contraseña incorrectos.',
-        'usuario_ya_registrado': 'El usuario ya se encuentra registrado.',
-        'no_autorizado': 'Usted no esta autorizado a esta accion',
-        'session_expirada': 'Tu sesión ha expirado.',
-        'error_de_servidor': 'Ocurrió un error en el servidor.',
-        'accion_no_encontrada' : 'Parece que esta accion esta en desarrollo',
-        'error_desconocido': 'Parece que ha ocurrido un error imprevisto.',
-
-        'error_al_crear_usuario' : 'Parece que ha ocurrido un error al crear',
-        'error_al_eliminar_usuario' : 'Parece que ha ocurrido un error al eliminar',
-        'usuario_no_encontrado' : 'No se encontro en el sistema, verifique sus datos',
-
-    };
-
     #notificacion;
     #notificacion_ocupada = false;
 
@@ -63,53 +43,48 @@ export default class Utils {
             });
             const data = await json.json();
 
-            if (json.status === 401 && data.error === 'session_expirada') {
+            // Validar sesión expirada (puedes ajustar la condición según lo que devuelva tu backend)
+            if (json.status === 401 || (data.error && data.error.toLowerCase().includes('sesión'))) {
                 this._manejar_sesion_expirada();
                 return;
             } 
 
-            if (!json.ok || data.estado !== 'completado') {   
-                const claveError = data.error || 'error_desconocido';
-                const mensaje_error = Utils.ERRORES[claveError] || Utils.ERRORES['error_desconocido'];
-
-                throw new Error( mensaje_error , { cause: data.error });
+            if (!json.ok || data.estado !== 'completado') {    
+                const mensaje_error = data.error || 'Ocurrió un error inesperado en el servidor.';
+                throw new Error(mensaje_error);
             }
 
             delete data.estado;
             return data;
 
         } catch(e) {
-            // const mensaje_error = (e instanceof TypeError) ? 'Sin conexión con el servidor.' : e.message;
             this._notificacion(e.message, 'Error');
-            console.error(`Mensaje: ${e.message} ${e.cause? `Causa: ${e.cause}`: ''}`);
+            console.error(`Mensaje: ${e.message}`);
             return {};        
         }
     }
 
-    async _traer_datos (ruta) {
+    async _traer_datos(ruta) {
         try {
             const json = await fetch(ruta);
             const data = await json.json();
 
-            if (json.status === 401 && data.error === 'session_expirada') {
+            if (json.status === 401 || (data.error && data.error.toLowerCase().includes('sesión'))) {
                 this._manejar_sesion_expirada();
                 return;
             } 
 
-            if (!json.ok || data.estado !== 'completado') {   
-                const claveError = data.error || 'error_desconocido';
-                const mensaje_error = Utils.ERRORES[claveError] || Utils.ERRORES['error_desconocido'];
-            
-                throw new Error( mensaje_error , { cause: data.error });
+            if (!json.ok || data.estado !== 'completado') {    
+                const mensaje_error = data.error || 'Ocurrió un error inesperado al obtener los datos.';
+                throw new Error(mensaje_error);
             }
 
             delete data.estado;
             return data;
 
-        }catch(e) {
-            // const mensaje_error = (e instanceof TypeError) ? 'Sin conexión con el servidor.' : e.message;
+        } catch(e) {
             this._notificacion(e.message, 'Error');
-            console.error(`Mensaje: ${e.message} ${e.cause? `Causa: ${e.cause}`: ''}`);
+            console.error(`Mensaje: ${e.message}`);
             return {};         
         } 
     }
@@ -133,7 +108,7 @@ export default class Utils {
                 contenedor.innerHTML = html;
                 contenedor.classList.add('show');
                 resolve();
-            },150)
+            }, 150)
         })
     }
 
@@ -182,6 +157,5 @@ export default class Utils {
             }
         }
     }
-
 
 }

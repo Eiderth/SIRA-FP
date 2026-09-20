@@ -19,6 +19,23 @@ export default class Login_controller extends Utils {
         const html = await this.#html;
         await this._inyectar_html(this.#root, html);
 
+        const splash = document.getElementById("splash-screen");
+        const wrapper = document.getElementById("splash-wrapper");
+
+        if (splash && wrapper) {
+            setTimeout(() => {
+                wrapper.classList.add("distribuir");
+            }, 2000);
+
+            setTimeout(() => {
+                splash.classList.add("ocultar");
+                
+                setTimeout(() => {
+                    splash.remove();
+                }, 800);
+            }, 6000);
+        }
+
         this.#crear_cuenta = false;
         await this.#verificar_db();
 
@@ -69,23 +86,23 @@ export default class Login_controller extends Utils {
 
     async #iniciar_session() {
         if (!this._validar_formulario(this.#formulario_login)) {
-            this._notificacion('Debe llenar todos los campos');
+            this._notificacion('Debe llenar todos los campos', 'Error');
             return;
         }
 
         const data = Object.fromEntries(new FormData(this.#formulario_login));
 
         for (let clave in data) {
-            if (data[clave].trim() === "") {
-                this._notificacion("Rellene todos los campos");
-                return;
-            } else {
-                data[clave] = data[clave].trim();
-            }
+            data[clave] = data[clave].trim();
+        }
+
+        if(data.nombre === '' || data.pass === '' || (this.#crear_cuenta && data.confirmar_pass === '')) {
+            this._notificacion('Debe llenar todos los campos', 'Error');
+            return;
         }
 
         if (this.#crear_cuenta && data.pass !== data.confirmar_pass) {
-            this._notificacion("Ha ingresado valores distintos en la contraseña");
+            this._notificacion("Ha ingresado valores distintos en la contraseña", 'Error');
             return;
         }
 

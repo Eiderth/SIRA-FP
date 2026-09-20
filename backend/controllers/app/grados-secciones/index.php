@@ -2,369 +2,639 @@
 
 class Grados_secciones_controller
 {
-	private $modelo;
-	private $sistema;
-	function __construct($modelo, $sistema)
-	{
-		$this->modelo = $modelo;
-		$this->sistema = $sistema;
-	}
+    private $modelo;
+    private $sistema;
+    
+    function __construct($modelo, $sistema)
+    {
+        $this->modelo = $modelo;
+        $this->sistema = $sistema;
+    }
 
-	public function init($action, $input){
+    public function init($action, $input) {
+        header('Content-Type: application/json');
 
-		switch ($action) {
+        switch ($action) {
+            case 'obtener_periodos_academicos': 
+                $this->obtener_periodos_academicos();
+                break;    
+            case 'crear_periodo_academico':
+                $this->crear_periodo_academico($input);
+                break;
+            case 'eliminar_periodo_academico': 
+                $this->eliminar_periodo_academico($input);
+                break;
+            case 'alternar_estado_periodo_academico': 
+                $this->alternar_estado_periodo_academico($input);
+                break;
 
-			case 'obtener_periodos_academicos': 
-				$this->obtener_periodos_academicos();
-				break;	
-			case 'crear_periodo_academico':
-				$this->crear_periodo_academico($input);
-				break;
-			case 'eliminar_periodo_academico': 
-				$this->eliminar_periodo_academico($input);
-				break;
-			case 'alternar_estado_periodo_academico': 
-				$this->alternar_estado_periodo_academico($input);
-				break;
+            case 'obtener_niveles_academicos': 
+                $this->obtener_niveles_academicos();
+                break;
+            case 'crear_nivel_academico':
+                $this->crear_nivel_academico($input);
+                break;
+            case 'eliminar_nivel_academico': 
+                $this->eliminar_nivel_academico($input);
+                break;
 
-			case 'obtener_niveles_academicos': 
-				$this->obtener_niveles_academicos();
-				break;
-			case 'crear_nivel_academico':
-				$this->crear_nivel_academico($input);
-				break;
-			case 'eliminar_nivel_academico': 
-				$this->eliminar_nivel_academico($input);
-				break;
+            case 'obtener_grados_niveles_academicos': 
+                $this->obtener_grados_niveles_academicos();
+                break;    
+            case 'crear_grado':
+                $this->crear_grado($input);
+                break;
+            case 'eliminar_grado': 
+                $this->eliminar_grado($input);
+                break;
 
-			case 'obtener_grados': 
-				$this->obtener_grados();
-				break;	
-			case 'crear_grado':
-				$this->crear_grado($input);
-				break;
-			case 'eliminar_grado': 
-				$this->eliminar_grado($input);
-				break;
+            case 'obtener_secciones': 
+                $this->obtener_secciones();
+                break;    
+            case 'crear_seccion':
+                $this->crear_seccion($input);
+                break;
+            case 'eliminar_seccion': 
+                $this->eliminar_seccion($input);
+                break;
 
-			case 'obtener_secciones': 
-				$this->obtener_secciones();
-				break;	
-			case 'crear_seccion':
-				$this->crear_seccion($input);
-				break;
-			case 'eliminar_seccion': 
-				$this->eliminar_seccion($input);
-				break;
+            case 'obtener_grados_secciones':
+                $this->obtener_grados_secciones();
+                break;
+            case 'crear_grado_seccion':
+                $this->crear_grado_seccion($input);
+                break;
+            case 'eliminar_grado_seccion': 
+                $this->eliminar_grado_seccion($input);
+                break;
+            case 'alternar_estado_grado_seccion': 
+                $this->alternar_estado_grado_seccion($input);
+                break;
 
-			case 'obtener_grados_secciones':
-				$this->obtener_grados_secciones();
-				break;
-			case 'crear_grado_seccion':
-				$this->crear_grado_seccion($input);
-				break;
-			case 'eliminar_grado_seccion': 
-				$this->eliminar_grado_seccion($input);
-				break;
-			case 'alternar_estado_grado_seccion': 
-				$this->alternar_estado_grado_seccion($input);
-				break;
+            default:
+                http_response_code(404);
+                echo json_encode(['estado' => 'error', 'error' => 'La acción solicitada no fue encontrada']);
+                break;
+        }
+    } 
 
-			default:
-				http_response_code(404);
-	            echo json_encode(['estado' => 'error', 'mensaje' => 'acción no válida']);
-				break;
-		}
-	} 
+    // ==========================================
+    // === PERIODOS ACADÉMICOS
+    // ==========================================
 
-	// === PERIODOS ===
-	private function obtener_periodos_academicos(){
-		$periodos = $this->sistema->obtener_periodos_academicos();
-		
-		if (empty($periodos)){
-			echo json_encode(['estado' => 'error', 'mensaje' => 'error al traer periodos academicos']);
-			exit();
-		}
+    private function obtener_periodos_academicos() {
 
-		echo json_encode(['estado' => 'completado', 'periodos_academicos' => $periodos]);
-	}
+        http_response_code(200);
+        echo json_encode([
+            'estado' => 'completado', 
+            'periodos_academicos' => $this->sistema->obtener_periodos_academicos()
+        ]);
 
-	private function crear_periodo_academico($input){
+    }
 
-		if ($this->modelo->existe('PERIODO_ACADEMICO', 'nombre', $input['nombre'])) {
-			echo json_encode(['estado' => 'error', 'mensaje' => 'Ya existe este periodo academico']);
-			exit();
-		} 
+    private function crear_periodo_academico($input) {
+        
+        if (empty($input['nombre'])) {
+        
+            http_response_code(400); 
+            echo json_encode(['estado' => 'error', 'error' => 'Por favor, ingrese el nombre del período académico']);
+            return;
+        
+        } else if ($this->modelo->existe('PERIODO_ACADEMICO', 'nombre', $input['nombre'])) {
+        
+            http_response_code(409); 
+            echo json_encode(['estado' => 'error', 'error' => 'Ya existe un período académico con ese nombre']);
+            return;
+        
+        } 
 
-		$nivel_id = $this->modelo->crear_periodo_academico($input);
-		
-		if (empty($nivel_id)){
-			echo json_encode(['estado' => 'error', 'mensaje' => 'Error al guardar']);
-			exit();
-		}
-		echo json_encode(['estado' => 'completado', 'periodo_academico_id' => $nivel_id]);
-		 
-	}
+        try {
 
-	private function eliminar_periodo_academico($input){
+            $periodo_id = $this->modelo->crear_periodo_academico($input['nombre']);
+            
+            if (!empty($periodo_id)) {
+            
+                http_response_code(201);
+                echo json_encode(['estado' => 'completado', 'creado' => true]);
+            
+            } else {
 
-		if ($this->modelo->existe('INSCRIPCION', 'periodo_academico_id', $input['id'])) {
-			echo json_encode([
-				'estado' => 'error',
-				'mensaje' => 'no se puede eliminar, hay inscripciones que dependen de este periodo'
-			]);
-			exit();
-		} 
+                http_response_code(500);
+                echo json_encode(['estado' => 'error', 'error' => 'No se pudo crear el período académico']);
 
-		$eliminado = $this->modelo->eliminar_periodo_academico($input['id']);
-		
-		if (empty($eliminado)){
-			echo json_encode([
-				'estado' => 'error',
-				'mensaje' => 'algo ha salido mal intente de nuevo'
-			]);
-			exit();
-		}
-		echo json_encode(['estado' => 'completado', 'mensaje' => 'periodo academico eliminado con exito']);
-	}
+            }
 
-	private function alternar_estado_periodo_academico($input){
+        } catch (PDOException $e) {
 
-		$alternado = $this->modelo->alternar_estado_periodo_academico($input['id']);
-		
-		if (empty($alternado)){
-			echo json_encode([
-				'estado' => 'error',
-				'mensaje' => 'algo ha salido mal'
-			]);		 
-			exit();
-		}
-		echo json_encode(['estado' => 'completado', 'mensaje' => 'estado cambiado']);
-	}
+            http_response_code(500);
+            echo json_encode(['estado' => 'error', 'error' => 'Ocurrió un error en la base de datos']);
 
+        }
+    
+    }
 
-	// === NIVELES ACADEMICOS ===
+    private function eliminar_periodo_academico($input) {
+        
+        if (empty($input['id']) || (int) $input['id'] < 1) {
 
-	private function obtener_niveles_academicos(){
-		$niveles = $this->sistema->obtener_niveles_academicos();
-		
-		if (empty($niveles)){
-			echo json_encode(['estado' => 'error', 'mensaje' => 'error al traer niveles academicos']);
-			exit();
-		}
+            http_response_code(400); 
+            echo json_encode(['estado' => 'error', 'error' => 'El ID del período académico no es válido']);
+            return;
 
-		echo json_encode(['estado' => 'completado', 'niveles_academicos' => $niveles]);
-	}
+        } else if ($this->modelo->existe('INSCRIPCION', 'periodo_academico_id', $input['id'])) {
+        
+            http_response_code(403); 
+            echo json_encode(['estado' => 'error', 'error' => 'No se puede eliminar el período porque tiene inscripciones asociadas']);
+            return;
+        
+        } 
 
-	private function crear_nivel_academico($input){
+        try {
 
-		if ($this->modelo->existe('NIVEL_ACADEMICO', 'nombre', $input['nombre'])) {
-			echo json_encode(['estado' => 'error', 'mensaje' => 'Ya existe este nivel academico']);
-			exit();
-		} 
+            $eliminado = $this->modelo->eliminar_periodo_academico($input['id']);
+            
+            if (!empty($eliminado)) {
+            
+                http_response_code(200);
+                echo json_encode(['estado' => 'completado', 'eliminado' => true]);
+            
+            } else {
+            
+                http_response_code(500);
+                echo json_encode(['estado' => 'error', 'error' => 'No se pudo eliminar el período académico']);
+            
+            }
 
-		$nivel_id = $this->modelo->crear_nivel_academico($input);
-		
-		if (empty($nivel_id)){
-			echo json_encode(['estado' => 'error', 'mensaje' => 'Error al guardar']);
-			exit();
-		}
-		echo json_encode(['estado' => 'completado', 'nivel_academico_id' => $nivel_id]);
-		 
-	}
+        } catch (PDOException $e) {
+            
+            http_response_code(500);
+            echo json_encode(['estado' => 'error', 'error' => 'Ocurrió un error en la base de datos']);
+        
+        } 
 
-	private function eliminar_nivel_academico($input){
+    }
 
-		if ($this->modelo->existe('GRADO', 'nivel_academico_id', $input['id'])) {
-			echo json_encode([
-				'estado' => 'error',
-				'mensaje' => 'Verifique que ningun grado dependa de este nivel'
-			]);
-			exit();
-		} 
+    private function alternar_estado_periodo_academico($input) {
+        
+        if (empty($input['id']) || (int) $input['id'] < 1) {
 
-		$eliminado = $this->modelo->eliminar_nivel_academico($input['id']);
-		
-		if (empty($eliminado)){
-			echo json_encode([
-				'estado' => 'error',
-				'mensaje' => 'algo ha salido mal intente de nuevo'
-			]);
-			exit();
-		}
-		echo json_encode(['estado' => 'completado', 'mensaje' => 'Nivel academico eliminado con exito']);
-	}
+            http_response_code(400); 
+            echo json_encode(['estado' => 'error', 'error' => 'Por favor, indique el período académico']);
+            return;
 
-	// === GRADOS ===
+        }
 
-	private function obtener_grados(){
-		$grado_niveles = $this->sistema->obtener_grados();
-		
-		if (empty($grado_niveles)){
-			echo json_encode(['estado' => 'error', 'mensaje' => 'Error al traer grados academicos']);
-			exit();
-		}
-		echo json_encode(['estado' => 'completado', 'data' => $grado_niveles]);
+        try {
 
-	}
+            $alternado = $this->modelo->alternar_estado_periodo_academico($input['id']);
+            
+            if (!empty($alternado)) {
 
-	private function crear_grado($input){
-		if ($this->modelo->existe('GRADO', 'nombre', $input['nombre'])) {
-			echo json_encode(['estado' => 'error', 'mensaje' => 'Ese grado ya existe']); 
-			exit(); 	
-		} 
+                http_response_code(200);
+                echo json_encode(['estado' => 'completado', 'alternado' => true]);
+            
+            } else {
+            
+                http_response_code(500);
+                echo json_encode(['estado' => 'error', 'error' => 'No se pudo cambiar el estado del período académico']);        
 
-		$grado_id = $this->modelo->crear_grado($input);
-		
-		if (empty($grado_id)){
-			echo json_encode(['estado' => 'error', 'mensaje' => 'Error al guardar']); 
-			exit();
-		}
-		echo json_encode(['estado' => 'completado', 'grado_id' => $grado_id]);
-	}
+            }
 
+        } catch (PDOException $e) {
+            
+            http_response_code(500);
+            echo json_encode(['estado' => 'error', 'error' => 'Ocurrió un error en la base de datos']);
 
-	private function eliminar_grado($input){
+        }
+    
+    }
 
-		if ($this->modelo->existe('GRADO_SECCION', 'grado_id', $input['id'])) {
-			echo json_encode([
-				'estado' => 'error',
-				'mensaje' => 'Revise que ninguna seccion dependa de este grado e intente de nuevo'
-			]);
-			exit();	
-		} 
+    // ==========================================
+    // === NIVELES ACADÉMICOS
+    // ==========================================
 
-		$eliminado = $this->modelo->eliminar_grado($input['id']);
-		
-		if (empty($eliminado)){
-			echo json_encode([
-				'estado' => 'error',
-				'mensaje' => 'algo ha salido mal'
-			]);		 
-			exit();
-		}
-		echo json_encode(['estado' => 'completado', 'mensaje' => 'grado eliminado con exito']);
-	}
+    private function obtener_niveles_academicos() {
+     
+        http_response_code(200);
+        echo json_encode([
+            'estado' => 'completado', 
+            'niveles_academicos' => $this->sistema->obtener_niveles_academicos()
+        ]);
 
+    }
 
-	//=== SECCIONES ===
+    private function crear_nivel_academico($input) {
+        
+        if (empty($input['nombre'])) {
 
+            http_response_code(400); 
+            echo json_encode(['estado' => 'error', 'error' => 'Por favor, ingrese el nombre del nivel académico']);
+            return;
 
-	private function obtener_secciones(){
-		$secciones = $this->sistema->obtener_secciones();
-		
-		if (empty($secciones)){
-			echo json_encode(['estado' => 'error', 'mensaje' => 'Error al traer secciones']);
-			exit();
-		}
-		echo json_encode(['estado' => 'completado', 'secciones' => $secciones]);
+        } else if ($this->modelo->existe('NIVEL_ACADEMICO', 'nombre', $input['nombre'])) {
+          
+            http_response_code(409);
+            echo json_encode(['estado' => 'error', 'error' => 'Ya existe un nivel académico con ese nombre']);
+            return;
+        
+        } 
 
-	}
+        try {
 
-	private function crear_seccion($input){
-		if ($this->modelo->existe('SECCION', 'nombre', $input['nombre'])) {
-			echo json_encode(['estado' => 'error', 'mensaje' => 'Esta seccion ya existe']); 
-			exit(); 	
-		} 
+            $nivel_id = $this->modelo->crear_nivel_academico($input['nombre']);
 
-		$seccion_id = $this->modelo->crear_seccion($input);
-		
-		if (empty($seccion_id)){
-			echo json_encode(['estado' => 'error', 'mensaje' => 'Error al guardar']); 
-			exit();
-		}
-		echo json_encode(['estado' => 'completado', 'seccion_id' => $seccion_id]);
-	}
+            if (!empty($nivel_id)) {
+            
+                http_response_code(201);
+                echo json_encode(['estado' => 'completado', 'creado' => true]);
+            
+            } else {
+            
+                http_response_code(500);
+                echo json_encode(['estado' => 'error', 'error' => 'No se pudo crear el nivel académico']);
+            
+            }
+        
+        } catch (PDOException $e) {
+        
+            http_response_code(500);
+            echo json_encode(['estado' => 'error', 'error' => 'Ocurrió un error en la base de datos']);
+        
+        }
+    
+    }
 
+    private function eliminar_nivel_academico($input) {
+        
+        if (empty($input['id']) || (int) $input['id'] < 1) {
 
-	private function eliminar_seccion($input){
+            http_response_code(400); 
+            echo json_encode(['estado' => 'error', 'error' => 'El ID del nivel académico no es válido']);
+            return;
 
-		if ($this->modelo->existe('GRADO_SECCION', 'seccion_id', $input['id'])) {
-			echo json_encode([
-				'estado' => 'error',
-				'mensaje' => 'Revise que ninguna vinculacion dependa de esta seccion e intente de nuevo'
-			]);
-			exit();	
-		} 
+        } else if ($this->modelo->existe('GRADO', 'nivel_academico_id', $input['id'])) {
+            
+            http_response_code(403);
+            echo json_encode(['estado' => 'error', 'error' => 'No se puede eliminar el nivel porque tiene grados asociados']);
+            return;
 
-		$eliminado = $this->modelo->eliminar_seccion($input['id']);
-		
-		if (empty($eliminado)){
-			echo json_encode([
-				'estado' => 'error',
-				'mensaje' => 'algo ha salido mal'
-			]);		 
-			exit();
-		}
-		echo json_encode(['estado' => 'completado', 'mensaje' => 'seccion eliminada con exito']);
-	}
+        } 
 
-	// === VINCULAR GRADOS-SECCIONES ===
+        try {
+            
+            $eliminado = $this->modelo->eliminar_nivel_academico($input['id']);
+            
+            if (!empty($eliminado)) {
+            
+                http_response_code(200);
+                echo json_encode(['estado' => 'completado', 'eliminado' => true]);
+            
+            } else {
+            
+                http_response_code(500);
+                echo json_encode(['estado' => 'error', 'error' => 'No se pudo eliminar el nivel académico']);
+            
+            }
+        
+        } catch (PDOException $e) {
+        
+            http_response_code(500);
+            echo json_encode(['estado' => 'error', 'error' => 'Ocurrió un error en la base de datos']);
+        
+        }
+    
+    }
 
-	private function obtener_grados_secciones(){
-		$grados_secciones = $this->sistema->obtener_grados_secciones();
-		
-		if (empty($grados_secciones)){
-			echo json_encode(['estado' => 'error', 'mensaje' => 'Error al traer grados ysecciones']);
-			exit();
-		}
-		echo json_encode(['estado' => 'completado', 'data' => $grados_secciones]);
+    // ==========================================
+    // === GRADOS
+    // ==========================================
 
-	}
+    private function obtener_grados_niveles_academicos() {
+        
+        http_response_code(200);
+        echo json_encode([
+            'estado' => 'completado', 
+            'grados' => $this->sistema->obtener_grados(),
+            'niveles_academicos' => $this->sistema->obtener_niveles_academicos()
+        ]);
 
-	private function crear_grado_seccion($input){
-		if ($this->modelo->existe('GRADO_SECCION', 'grado_id, seccion_id', [$input['grado_id'], $input['seccion_id']]) ) {
-			echo json_encode(['estado' => 'error', 'mensaje' => 'Esta vinculacion ya existe']); 
-			exit(); 	
-		} 
+    }
 
-		$grado_seccion_id = $this->modelo->crear_grado_seccion($input);
-		
-		if (empty($grado_seccion_id)){
-			echo json_encode(['estado' => 'error', 'mensaje' => 'Error al guardar']); 
-			exit();
-		}
-		echo json_encode(['estado' => 'completado', 'grado_seccion_id' => $grado_seccion_id]);
-	}
+    private function crear_grado($input) {
+        
+        if (empty($input['nombre']) || empty($input['nivel_academico_id'])) {
 
+            http_response_code(400); 
+            echo json_encode(['estado' => 'error', 'error' => 'Por favor, complete todos los campos obligatorios']);
+            return;
 
-	private function eliminar_grado_seccion($input){
-		if ($this->modelo->existe('INSCRIPCION', 'grado_seccion_id', $input['id'])) {
-			echo json_encode([
-				'estado' => 'error',
-				'mensaje' => 'no se puede eliminar esta vinculacion porque existen inscripciones vinculadas a ella, desactivela si no la quiere usar'
-			]);
-			exit();	
-		} 
+        } else if ($this->modelo->existe('GRADO', 'nombre', $input['nombre'])) {
 
-		$eliminado = $this->modelo->eliminar_grado_seccion($input['id']);
-		
-		if (empty($eliminado)){
-			echo json_encode([
-				'estado' => 'error',
-				'mensaje' => 'algo ha salido mal'
-			]);		 
-			exit();
-		}
-		echo json_encode(['estado' => 'completado', 'mensaje' => 'vinculacion eliminada con exito']);
-	}
+            http_response_code(409);
+            echo json_encode(['estado' => 'error', 'error' => 'Ya existe un grado con ese nombre']); 
+            return;     
+        
+        } 
 
-	private function alternar_estado_grado_seccion($input){
+        try {
+        
+            $grado_id = $this->modelo->crear_grado($input['nombre'], $input['nivel_academico_id']);
+        
+            if (!empty($grado_id)) {
+        
+                http_response_code(201);
+                echo json_encode(['estado' => 'completado', 'creado' => true]);
+        
+            } else {
 
-		$alternado = $this->modelo->alternar_estado_grado_seccion($input['id']);
-		
-		if (empty($alternado)){
-			echo json_encode([
-				'estado' => 'error',
-				'mensaje' => 'algo ha salido mal'
-			]);		 
-			exit();
-		}
-		echo json_encode(['estado' => 'completado', 'mensaje' => 'estado cambiado']);
-	}
+                http_response_code(500);
+                echo json_encode(['estado' => 'error', 'error' => 'No se pudo crear el grado']); 
+            
+            }
 
+        } catch (PDOException $e) {
+            
+            http_response_code(500);
+            echo json_encode(['estado' => 'error', 'error' => 'Ocurrió un error en la base de datos']);
 
+        }
+
+    }
+
+    private function eliminar_grado($input) {
+        
+        if (empty($input['id']) || (int) $input['id'] < 1) {
+
+            http_response_code(400); 
+            echo json_encode(['estado' => 'error', 'error' => 'El ID del grado no es válido']);
+            return;
+
+        } else if ($this->modelo->existe('GRADO_SECCION', 'grado_id', $input['id'])) {
+        
+            http_response_code(403);
+            echo json_encode(['estado' => 'error', 'error' => 'No se puede eliminar el grado porque está vinculado a secciones']);
+            return;
+
+        } 
+
+        try {
+
+            $eliminado = $this->modelo->eliminar_grado($input['id']);
+            
+            if (!empty($eliminado)) {
+            
+                http_response_code(200);
+                echo json_encode(['estado' => 'completado', 'eliminado' => true]);
+            
+            } else {
+            
+                http_response_code(500);
+                echo json_encode(['estado' => 'error', 'error' => 'No se pudo eliminar el grado']);        
+            }
+
+        } catch (PDOException $e) {
+            
+            http_response_code(500);
+            echo json_encode(['estado' => 'error', 'error' => 'Ocurrió un error en la base de datos']);
+        
+        }
+    
+    }
+
+    // ==========================================
+    // === SECCIONES
+    // ==========================================
+
+    private function obtener_secciones() {
+    
+        http_response_code(200);
+        echo json_encode([
+            'estado' => 'completado', 
+            'secciones' => $this->sistema->obtener_secciones()
+        ]);
+    
+    }
+
+    private function crear_seccion($input) {
+        
+        if (empty($input['nombre'])) {
+
+            http_response_code(400); 
+            echo json_encode(['estado' => 'error', 'error' => 'Por favor, ingrese el nombre de la sección']);
+            return;
+
+        } else if ($this->modelo->existe('SECCION', 'nombre', $input['nombre'])) {
+            
+            http_response_code(409);
+            echo json_encode(['estado' => 'error', 'error' => 'Ya existe una sección con ese nombre']); 
+            return;     
+        
+        } 
+
+        try {
+        
+            $seccion_id = $this->modelo->crear_seccion($input['nombre']);
+        
+            if (!empty($seccion_id)) {
+        
+                http_response_code(201);
+                echo json_encode(['estado' => 'completado', 'creada' => true]);
+
+            } else {
+
+                http_response_code(500);
+                echo json_encode(['estado' => 'error', 'error' => 'No se pudo crear la sección']); 
+            
+            }
+
+        } catch (PDOException $e) {
+            
+            http_response_code(500);
+            echo json_encode(['estado' => 'error', 'error' => 'Ocurrió un error en la base de datos']);
+        
+        }
+   
+    }
+
+    private function eliminar_seccion($input) {
+        
+        if (empty($input['id']) || (int) $input['id'] < 1) {
+
+            http_response_code(400); 
+            echo json_encode(['estado' => 'error', 'error' => 'El ID de la sección no es válido']);
+            return;
+
+        } else if ($this->modelo->existe('GRADO_SECCION', 'seccion_id', $input['id'])) {
+            
+            http_response_code(403);
+            echo json_encode(['estado' => 'error', 'error' => 'No se puede eliminar la sección porque está vinculada a un grado']);
+            return; 
+        
+        } 
+
+        try {
+        
+            $eliminado = $this->modelo->eliminar_seccion($input['id']);
+        
+            if (!empty($eliminado)) {
+
+                http_response_code(200);
+                echo json_encode(['estado' => 'completado', 'eliminada' => true]);
+            
+            } else {
+            
+                http_response_code(500);
+                echo json_encode(['estado' => 'error', 'error' => 'No se pudo eliminar la sección']);        
+            
+            }
+        
+        } catch (PDOException $e) {
+        
+            http_response_code(500);
+            echo json_encode(['estado' => 'error', 'error' => 'Ocurrió un error en la base de datos']);
+        
+        }
+    
+    }
+
+    // ==========================================
+    // === VINCULAR GRADOS-SECCIONES
+    // ==========================================
+
+    private function obtener_grados_secciones() {
+    
+        http_response_code(200);
+        echo json_encode([
+            'estado' => 'completado', 
+            'grados_secciones' => $this->sistema->obtener_grados_secciones(),
+            'niveles_academicos' => $this->sistema->obtener_niveles_academicos(),
+            'grados' => $this->sistema->obtener_grados(),
+            'secciones' => $this->sistema->obtener_secciones()
+        ]);
+    
+    }
+
+    private function crear_grado_seccion($input) {
+        
+        if (
+            empty($input['grado_id']) || 
+            empty($input['seccion_id']) || 
+            (int) $input['grado_id'] < 1 ||
+            (int) $input['seccion_id'] < 1 
+        ) {
+
+            http_response_code(400); 
+            echo json_encode(['estado' => 'error', 'error' => 'Por favor, seleccione un grado y una sección válidos']);
+            return;
+
+        } else if ($this->modelo->existe('GRADO_SECCION', 'grado_id, seccion_id', [$input['grado_id'], $input['seccion_id']])) {
+            
+            http_response_code(409);
+            echo json_encode(['estado' => 'error', 'error' => 'Esta asignación de grado y sección ya existe']); 
+            return;     
+        
+        } 
+
+        try {
+        
+            $grado_seccion_id = $this->modelo->crear_grado_seccion(
+                $input['grado_id'],
+                $input['seccion_id']
+            );
+        
+            if (!empty($grado_seccion_id)) {
+        
+                http_response_code(201);
+                echo json_encode(['estado' => 'completado', 'creado' => true]);
+        
+            } else {
+        
+                http_response_code(500);
+                echo json_encode(['estado' => 'error', 'error' => 'No se pudo realizar la asignación']); 
+        
+            }
+        
+        } catch (PDOException $e) {
+        
+            http_response_code(500);
+            echo json_encode(['estado' => 'error', 'error' => 'Ocurrió un error en la base de datos']);
+        
+        }
+    
+    }
+
+    private function eliminar_grado_seccion($input) {
+
+        if (empty($input['id']) || (int) $input['id'] < 1) {
+
+            http_response_code(400); 
+            echo json_encode(['estado' => 'error', 'error' => 'El ID de la asignación no es válido']);
+            return;
+
+        } else if ($this->modelo->existe('INSCRIPCION', 'grado_seccion_id', $input['id'])) {
+            
+            http_response_code(403);
+            echo json_encode(['estado' => 'error', 'error' => 'No se puede eliminar la asignación porque tiene estudiantes inscritos']);
+            return; 
+        
+        } 
+
+        try {
+            
+            $eliminado = $this->modelo->eliminar_grado_seccion($input['id']);
+        
+            if (!empty($eliminado)) {
+        
+                http_response_code(200);
+                echo json_encode(['estado' => 'completado', 'eliminado' => true]);
+        
+            } else {
+        
+                http_response_code(500);
+                echo json_encode(['estado' => 'error', 'error' => 'No se pudo eliminar la asignación']);        
+            }
+        
+        } catch (PDOException $e) {
+        
+            http_response_code(500);
+            echo json_encode(['estado' => 'error', 'error' => 'Ocurrió un error en la base de datos']);
+        
+        }
+    
+    }
+
+    private function alternar_estado_grado_seccion($input) {
+        
+        if (empty($input['id']) || (int) $input['id'] < 1) {
+
+            http_response_code(400); 
+            echo json_encode(['estado' => 'error', 'error' => 'El ID de la asignación no es válido']);
+            return;
+
+        }
+
+        try {
+    
+            $alternado = $this->modelo->alternar_estado_grado_seccion($input['id']);
+            
+            if (!empty($alternado)) {
+            
+                http_response_code(200);
+                echo json_encode(['estado' => 'completado', 'alternado' => true]);
+            
+            } else {
+            
+                http_response_code(500);
+                echo json_encode(['estado' => 'error', 'error' => 'No se pudo cambiar el estado de la asignación']);        
+            }
+
+        } catch (PDOException $e) {
+            
+            http_response_code(500);
+            echo json_encode(['estado' => 'error', 'error' => 'Ocurrió un error en la base de datos']);
+        
+        }
+    
+    }
 
 }
-
-?>

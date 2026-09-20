@@ -10,7 +10,7 @@ class Usuarios_controller {
     public function init($action, $input) {
 
         if ($this->modelo->type !== 'Administrador') {
-            echo json_encode(['estado' => 'error', 'error' => 'no_autorizado']);
+            echo json_encode(['estado' => 'error', 'error' => 'No autorizado para realizar esta acción']);
             return;
         }
             
@@ -37,59 +37,69 @@ class Usuarios_controller {
 
             default:
                 http_response_code(404);
-                echo json_encode(['estado' => 'error', 'error' => 'accion_no_encontrada']);
+                echo json_encode(['estado' => 'error', 'error' => 'La acción solicitada no fue encontrada']);
                 break;
         }
     }
 
     private function listar_usuarios() {
     
-        $usuarios = $this->modelo->listar_usuarios();
         http_response_code(200);     
-        echo json_encode(['estado' => 'completado', 'usuarios' => $usuarios]);
+        echo json_encode([
+            'estado' => 'completado', 
+            'usuarios' => $this->modelo->listar_usuarios()
+        ]);
     
     }
 
     private function filtrar_usuarios($input) {
         
-        if (empty(array_filter(($input)))) {
+        if (empty($input['general']) && empty( $input['rol']) && empty($input['estado']) ) {
             http_response_code(200);
-            echo json_encode(['estado' => 'completado', 'usuario' => []]);
+            echo json_encode([
+                'estado' => 'completado', 
+                'usuario' => $this->modelo->listar_usuarios()
+            ]);
             return;
         } 
 
-        $usuarios = $this->modelo->filtrar_usuarios($input['general'], $input['rol'], $input['estado']);
         http_response_code(200);     
-        echo json_encode(['estado' => 'completado', 'usuarios' => $usuarios]);
+        echo json_encode([
+            'estado' => 'completado',
+            'usuarios' => $this->modelo->filtrar_usuarios($input['general'], $input['rol'], $input['estado'])
+        ]);
     
     }
 
 
     private function crear_usuario($input) {
 
-        if (empty(array_filter($input))) {
-
+        if (empty($input['nombre']) || 
+            empty($input['pass']) || 
+            empty($input['rol']) || 
+            empty($input['confirmar_pass'])
+        ) {
             http_response_code(400);
-            echo json_encode(['estado' => 'error', 'error' => 'campos_incompletos']);
+            echo json_encode(['estado' => 'error', 'error' => 'Por favor, complete todos los campos obligatorios']);
             return;
         
         } else if($input['pass'] !== $input['confirmar_pass']) {
 
             http_response_code(400);
-            echo json_encode(['estado' => 'error', 'error' => 'datos_invalidos']);
+            echo json_encode(['estado' => 'error', 'error' => 'Las contraseñas no coinciden']);
         
+        } else if ($this->modelo->existe('USUARIO', 'nombre', $input['nombre'])) {
+            
+            echo json_encode(['estado' => 'error', 'error' => 'El nombre de usuario ya se encuentra registrado']);
+            return;
+
         }
 
         try {
 
-            if ($this->modelo->existe('USUARIO', 'nombre', $input['nombre'])) {
-                echo json_encode(['estado' => 'error', 'error' => 'usuario_ya_registrado']);
-                return;
-            }
-
             $id = $this->modelo->crear_usuario($input['nombre'], $input['pass'], $input['rol']);
 
-            if ($id) {
+            if (!empty($id)) {
                 http_response_code(201);
                 echo json_encode([
                     'estado'  => 'completado', 
@@ -99,18 +109,25 @@ class Usuarios_controller {
                 http_response_code(500);
                 echo json_encode([
                     'estado'  => 'error', 
-                    'error' => 'error_al_crear_usuario'
+                    'error' => 'No se pudo crear el usuario'
                 ]);
             }
+
         } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(['estado' => 'error', 'error' => 'error_en_db']);
+            echo json_encode(['estado' => 'error', 'error' => 'Ocurrió un error en la base de datos']);
         }
     }
 
     private function actualizar_usuario($input) {
         
-        if (empty(array_filter($input))) {
+        if (empty($input['id'])) {
+
+            http_response_code(400);
+            echo json_encode(['estado' => 'error', 'error' => 'Por favor, indique el ID del usuario']);
+            return;
+
+        } else if (empty($input['nombre']) && empty($input['rol']) && empty($input['estado'])) {
 
             http_response_code(201);
             echo json_encode(['estado' => 'completado', 'actualizado' => true]);
@@ -119,20 +136,20 @@ class Usuarios_controller {
         } else if($input['rol'] !== 'Administrador' && $input['rol'] !== 'Usuario' && $input['rol'] !== 'Secretaria') {
             
             http_response_code(400);
-            echo json_encode(['estado' => 'error', 'error' => 'datos_invalidos']);
+            echo json_encode(['estado' => 'error', 'error' => 'El rol seleccionado no es válido']);
             return;
             
         } else if($input['estado'] !== 'Activo' && $input['estado'] !== 'Inactivo') {
             
             http_response_code(400);
-            echo json_encode(['estado' => 'error', 'error' => 'datos_invalidos']);
+            echo json_encode(['estado' => 'error', 'error' => 'El estado seleccionado no es válido']);
             return;
 
         }
 
         if ($this->modelo->id == $input['id'] && ($input['rol'] !== 'Administrador') ) {
             http_response_code(401);
-            echo json_encode(['estado' => 'error', 'error' => 'no_autorizado']);
+            echo json_encode(['estado' => 'error', 'error' => 'No puedes quitarte los privilegios de administrador a ti mismo']);
             return;
         }
 
@@ -146,13 +163,13 @@ class Usuarios_controller {
                 echo json_encode(['estado' => 'completado', 'actualizado' => true]);
             } else {
                 http_response_code(401);
-                echo json_encode(['estado' => 'error', 'error' => 'no_autorizado']);
+                echo json_encode(['estado' => 'error', 'error' => 'No se pudo actualizar el usuario']);
             } 
 
         } catch(PDOException $e) {
 
             http_response_code(500);
-            echo json_encode(['estado' => 'error', 'error' => 'error_en_db']);
+            echo json_encode(['estado' => 'error', 'error' => 'Ocurrió un error en la base de datos']);
              
         }
         
@@ -160,18 +177,26 @@ class Usuarios_controller {
 
     private function eliminar_usuario($input) {
 
+        if (empty($input['id'])) {
+        
+            http_response_code(400);
+            echo json_encode(['estado' => 'error', 'error' => 'Por favor, indique el usuario a eliminar']);
+            return;
+        
+        }
+
         $id = (int) $input['id'];
 
         if ($id <= 0) {
             http_response_code(400);
-            echo json_encode(['estado' => 'error', 'error' => 'credenciales_invalidas']);
+            echo json_encode(['estado' => 'error', 'error' => 'El ID proporcionado no es válido']);
             return;
         }
   
         if ($id == $this->modelo->id) {
             http_response_code(401);
 
-            echo json_encode(['estado' => 'error', 'error' => 'no_autorizado']);
+            echo json_encode(['estado' => 'error', 'error' => 'No puedes eliminar tu propio usuario en sesión']);
             return;
         }
 
@@ -179,7 +204,7 @@ class Usuarios_controller {
 
             $eliminado = $this->modelo->eliminar_usuario($id);
 
-            if ($eliminado) {
+            if (!empty($eliminado)) {
                 http_response_code(201);
                 echo json_encode([
                     'estado' => 'completado',
@@ -187,12 +212,12 @@ class Usuarios_controller {
                 ]);
             } else {
                 http_response_code(500);
-                echo json_encode(['estado' => 'error', 'error' => 'error_al_eliminar_usuario']);
+                echo json_encode(['estado' => 'error', 'error' => 'No se pudo eliminar el usuario']);
             }
             
         } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(['estado' => 'error', 'error' => 'error_en_db']);
+            echo json_encode(['estado' => 'error', 'error' => 'Ocurrió un error en la base de datos']);
         }
     }
 }

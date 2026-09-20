@@ -35,7 +35,7 @@ class Router {
         
         try {
 
-            $usuario_session = $this->sistema->verificar_sesion();
+            $usuario_session = $this->sistema->validar_sesion();
             
             if ($controlador == 'router') {
                 switch ($action) {
@@ -118,7 +118,7 @@ class Router {
                     break;
 
                 case 'reportes_controller':
-                    $reportes_controller = new Reportes_controller($this->usuario);
+                    $reportes_controller = new Reportes_controller($this->usuario, $this->sistema);
                     $reportes_controller->init($action, $input);
                     break;
 
@@ -147,7 +147,7 @@ class Router {
             
         } catch (PDOException $e) {
             http_response_code(404);
-            echo json_encode(['estado' => 'error', 'error' => "error_servidor"]);
+            echo json_encode(['estado' => 'error', 'error' => 'error_servidor', 'e' => $e->getMessage()]);
             // var_dump($e->getMessage());
         }
     }

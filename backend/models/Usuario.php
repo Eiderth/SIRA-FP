@@ -76,6 +76,7 @@ Class Usuario{
 	}
 
 
+
 	//=== Metodos para el manejo de datos de estudiantes ===
 
 	public function guardar_estudiante ($data, $rep_principal_id, $rep_secundario_id) {
@@ -139,16 +140,21 @@ Class Usuario{
 
 	}
 
-	public function listar_estudiantes($limit = '') {
-		$consulta =  "SELECT i.id AS id_inscripcion, i.fecha_inscripcion,
-          p.nombre_1, p.apellido_1, p.nacionalidad, p.cedula_identidad,
-          e.cedula_escolar, s.nombre AS seccion, g.nombre AS grado
+	public function listar_inscripciones($limit = '') {
+
+		$consulta =  "SELECT 
+		  i.id AS id_inscripcion,
+          i.fecha_inscripcion,
+          pe.nombre_1, pe.apellido_1, pe.nacionalidad, 
+          pe.cedula_identidad, e.cedula_escolar, e.estado,
+          s.nombre AS seccion, g.nombre AS grado, pa.nombre as periodo
           FROM INSCRIPCION i
+          INNER JOIN PERIODO_ACADEMICO pa ON i.periodo_academico_id = pa.id
           INNER JOIN GRADO_SECCION gs ON i.grado_seccion_id = gs.id
           INNER JOIN GRADO g ON gs.grado_id = g.id
           INNER JOIN SECCION s ON gs.seccion_id = s.id
           INNER JOIN PERSONA_ESTUDIANTE e ON i.estudiante_id = e.id
-          INNER JOIN PERSONA p ON e.persona_id = p.id
+          INNER JOIN PERSONA pe ON e.persona_id = pe.id
 
           ORDER BY i.fecha_inscripcion DESC";
 
@@ -158,11 +164,137 @@ Class Usuario{
 
 		$stmt = $this->db->query($consulta);
         
-		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+		return $stmt->fetchAll(PDO::FETCH_ASSOC);	
 
 	}
 
+	public function filtrar_inscripciones($periodo_id = null, $grado_id = null, $seccion_id = null, $pagina = 1, $limite = 15) {
 
+	    $pagina = max(1, (int)$pagina);
+	    $limite = max(1, (int)$limite);
+
+	    $offset = ($pagina - 1) * $limite;
+
+	    $sql = "SELECT 
+	                i.id AS id_inscripcion,
+	                pe.nombre_1, pe.apellido_1, pe.nacionalidad, 
+	                pe.cedula_identidad, e.cedula_escolar, e.estado,
+	                s.nombre AS seccion, g.nombre AS grado, pa.nombre AS periodo
+	            FROM INSCRIPCION i
+	            INNER JOIN PERIODO_ACADEMICO pa ON i.periodo_academico_id = pa.id
+	            INNER JOIN GRADO_SECCION gs ON i.grado_seccion_id = gs.id
+	            INNER JOIN GRADO g ON gs.grado_id = g.id
+	            INNER JOIN SECCION s ON gs.seccion_id = s.id
+	            INNER JOIN PERSONA_ESTUDIANTE e ON i.estudiante_id = e.id
+	            INNER JOIN PERSONA pe ON e.persona_id = pe.id";
+
+	    $condiciones = [];
+	    $params = [];
+
+	    if (!empty($periodo_id)) {
+	        $condiciones[] = "i.periodo_academico_id = :periodo_id";
+	        $params['periodo_id'] = $periodo_id;
+	    }
+
+	    if (!empty($grado_id)) {
+	        $condiciones[] = "gs.grado_id = :grado_id";
+	        $params['grado_id'] = $grado_id;
+	    }
+
+	    if (!empty($seccion_id)) {
+	        $condiciones[] = "gs.seccion_id = :seccion_id";
+	        $params['seccion_id'] = $seccion_id;
+	    }
+
+	    if (count($condiciones) > 0) {
+	        $sql .= " WHERE " . implode(" AND ", $condiciones);
+	    }
+
+	    $sql .= " ORDER BY i.fecha_inscripcion DESC LIMIT {$limite} OFFSET {$offset}";
+
+	    $stmt = $this->db->prepare($sql);
+	    $stmt->execute($params);
+
+	    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
+	
+	public function contar_total_inscripciones($periodo_id = null, $grado_id = null, $seccion_id = null) {
+	    
+	    $sql = "SELECT COUNT(*) AS total 
+	            FROM INSCRIPCION i
+	            INNER JOIN GRADO_SECCION gs ON i.grado_seccion_id = gs.id";
+
+	    $condiciones = [];
+	    $params = [];
+
+	    if (!empty($periodo_id)) {
+	        $condiciones[] = "i.periodo_academico_id = :periodo_id";
+	        $params['periodo_id'] = $periodo_id;
+	    }
+	    if (!empty($grado_id)) {
+	        $condiciones[] = "gs.grado_id = :grado_id";
+	        $params['grado_id'] = $grado_id;
+	    }
+	    if (!empty($seccion_id)) {
+	        $condiciones[] = "gs.seccion_id = :seccion_id";
+	        $params['seccion_id'] = $seccion_id;
+	    }
+
+	    if (count($condiciones) > 0) {
+	        $sql .= " WHERE " . implode(" AND ", $condiciones);
+	    }
+
+	    $stmt = $this->db->prepare($sql);
+	    $stmt->execute($params);
+	    $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+	    return (int)$resultado['total'];
+	}
+	public function filtrar_todas_las_inscripciones($periodo_id = null, $grado_id = null, $seccion_id = null) {
+
+	    $sql = "SELECT 
+            i.id AS id_inscripcion,
+            pe.nombre_1, pe.apellido_1, pe.nacionalidad, 
+            pe.cedula_identidad, e.cedula_escolar, e.estado,
+            s.nombre AS seccion, g.nombre AS grado, pa.nombre AS periodo
+        FROM INSCRIPCION i
+        INNER JOIN PERIODO_ACADEMICO pa ON i.periodo_academico_id = pa.id
+        INNER JOIN GRADO_SECCION gs ON i.grado_seccion_id = gs.id
+        INNER JOIN GRADO g ON gs.grado_id = g.id
+        INNER JOIN SECCION s ON gs.seccion_id = s.id
+        INNER JOIN PERSONA_ESTUDIANTE e ON i.estudiante_id = e.id
+        INNER JOIN PERSONA pe ON e.persona_id = pe.id";
+
+	    $condiciones = [];
+	    $params = [];
+
+	    if (!empty($periodo_id)) {
+	        $condiciones[] = "i.periodo_academico_id = :periodo_id";
+	        $params['periodo_id'] = $periodo_id;
+	    }
+
+	    if (!empty($grado_id)) {
+	        $condiciones[] = "gs.grado_id = :grado_id";
+	        $params['grado_id'] = $grado_id;
+	    }
+
+	    if (!empty($seccion_id)) {
+	        $condiciones[] = "gs.seccion_id = :seccion_id";
+	        $params['seccion_id'] = $seccion_id;
+	    }
+
+	    if (count($condiciones) > 0) {
+	        $sql .= " WHERE " . implode(" AND ", $condiciones);
+	    }
+
+	    // Ordenamos por fecha de inscripción sin limitar la cantidad de resultados
+	    $sql .= " ORDER BY i.fecha_inscripcion DESC";
+
+	    $stmt = $this->db->prepare($sql);
+	    $stmt->execute($params);
+
+	    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
 	//=== Metodos para el manejo de datos de representantes ===
 
 	public function guardar_representante($representante) {
@@ -240,7 +372,7 @@ Class Usuario{
 	}
 
 	public function crear_periodo_academico($periodo_academico) {
-		return $this->insertar('PERIODO_ACADEMICO', $periodo_academico);
+		return $this->insertar('PERIODO_ACADEMICO', ['nombre' => $periodo_academico]);
 	}
 
 	public function eliminar_periodo_academico($id) {
@@ -261,7 +393,7 @@ Class Usuario{
 	}
 
 	public function crear_nivel_academico($nivel_academico) {
-		return $this->insertar('NIVEL_ACADEMICO', $nivel_academico);
+		return $this->insertar('NIVEL_ACADEMICO', ['nombre' => $nivel_academico]);
 	}
 
 	public function eliminar_nivel_academico($id) {
@@ -270,8 +402,11 @@ Class Usuario{
 		return true;
 	}
 
-	public function crear_grado($data) {
-		return $this->insertar('GRADO', $data);
+	public function crear_grado($grado, $nivel_academico_id) {
+		return $this->insertar('GRADO', [
+			'nombre' => $grado,
+			'nivel_academico_id' => $nivel_academico_id
+		]);
 	}
 
 	public function eliminar_grado($id) {
@@ -280,8 +415,8 @@ Class Usuario{
 		return true;
 	}
 
-	public function crear_seccion($data) {
-		return $this->insertar('SECCION', $data);
+	public function crear_seccion($seccion) {
+		return $this->insertar('SECCION', ['nombre' => $seccion]);
 	}
 
 	public function eliminar_seccion($id) {
@@ -290,8 +425,11 @@ Class Usuario{
 		return true;
 	}
 
-	public function crear_grado_seccion($data) {
-		return $this->insertar('GRADO_SECCION', $data);
+	public function crear_grado_seccion($grado_id, $seccion_id) {
+		return $this->insertar('GRADO_SECCION', [
+			'grado_id' => $grado_id,
+			'seccion_id' => $seccion_id
+		]);
 	}
 
 	public function eliminar_grado_seccion($id) {

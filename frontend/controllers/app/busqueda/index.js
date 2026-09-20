@@ -38,7 +38,7 @@ export default class Busqueda_controller extends Utils {
     async #insertar_parametros() {
         const {periodos, grados, secciones}  = (await this._traer_datos('./api.php?controller=busqueda_controller&action=traer_parametros')).data;
         this._llenar_select(this.#select_periodo, [{ 'nombre' : 'Todos los periodos', 'id': ''}, ...periodos]);
-        this._llenar_select(this.#select_grado, [{'nombre': 'Todos los grados', 'id': ''}, ...grados.grados]);
+        this._llenar_select(this.#select_grado, [{'nombre': 'Todos los grados', 'id': ''}, ...grados]);
         this._llenar_select(this.#select_seccion, [ {'nombre': 'Todas las secciones', 'id': ''}, ...secciones]);
     }
 
@@ -91,10 +91,10 @@ export default class Busqueda_controller extends Utils {
                     const id = e.currentTarget.getAttribute('data-id');
                     if(!id) return;
 
-                    const resp = await this._enviar_datos('./api.php?controller=busqueda_controller&action=buscar_datos_estudiante', {'estudiante_id': id});
+                    const {resultados} = await this._enviar_datos('./api.php?controller=busqueda_controller&action=buscar_datos_estudiante', {'estudiante_id': id});
 
-                    if(resp.estado == 'completado'){
-                        this.#mostrar_expediente(resp.resultados);
+                    if(resultados){
+                        this.#mostrar_expediente(resultados);
                         return;
                     } 
                     this._notificacion('algo ha salido mal')

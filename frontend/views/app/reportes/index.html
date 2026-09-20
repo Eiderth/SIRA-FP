@@ -1,32 +1,90 @@
-<div class="container py-4">
-    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h3 class="fw-bold text-dark m-0">Reporte de Alumnos Inscritos</h3>
-                <p class="text-secondary small m-0">Listado general del sistema académico</p>
-            </div>
-            <span class="badge bg-primary rounded-pill px-3 py-2 fs-6" id="total-inscritos">0 Alumnos</span>
-        </div>
+<div class="container-fluid px-3 py-2">
+    <div class="card border-0 shadow-sm rounded-3 p-3 bg-white">
         
-        <div class="table-responsive">
-            <table class="table table-hover align-middle m-0">
-                <thead class="table-dark">
+        <!-- Encabezado Compacto -->
+        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+            <div>
+                <h4 class="fw-bold text-dark m-0">Reporte de Alumnos Inscritos</h4>
+                <span class="text-muted small">Generación de listados por lote y filtros académicos</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1 fs-6 fw-bold" id="total-inscritos">
+                    0 Alumnos
+                </span>
+                <button type="button" id="btn-exportar-reporte" class="btn btn-success btn-sm fw-bold d-flex align-items-center gap-1">
+                    <i class="bi bi-file-earmark-excel"></i> Exportar Listado
+                </button>
+            </div>
+        </div>
+
+        <!-- BARRA DE FILTROS COMPACTA -->
+        <div class="card border bg-light rounded-2 p-2 mb-2">
+            <form id="formulario-filtrar-reportes" class="row g-2 align-items-end">
+                
+                <!-- Filtro Período -->
+                <div class="col-6 col-md-3">
+                    <label class="form-label fs-7 fw-bold text-secondary mb-1">Período Escolar</label>
+                    <select id="filtro-periodo" name="periodo_id" class="form-select form-select-sm bg-white shadow-none">
+                        <option value="">Todos los Períodos</option>
+                    </select>
+                </div>
+
+                <!-- Filtro Grado / Año -->
+                <div class="col-6 col-md-3">
+                    <label class="form-label fs-7 fw-bold text-secondary mb-1">Grado / Año</label>
+                    <select id="filtro-grado" name="grado_id" class="form-select form-select-sm bg-white shadow-none">
+                        <option value="">Todos los Grados</option>
+                    </select>
+                </div>
+
+                <!-- Filtro Sección -->
+                <div class="col-6 col-md-3">
+                    <label class="form-label fs-7 fw-bold text-secondary mb-1">Sección</label>
+                    <select id="filtro-seccion" name="seccion_id" class="form-select form-select-sm bg-white shadow-none">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+
+                <!-- Botones Filtro -->
+                <div class="col-12 col-md-3 d-flex gap-1">
+                    <button type="button" id="btn-filtrar" class="btn btn-primary btn-sm w-50 fw-semibold d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-funnel-fill"></i> Filtrar
+                    </button>
+                    <button type="button" id="btn-limpiar-filtros" class="btn btn-outline-secondary btn-sm w-50 fw-semibold" title="Limpiar Filtros">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- TABLA CON SCROLL VERTICAL Y CABECERA FIJA -->
+        <div 
+         id="contenedor-tabla-reportes" 
+         class="table-responsive rounded-2 border"
+         style="max-height: 400px; overflow-y: auto;"
+        >
+            <table class="table table-sm table-hover align-middle m-0 text-nowrap">
+                <thead class="table-dark small text-uppercase">
                     <tr>
-                        <th scope="col" class="py-3 ps-4">Cédula / Escolar</th>
-                        <th scope="col" class="py-3">Estudiante</th>
-                        <th scope="col" class="py-3">Fecha de Inscripción</th>
-                        <th scope="col" class="py-3 text-center pe-4">Acciones</th>
+                        <th scope="col" class="py-2 ps-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">#</th>
+                        <th scope="col" class="py-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Cédula / Escolar</th>
+                        <th scope="col" class="py-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Estudiante</th>
+                        <th scope="col" class="py-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Período Académico</th>
+                        <th scope="col" class="py-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Grado y Sección</th>
+                        <th scope="col" class="py-2 text-center" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Estado</th>
+                        <th scope="col" class="py-2 text-end pe-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="tabla-inscritos-body">
+                <tbody id="tabla-inscritos-body" class="small">
                     <tr>
-                        <td colspan="4" class="text-center py-4 text-secondary">
+                        <td colspan="7" class="text-center py-4 text-secondary">
                             <div class="spinner-border spinner-border-sm me-2 text-primary" role="status"></div>
-                            Cargando lista de inscritos...
+                            Cargando listado...
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
     </div>
 </div>

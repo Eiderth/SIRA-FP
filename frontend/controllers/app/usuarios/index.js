@@ -142,7 +142,6 @@ export default class Usuarios_controller extends Utils {
 
         const {eliminado = null} = await this._enviar_datos('./api.php?controller=usuarios_controller&action=eliminar_usuario', {'id': id}); 
         if (eliminado) {
-            this._notificacion('Usuario eliminado con exito', 'Exito');
             this.#cargar_usuarios();
             return;
         } 
@@ -151,36 +150,45 @@ export default class Usuarios_controller extends Utils {
     async #crear_usuario(){
 
         if (!this._validar_formulario(this.#formulario_crear_usuario)) {
-            this._notificacion('Debe llenar todos los campos');
+            this._notificacion('Debe llenar todos los campos', 'Error');
             return;
         }
-
         const data = Object.fromEntries(new FormData(this.#formulario_crear_usuario));
 
         for (let clave in data) {
-            if (data[clave].trim() === "") {
-                this._notificacion("Rellene todos los campos");
-                return;
-            } else {
-                data[clave] = data[clave].trim();
-            }
+            data[clave] = data[clave].trim();   
         }
 
-        if (data.pass !== data.confirmar_pass) {
-            this._notificacion("Ha ingresado valores distintos en la contraseña");
+        if(data.nombre === '' || data.pass === '' || data.confirmar_pass === '' || 
+            (data.rol !== 'Administrador' && data.rol !== 'Usuario' && data.rol !== 'Secretaria') 
+        ){
+            this._notificacion('debe llenar todos los campos', 'Error');
             return;
         }
+        
+        this.#btn_crear_usuario.disabled = true;
 
-        const {creado = null} = await this._enviar_datos('./api.php?controller=usuarios_controller&action=crear_usuario', data);
+        if (data.pass !== data.confirmar_pass) {
 
-        if (creado) {
-            this._notificacion(`Se agrego al usuario ${data.nombre} al sistema`, 'Exito')
-            this.#formulario_crear_usuario.reset();
-            await this.#cargar_usuarios();
-        } 
+            this._notificacion("Ha ingresado valores distintos en la contraseña", 'Error');
+
+        } else {
+       
+            const {creado = null} = await this._enviar_datos('./api.php?controller=usuarios_controller&action=crear_usuario', data);
+
+            if (creado) {
+                this.#formulario_crear_usuario.reset();
+                await this.#cargar_usuarios();
+            } 
+
+        }
+
+        this.#btn_crear_usuario.disabled = false;
+
     }
 
     async #filtrar_usuarios() {
+        this.#btn_filtrar_usuarios.disabled = true;
         const filtros =  Object.fromEntries(new FormData(this.#formulario_filtrar_usuarios));
 
         for (let clave in filtros) {
@@ -191,14 +199,21 @@ export default class Usuarios_controller extends Utils {
             }
         }
 
-        if(Object.values(filtros).every(v => v === null)) return;
+        if(Object.values(filtros).every(v => v === null)) {
+            
+            await this.#cargar_usuarios();
 
-        console.log('evento fiktrar')
-        const {usuarios} = await this._enviar_datos('./api.php?controller=usuarios_controller&action=filtrar_usuarios', filtros)
+        } else {
 
-        if(usuarios) {
-            this.#cargar_usuarios(usuarios);
+            const {usuarios} = await this._enviar_datos('./api.php?controller=usuarios_controller&action=filtrar_usuarios', filtros)
+
+            if(usuarios) {
+                this.#cargar_usuarios(usuarios);
+            }
         }
+
+        this.#btn_filtrar_usuarios.disabled = false;
+
     }
 
     async #actualizar(btn) {
@@ -232,7 +247,7 @@ export default class Usuarios_controller extends Utils {
             // limpieza
             for (let clave in data) {
                 if (data[clave].trim() === "") {
-                    this._notificacion("Rellene todos los campos");
+                    this._notificacion("Rellene todos los campos", 'Error');
                     return;
                 } else {
                     data[clave] = data[clave].trim();

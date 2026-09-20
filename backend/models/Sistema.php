@@ -30,8 +30,21 @@ class Sistema {
         ];
     }
 
-    public function obtener_periodos_academicos() {
-        return $this->db->query('SELECT * FROM PERIODO_ACADEMICO ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC);
+    public function obtener_periodos_academicos($estado_periodo = null) {
+        $params = [];
+        $sql = "SELECT * FROM PERIODO_ACADEMICO";
+
+        if ($estado_periodo === 'Activo' || $estado_periodo === 'Cerrado'){
+            $sql .= "  WHERE estado = :estado";
+            $params['estado'] = $estado_periodo; 
+        }
+        
+        $sql .= " ORDER BY id DESC";
+
+        $stmt = $this->db->prepare($sql);
+
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function obtener_niveles_academicos() {
@@ -39,10 +52,7 @@ class Sistema {
     }
 
     public function obtener_grados() {
-        return [
-            'grados'  => $this->db->query('SELECT * FROM GRADO ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC),
-            'niveles_academicos'  => $this->db->query('SELECT * FROM NIVEL_ACADEMICO ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC)
-        ];
+        return $this->db->query('SELECT * FROM GRADO ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC);
     }
     
     public function obtener_secciones() {
@@ -50,17 +60,12 @@ class Sistema {
     }
 
     public function obtener_grados_secciones() {
-        return [
-            'secciones' => $this->db->query('SELECT * FROM SECCION ORDER BY id ASC')->fetchAll(PDO::FETCH_ASSOC),
-            'grados'  => $this->db->query('SELECT * FROM GRADO ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC),
-            'niveles_academicos'  => $this->db->query('SELECT * FROM NIVEL_ACADEMICO ORDER BY id DESC')->fetchAll(PDO::FETCH_ASSOC),
-            'grados_secciones' => $this->db->query('
+        return $this->db->query('
                 SELECT gs.id, gs.grado_id, gs.seccion_id, gs.estado, na.id AS nivel_academico_id FROM GRADO_SECCION gs
                 JOIN GRADO g ON gs.grado_id = g.id
                 JOIN NIVEL_ACADEMICO na ON g.nivel_academico_id = na.id
                 ORDER BY gs.id DESC
-            ')->fetchAll(PDO::FETCH_ASSOC),
-        ];
+            ')->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function buscar_coincidencias($busqueda, $tipo_busqueda = 'estudiante' ) {
@@ -257,7 +262,7 @@ class Sistema {
         return $stmt->rowCount() > 0;
     }
 
-    public function verificar_sesion() {
+    public function validar_sesion() {
         if (empty($_COOKIE['session_token'])) return false;
 
         $token = $_COOKIE['session_token'];

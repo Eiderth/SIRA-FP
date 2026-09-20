@@ -30,25 +30,28 @@ export default class Dashboard_controller extends Utils {
     }
 
     async #llenar_cards() {
-        const resp = await this._traer_datos('./api.php?controller=dashboard_controller&action=obtener_datos_resumen')
-        // console.log(resp)
-        document.getElementById('estudiantes-activos').textContent = resp.data.estudiantes_activos;
-        document.getElementById('periodo-activo').textContent = resp.data.periodo_activo;
-        document.getElementById('grados-secciones-activas').textContent = resp.data.grados_secciones_activas;
-        if (resp.resumen_reportes) return;
+        const {estudiantes_activos, periodo_activo, grados_secciones_activas, resumen_reportes} = await this._traer_datos('./api.php?controller=dashboard_controller&action=obtener_datos_resumen')
+        
+        if (!estudiantes_activos || !periodo_activo|| !grados_secciones_activas) return;
 
-        let reportes = ''
-        resp.data.resumen_reportes.forEach(r => {
-            reportes += `
-                <tr>
-                    <th class="ps-4">${r.nombre_1} ${r.apellido_1}</th>
-                    <th>${r.cedula_identidad !== ''? (r.nacionalidad+r.cedula_identidad): r.cedula_escolar}</th>
-                    <th>${r.grado} ${r.seccion}</th>
-                    <th>${r.fecha_inscripcion}</th>
-                </tr>
-            `    
-        })
-        document.getElementById('resumen-reportes').innerHTML = reportes;
+        document.getElementById('estudiantes-activos').textContent = estudiantes_activos;
+        document.getElementById('periodo-activo').textContent = periodo_activo;
+        document.getElementById('grados-secciones-activas').textContent = grados_secciones_activas;
+
+        if (resumen_reportes.length > 0) {
+
+            let reportes =  resumen_reportes.map(r => {
+                return `
+                    <tr>
+                        <th class="ps-4">${r.nombre_1} ${r.apellido_1}</th>
+                        <th>${r.cedula_identidad !== ''? (r.nacionalidad+r.cedula_identidad): r.cedula_escolar}</th>
+                        <th>${r.grado} ${r.seccion}</th>
+                        <th>${r.fecha_inscripcion}</th>
+                    </tr>
+                `    
+            }).join(' ');
+            document.getElementById('resumen-reportes').innerHTML = reportes;
+        }
     }
 
     #dar_eventos_click(){

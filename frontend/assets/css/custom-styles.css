@@ -51,3 +51,164 @@
     color: white;
     opacity: 0.6;
 }
+
+/* Contenedor principal del Splash */
+.splash-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #050505;
+    /* Fondo radial sutil para dar profundidad y evitar el negro plano/vacío */
+    background-image: radial-gradient(circle at center, #111a22 0%, #000000 70%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+/* Contenedor interno general */
+.splash-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 900px;
+    padding: 40px;
+    gap: 30px;
+    transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.splash-wrapper.distribuir {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 40px;
+}
+
+.splash-brand-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 1s ease;
+}
+
+.splash-wrapper.distribuir .splash-brand-box {
+    align-items: flex-start;
+    text-align: left;
+}
+
+.logo-glow-container {
+    position: relative;
+    padding: 10px;
+    animation: flotarLogo 3s ease-in-out infinite;
+}
+
+.logo-glow-container::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(13, 202, 240, 0.2);
+    filter: blur(25px);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.splash-logo {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(13, 202, 240, 0.4));
+    transition: width 1s ease;
+}
+
+.splash-wrapper.distribuir .splash-logo {
+    width: 75px; 
+    height: 75px;
+}
+
+.welcome-title {
+    color: #fff;
+    font-size: 2.8rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+    transition: all 1s ease;
+    margin: 0;
+    line-height: 1.1;
+}
+
+.splash-wrapper.distribuir .welcome-title {
+    font-size: 2.2rem;
+}
+
+.splash-divider {
+    width: 1px;
+    height: 0px;
+    background: rgba(13, 202, 240, 0.3);
+    transition: height 1s ease 0.4s;
+}
+
+.splash-wrapper.distribuir .splash-divider {
+    height: 220px; 
+}
+
+.acrostic-box {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.8s ease;
+    display: none;
+    text-align: left;
+}
+
+.splash-wrapper.distribuir .acrostic-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.acrostic-row {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    font-family: monospace;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.acrostic-row .letra {
+    color: #0dcaf0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-shadow: 0 0 10px rgba(13, 202, 240, 0.4);
+    min-width: 35px;
+    text-align: center;
+    background: rgba(13, 202, 240, 0.08);
+    border: 1px solid rgba(13, 202, 240, 0.2);
+    border-radius: 6px;
+    padding: 2px 0;
+}
+
+.acrostic-row .texto {
+    color: #cbd5e1;
+    font-weight: 400;
+    font-size: 1.3rem;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+@keyframes flotarLogo {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+.splash-container.ocultar {
+    opacity: 0;
+    visibility: hidden;
+}

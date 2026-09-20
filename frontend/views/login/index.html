@@ -6,6 +6,34 @@
         src="./frontend/assets/img/icon-512.webp"
     >
 
+    <div id="splash-screen" class="splash-container">
+        <div id="splash-wrapper" class="splash-wrapper">
+            
+            <!-- Bloque Izquierdo: Logo + Título -->
+            <div class="splash-brand-box">
+                <div class="logo-glow-container mb-3">
+                    <img src="./frontend/assets/img/icon-512.webp" alt="Logo SIRA-FP" class="splash-logo">
+                </div>
+                <h1 id="splash-welcome" class="welcome-title">Bienvenido a <br><span class="text-info">SIRA-FP</span></h1>
+            </div>
+
+            <!-- Línea divisora vertical -->
+            <div class="splash-divider"></div>
+
+            <!-- Bloque Derecho: Acróstico (Siempre presente en el DOM, animado por opacidad y desplazamiento) -->
+            <div id="splash-acrostic" class="acrostic-box">
+                <div class="acrostic-row"><span class="letra">S</span> <span class="texto">istema</span></div>
+                <div class="acrostic-row"><span class="letra">I</span> <span class="texto">nformación</span></div>
+                <div class="acrostic-row"><span class="letra">R</span> <span class="texto">egistro</span></div>
+                <div class="acrostic-row"><span class="letra">A</span> <span class="texto">lumnos</span></div>
+                <div class="acrostic-row"><span class="letra">F</span> <span class="texto">ernando</span></div>
+                <div class="acrostic-row"><span class="letra">P</span> <span class="texto">eñalver</span></div>
+            </div>
+
+        </div>
+    </div>
+
+
     <form id="formulario-login" class="z-2 w-100" style="max-width: 380px;">
         <!-- Contenedor con efecto vidrio, borde tenue y sombra pulida -->
         <div class="text-white p-4 p-sm-5 rounded-4 d-flex flex-column gap-3 text-uppercase bg-dark bg-opacity-75 border border-secondary border-opacity-25 shadow-lg backdrop-blur flotar">

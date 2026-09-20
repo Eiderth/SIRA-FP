@@ -17,8 +17,6 @@ export default class Grados_secciones_controller extends Utils  {
 	#secciones_controller;
 	#vincular_grados_secciones_controller;
 
-
-
 	constructor() {
 		super();
 		this.#html = this._traer_html("./frontend/views/app/grados-secciones/index.html");
