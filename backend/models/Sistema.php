@@ -1,8 +1,8 @@
 <?php
 
 class Sistema {
-    private $db;
     
+    private $db;
     public $type = 'Sistema';
     
     function __construct($db){
@@ -161,7 +161,7 @@ class Sistema {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function buscar_historial_estudiante($id) {
+    public function buscar_datos_estudiante($id) {
         $resultado = [];
 
         $estudiante =  $this->buscar_todo('PERSONA_ESTUDIANTE', 'id', $id);

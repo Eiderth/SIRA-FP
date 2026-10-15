@@ -1,11 +1,11 @@
 import Utils from "../../../core/utils.js";
 import Periodos_academicos_controlller from "./secciones/periodos_academicos.js";
-import Vincular_grados_secciones_controller from "./secciones/vincular.js";
+import vinculaciones_controller from "./secciones/vinculaciones.js";
 import Grados_controlller from "./secciones/grados.js";
 import Secciones_controlller from "./secciones/secciones.js";
 import Niveles_academicos_controlller from "./secciones/niveles_academicos.js";
 
-export default class Grados_secciones_controller extends Utils  {
+export default class academicos_controller extends Utils  {
 
 	#html;
 
@@ -15,11 +15,11 @@ export default class Grados_secciones_controller extends Utils  {
 	#niveles_academicos_controller;
 	#grados_controller;
 	#secciones_controller;
-	#vincular_grados_secciones_controller;
+	#vinculaciones_controller;
 
 	constructor() {
 		super();
-		this.#html = this._traer_html("./frontend/views/app/grados-secciones/index.html");
+		this.#html = this._traer_html("./frontend/views/app/academicos/index.html");
 	}
 
 	async init(seccion = '') {
@@ -29,7 +29,7 @@ export default class Grados_secciones_controller extends Utils  {
 
 		localStorage.removeItem('parametros_formulario')
 		this.#periodos_academicos_controller = new Periodos_academicos_controlller();
-		this.#vincular_grados_secciones_controller = new Vincular_grados_secciones_controller();
+		this.#vinculaciones_controller = new vinculaciones_controller();
 		this.#grados_controller = new Grados_controlller();
 		this.#secciones_controller = new Secciones_controlller();
 		this.#niveles_academicos_controller = new Niveles_academicos_controlller();
@@ -94,7 +94,7 @@ export default class Grados_secciones_controller extends Utils  {
 		})
 		this.#botones.vincular.addEventListener('click', () => {
 			if (this.#seccion == 'vincular') return;
-			this.#vincular_grados_secciones_controller.init();
+			this.#vinculaciones_controller.init();
 			this.#seccion = 'vincular';
 		})
 	

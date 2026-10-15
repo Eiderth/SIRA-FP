@@ -1,7 +1,7 @@
-<div class="container-fluid px-4 py-3 d-flex flex-column overflow-hidden">
+<div class="container-fluid px-4 py-3 d-flex flex-column vh-100">
     
     <!-- CONTENEDOR SUPERIOR (Encabezado + Formulario) -->
-    <div id="seccion-superior" class="collapse show">
+    <div id="seccion-superior" class="collapse show flex-shrink-0">
         
         <!-- Encabezado de Sección -->
         <div class="d-flex align-items-center justify-content-between mb-3">
@@ -21,7 +21,7 @@
                         
                         <!-- Select Estado -->
                         <div class="col-12 col-sm-4 col-md-3 col-lg-2">
-                            <select id="select-estado" name="estado" class="form-select py-2">
+                            <select id="select-estado" name="estado" class="form-select form-select-sm py-2">
                                 <option value="">Todos</option>
                                 <option value="activo" selected>Solo Activos</option>
                                 <option value="retirado">Solo Retirados</option>
@@ -31,7 +31,7 @@
 
                         <!-- Input de Búsqueda General -->
                         <div class="col-12 col-sm-8 col-md">
-                            <div class="input-group">
+                            <div class="input-group input-group-sm">
                                 <span class="input-group-text bg-white text-muted border-end-0"><i class="bi bi-search"></i></span>
                                 <input type="text" id="input-busqueda-general" name="busqueda_general" class="form-control border-start-0 py-2" placeholder="Buscar por Cédula, Nombre o Apellido...">
                                 <button type="submit" id="btn-buscar" class="btn btn-primary px-4 fw-bold">
@@ -42,7 +42,7 @@
 
                         <!-- Botón Filtros Avanzados -->
                         <div class="col-12 col-md-auto">
-                            <button class="btn btn-light border text-secondary w-100 py-2 d-flex align-items-center justify-content-center" type="button" data-bs-toggle="collapse" data-bs-target="#panelFiltrosAvanzados" aria-expanded="false" aria-controls="panelFiltrosAvanzados">
+                            <button class="btn btn-light border text-secondary w-100 py-2 d-flex align-items-center justify-content-center fs-7" type="button" data-bs-toggle="collapse" data-bs-target="#panelFiltrosAvanzados" aria-expanded="false" aria-controls="panelFiltrosAvanzados">
                                 <i class="bi bi-sliders me-2"></i>Filtros <i class="bi bi-chevron-down ms-1 fs-7"></i>
                             </button>
                         </div>
@@ -87,14 +87,14 @@
     </div>
 
     <!-- TARJETA DE RESULTADOS -->
-    <div id="tarjeta-resultados" class="card border-0 shadow-sm rounded-3 d-flex flex-column overflow-hidden flex-grow-1">
+    <div id="tarjeta-resultados" class="card border-0 shadow-sm rounded-3 d-flex flex-column overflow-hidden flex-grow-1 mb-3">
         
         <!-- HEADER DE LA TABLA -->
-        <div class="card-header bg-white border-bottom py-2 px-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="card-header bg-white border-bottom py-2.5 px-3 d-flex justify-content-between align-items-center flex-wrap gap-2 flex-shrink-0">
             
             <!-- Indicador Directo -->
             <div class="d-flex align-items-center gap-2">
-                <span class="badge bg-primary text-white p-2 rounded-2">
+                <span class="badge bg-primary-subtle text-primary p-2 rounded-2">
                     <i class="bi bi-mortarboard-fill fs-6"></i>
                 </span>
                 <span class="fw-bold text-dark fs-7">Listado de Estudiantes</span>
@@ -103,13 +103,13 @@
             <!-- Botón Maximizar / Restaurar + Badge -->
             <div class="d-flex align-items-center gap-2">
                 
-                <span id="badge-total-resultados" class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1-5 fs-7">
+                <span id="badge-total-resultados" class="badge bg-light text-secondary border rounded-pill px-3 py-1 fs-7">
                     0 Registros
                 </span>
 
                 <button type="button" 
                         id="btn-expandir-tabla" 
-                        class="btn btn-light border btn-sm px-2 py-1 text-secondary d-inline-flex align-items-center gap-1 fs-7 fw-semibold" 
+                        class="btn btn-light border btn-sm px-2.5 py-1 text-secondary d-inline-flex align-items-center gap-1 fs-7 fw-semibold" 
                         data-bs-toggle="collapse" 
                         data-bs-target="#seccion-superior" 
                         aria-expanded="true" 
@@ -123,30 +123,33 @@
 
         </div>
 
-        <!-- CONTENIDO DE LA TABLA -->
-        <div class="card-body p-0 flex-grow-1 overflow-auto" id="contenedorResultados" style="max-height: 260px;">
-            <div class="table-responsive h-100 overflow-auto">
-                <table class="table table-hover align-middle mb-0" style="font-size: 0.875rem; table-layout: fixed;">
-                    <thead class="bg-light border-bottom text-muted text-uppercase fs-7 fw-semibold sticky-top">
-                        <tr>
-                            <th class="ps-3 py-2" style="width: 15%;">Cédula</th>
-                            <th class="py-2" style="width: 30%;">Estudiante</th>
-                            <th class="py-2" style="width: 30%;">Representante / Tel.</th>
-                            <th class="py-2 text-center" style="width: 15%;">Estado</th>
-                            <th class="pe-3 py-2 text-end" style="width: 10%;">Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody-resultados-estudiantes">
-                        <tr>
-                            <td colspan="5" class="text-center py-3 text-muted">
-                                <i class="bi bi-search fs-4 d-block mb-1 opacity-50"></i>
-                                <span class="fs-7">Ingrese un término o active un filtro para consultar estudiantes.</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div 
+         id="contenedor-tabla-busqueda" 
+         class="table-responsive rounded-2 border"
+         style="max-height: 400px; overflow-y: auto;"
+        >
+            <table class="table table-sm table-hover align-middle m-0 text-nowrap">
+                <thead class="table-dark small text-uppercase">
+                    <tr>
+                        <th class="ps-3 py-2.5" style="width: 15%;">Cédula</th>
+                        <th class="py-2.5" style="width: 30%;">Estudiante</th>
+                        <th class="py-2.5" style="width: 30%;">Representante / Tel.</th>
+                        <th class="py-2.5 text-center" style="width: 15%;">Estado</th>
+                        <th class="pe-3 py-2.5 text-end" style="width: 10%;">Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-inscritos-body" class="small">
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-secondary">
+                            <div class="spinner-border spinner-border-sm me-2 text-primary" role="status"></div>
+                            Cargando listado...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+
+
     </div>
 </div>
 
@@ -388,31 +391,31 @@
                                 </div>
                                 <div class="col-6 col-md-3">
                                     <span class="text-muted d-block">Parentesco:</span>
-                                    <strong class="text-dark" data-field="representante_principal.persona.parentesco">--</strong>
+                                    <strong class="text-dark" data-field="representante_principal.persona_representante.parentesco">--</strong>
                                 </div>
                                 <div class="col-6 col-md-3 border-top pt-2">
                                     <span class="text-muted d-block">Teléfono Móvil:</span>
-                                    <strong class="text-dark" data-field="representante_principal.persona.telefono_movil">--</strong>
+                                    <strong class="text-dark" data-field="representante_principal.persona_representante.telefono_movil">--</strong>
                                 </div>
                                 <div class="col-6 col-md-3 border-top pt-2">
                                     <span class="text-muted d-block">Teléfono Habitación:</span>
-                                    <strong class="text-dark" data-field="representante_principal.persona.telefono_habitacion">--</strong>
+                                    <strong class="text-dark" data-field="representante_principal.persona_representante.telefono_habitacion">--</strong>
                                 </div>
                                 <div class="col-12 col-md-6 border-top pt-2">
                                     <span class="text-muted d-block">Correo Electrónico:</span>
-                                    <strong class="text-dark" data-field="representante_principal.persona.correo_electronico">--</strong>
+                                    <strong class="text-dark" data-field="representante_principal.persona_representante.correo_electronico">--</strong>
                                 </div>
                                 <div class="col-6 col-md-3 border-top pt-2">
                                     <span class="text-muted d-block">Profesión:</span>
-                                    <strong class="text-dark" data-field="representante_principal.persona.profesion">--</strong>
+                                    <strong class="text-dark" data-field="representante_principal.persona_representante.profesion">--</strong>
                                 </div>
                                 <div class="col-6 col-md-3 border-top pt-2">
                                     <span class="text-muted d-block">Estado Civil:</span>
-                                    <strong class="text-dark" data-field="representante_principal.persona.estado_civil">--</strong>
+                                    <strong class="text-dark" data-field="representante_principal.persona_representante.estado_civil">--</strong>
                                 </div>
                                 <div class="col-12 col-md-6 border-top pt-2">
                                     <span class="text-muted d-block">Empresa donde Labora:</span>
-                                    <strong class="text-dark" data-field="representante_principal.persona.empresa_trabajo">--</strong>
+                                    <strong class="text-dark" data-field="representante_principal.persona_representante.empresa_trabajo">--</strong>
                                 </div>
                             </div>
                         </div>
@@ -435,31 +438,31 @@
                                 </div>
                                 <div class="col-6 col-md-3">
                                     <span class="text-muted d-block">Parentesco:</span>
-                                    <strong class="text-dark" data-field="representante_secundario.persona.parentesco">--</strong>
+                                    <strong class="text-dark" data-field="representante_secundario.persona_representante.parentesco">--</strong>
                                 </div>
                                 <div class="col-6 col-md-3 border-top pt-2">
                                     <span class="text-muted d-block">Teléfono Móvil:</span>
-                                    <strong class="text-dark" data-field="representante_secundario.persona.telefono_movil">--</strong>
+                                    <strong class="text-dark" data-field="representante_secundario.persona_representante.telefono_movil">--</strong>
                                 </div>
                                 <div class="col-6 col-md-3 border-top pt-2">
                                     <span class="text-muted d-block">Teléfono Habitación:</span>
-                                    <strong class="text-dark" data-field="representante_secundario.persona.telefono_habitacion">--</strong>
+                                    <strong class="text-dark" data-field="representante_secundario.persona_representante.telefono_habitacion">--</strong>
                                 </div>
                                 <div class="col-12 col-md-6 border-top pt-2">
                                     <span class="text-muted d-block">Correo Electrónico:</span>
-                                    <strong class="text-dark" data-field="representante_secundario.persona.correo_electronico">--</strong>
+                                    <strong class="text-dark" data-field="representante_secundario.persona_representante.correo_electronico">--</strong>
                                 </div>
                                 <div class="col-6 col-md-3 border-top pt-2">
                                     <span class="text-muted d-block">Profesión:</span>
-                                    <strong class="text-dark" data-field="representante_secundario.persona.profesion">--</strong>
+                                    <strong class="text-dark" data-field="representante_secundario.persona_representante.profesion">--</strong>
                                 </div>
                                 <div class="col-6 col-md-3 border-top pt-2">
                                     <span class="text-muted d-block">Estado Civil:</span>
-                                    <strong class="text-dark" data-field="representante_secundario.persona.estado_civil">--</strong>
+                                    <strong class="text-dark" data-field="representante_secundario.persona_representante.estado_civil">--</strong>
                                 </div>
                                 <div class="col-12 col-md-6 border-top pt-2">
                                     <span class="text-muted d-block">Empresa donde Labora:</span>
-                                    <strong class="text-dark" data-field="representante_secundario.persona.empresa_trabajo">--</strong>
+                                    <strong class="text-dark" data-field="representante_secundario.persona_representante.empresa_trabajo">--</strong>
                                 </div>
                             </div>
                         </div>
@@ -469,7 +472,7 @@
             </div>
 
             <!-- FOOTER DEL MODAL -->
-            <div class="modal-footer bg-light border-top py-2 px-4">
+            <div class="modal-header bg-light border-top py-2 px-4">
                 <button type="button" class="btn btn-secondary btn-sm px-4 fw-semibold" data-bs-dismiss="modal">Cerrar</button>
             </div>
 

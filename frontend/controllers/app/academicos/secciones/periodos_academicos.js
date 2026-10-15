@@ -35,7 +35,7 @@ export default class Periodos_academicos_controller extends Utils {
 
 		this.#btn_crear_periodo_academico.disabled = true;
 		
-     	const { creado } = await this._enviar_datos('./api.php?controller=grados_secciones_controller&action=crear_periodo_academico', data);
+     	const { creado } = await this._enviar_datos('./api.php?controller=academicos_controller&action=crear_periodo_academico', data);
 
 
 		if (creado) {
@@ -48,7 +48,7 @@ export default class Periodos_academicos_controller extends Utils {
 	}
 
 	async #llenar_tabla() {
-		const {periodos_academicos} = await this._traer_datos('./api.php?controller=grados_secciones_controller&action=obtener_periodos_academicos');
+		const {periodos_academicos} = await this._traer_datos('./api.php?controller=academicos_controller&action=obtener_periodos_academicos');
 		
 		if (periodos_academicos) {
 			
@@ -84,13 +84,13 @@ export default class Periodos_academicos_controller extends Utils {
 	}
 
 	async #eliminar_periodo_academico(id) {
-		const { eliminado } = await this._enviar_datos('./api.php?controller=grados_secciones_controller&action=eliminar_periodo_academico', {'id': id}); 
+		const { eliminado } = await this._enviar_datos('./api.php?controller=academicos_controller&action=eliminar_periodo_academico', {'id': id}); 
 		if (eliminado) {
 			this.#llenar_tabla();
 		} 
 	}
 	async #alternar_estado_periodo_academico(id) {
-		const {alternado} = await this._enviar_datos('./api.php?controller=grados_secciones_controller&action=alternar_estado_periodo_academico', {'id': id}); 
+		const {alternado} = await this._enviar_datos('./api.php?controller=academicos_controller&action=alternar_estado_periodo_academico', {'id': id}); 
 		if (alternado) {
 			this.#llenar_tabla();
 		} 

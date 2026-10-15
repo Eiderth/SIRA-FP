@@ -1,14 +1,18 @@
 <?php
-require_once __DIR__. '/Usuario.php';
+require_once __DIR__. '/entities/utils.php';
 
-class Administrador extends Usuario {
+class Administrador {
+    use Utils;
 
+    private $db;
     public $type = 'Administrador';
+    public $id; 
 
-    public function __construct($db,$id){
-        parent::__construct($db, $id);
+    public function __construct($db, $id){
+        $this->db = $db;
+        $this->id = $id; 
     }
-
+    
     public function listar_usuarios() {
         $stmt = $this->db->query("SELECT id, nombre, rol, estado FROM USUARIO ORDER BY id DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

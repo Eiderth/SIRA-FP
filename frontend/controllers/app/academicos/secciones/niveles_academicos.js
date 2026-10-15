@@ -35,7 +35,7 @@ export default class Niveles_academicos_controller extends Utils {
      	}
 
 		this.#btn_crear_nivel_academico.disabled = true;
-     	const {creado} = await this._enviar_datos('./api.php?controller=grados_secciones_controller&action=crear_nivel_academico', data);
+     	const {creado} = await this._enviar_datos('./api.php?controller=academicos_controller&action=crear_nivel_academico', data);
 
 		if (creado) {
 			this.#llenar_tabla();
@@ -47,7 +47,7 @@ export default class Niveles_academicos_controller extends Utils {
 	}
 
 	async #llenar_tabla() {
-		const {niveles_academicos} = await this._traer_datos('./api.php?controller=grados_secciones_controller&action=obtener_niveles_academicos');
+		const {niveles_academicos} = await this._traer_datos('./api.php?controller=academicos_controller&action=obtener_niveles_academicos');
 
 		if (niveles_academicos) {
 
@@ -76,7 +76,7 @@ export default class Niveles_academicos_controller extends Utils {
 	}
 
 	async #eliminar_nivel_academico(id) {
-		const {eliminado} = await this._enviar_datos('./api.php?controller=grados_secciones_controller&action=eliminar_nivel_academico', {'id': id}); 
+		const {eliminado} = await this._enviar_datos('./api.php?controller=academicos_controller&action=eliminar_nivel_academico', {'id': id}); 
 		if (eliminado) {
 			this.#llenar_tabla();
 		} 

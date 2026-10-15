@@ -6,7 +6,7 @@ export default class Seccion_error extends Utils{
 
     constructor() {
         super();
-        this.#html = this._traer_html('./frontend/views/app/formulario-inscripcion/interfaz-final/error.html');
+        this.#html = this._traer_html('./frontend/views/app/inscripcion/interfaz-final/error.html');
     }
 
     async init(mensaje, cambio_interfaz) {

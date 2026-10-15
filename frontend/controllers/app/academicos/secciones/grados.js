@@ -39,7 +39,7 @@ export default class Grados_controller extends Utils {
 	        }
         
 			this.#btn_crear_grado.disabled = true;
-         	const { creado } = await this._enviar_datos('./api.php?controller=grados_secciones_controller&action=crear_grado', data);
+         	const { creado } = await this._enviar_datos('./api.php?controller=academicos_controller&action=crear_grado', data);
 
 			if ( creado ) {
 			
@@ -54,7 +54,7 @@ export default class Grados_controller extends Utils {
 	}
 
 	async #llenar_tabla() {
-		const {grados, niveles_academicos} = await this._traer_datos('./api.php?controller=grados_secciones_controller&action=obtener_grados_niveles_academicos');
+		const {grados, niveles_academicos} = await this._traer_datos('./api.php?controller=academicos_controller&action=obtener_grados_niveles_academicos');
 		
 		if (grados && niveles_academicos) {
 			
@@ -86,7 +86,7 @@ export default class Grados_controller extends Utils {
 	}
 
 	async #eliminar_grado(id) {
-		const {eliminado} = await this._enviar_datos('./api.php?controller=grados_secciones_controller&action=eliminar_grado', {'id': id}); 
+		const {eliminado} = await this._enviar_datos('./api.php?controller=academicos_controller&action=eliminar_grado', {'id': id}); 
 		if (eliminado) {
 			this.#llenar_tabla();
 		} 

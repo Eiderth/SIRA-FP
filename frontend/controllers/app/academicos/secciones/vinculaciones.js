@@ -1,7 +1,7 @@
 import Utils from "../../../../core/utils.js";
 
 
-export default class Vincular_grados_secciones_controller extends Utils {
+export default class vinculaciones_controller extends Utils {
 	
 	#form;
 	#tbody;
@@ -9,7 +9,7 @@ export default class Vincular_grados_secciones_controller extends Utils {
 	#select_seccion;
 
 	#menu_vinculacion;
-	#btn_crear_grado_seccion;
+	#btn_crear_vinculacion;
 	#btn_eliminar_vinculacion;
 	#btn_alternar_estado_vinculacion
 	#vinculacion_id = null;
@@ -17,7 +17,7 @@ export default class Vincular_grados_secciones_controller extends Utils {
 	constructor(){
 		super();
 		this.#tbody = document.getElementById('tbody-grados-secciones');
-		this.#btn_crear_grado_seccion = document.getElementById('btn-crear-grado-seccion');
+		this.#btn_crear_vinculacion = document.getElementById('btn-crear-grado-seccion');
 		this.#form = document.getElementById('form-crear-grado-seccion');
 		this.#select_grado = document.getElementById('select-grado');
 		this.#select_seccion = document.getElementById('select-seccion');
@@ -27,9 +27,19 @@ export default class Vincular_grados_secciones_controller extends Utils {
 		this.#btn_alternar_estado_vinculacion = document.getElementById('btn-alternar-estado-vinculacion');
 
 		this.#dar_evento_dom();
-		this.#btn_eliminar_vinculacion.addEventListener('click', () => this.#eliminar_vinculacion());
-		this.#btn_alternar_estado_vinculacion.addEventListener('click', () => this.#alternar_estado_vinculacion());
-		this.#btn_crear_grado_seccion.addEventListener('click', () => this.#crear_grado_seccion());
+		this.#btn_eliminar_vinculacion.addEventListener('click', async () => {
+			if (!this.#vinculacion_id) return;
+			await this.#eliminar_vinculacion(this.#vinculacion_id);
+			this.#menu_vinculacion.style.display = 'none';
+		});
+
+		this.#btn_alternar_estado_vinculacion.addEventListener('click', async() => {
+			if (!this.#vinculacion_id) return; 
+			await this.#alternar_estado_vinculacion(this.#vinculacion_id);
+			this.#menu_vinculacion.style.display = 'none';
+		});
+
+		this.#btn_crear_vinculacion.addEventListener('click', () => this.#crear_vinculacion());
 	}
 
 	async init () {
@@ -44,21 +54,7 @@ export default class Vincular_grados_secciones_controller extends Utils {
 		})
 	}
 
-	async #eliminar_vinculacion() {	
-		if (this.#vinculacion_id) {
-			await this.#eliminar_grado_seccion(this.#vinculacion_id);
-			this.#menu_vinculacion.style.display = 'none';
-		}
-	}
-
-	async #alternar_estado_vinculacion() {
-		if (this.#vinculacion_id) {
-			await this.#alternar_estado_grado_seccion(this.#vinculacion_id);
-			this.#menu_vinculacion.style.display = 'none';
-		}
-	}
-
-	async #crear_grado_seccion(){
+	async #crear_vinculacion(){
 
 		if (!this._validar_formulario(this.#form)) {
 			this._notificacion('debe llenar el formulario', 'Error');
@@ -73,31 +69,31 @@ export default class Vincular_grados_secciones_controller extends Utils {
             return;
 	    }
 
-		this.#btn_crear_grado_seccion.disabled = true;
+		this.#btn_crear_vinculacion.disabled = true;
     
-     	const {creado} = await this._enviar_datos('./api.php?controller=grados_secciones_controller&action=crear_grado_seccion', data);
+     	const {creado} = await this._enviar_datos('./api.php?controller=academicos_controller&action=crear_vinculacion', data);
 
 		if (creado) {
 			this.#llenar_tabla();
 		}
 		
-		this.#btn_crear_grado_seccion.disabled = false;
+		this.#btn_crear_vinculacion.disabled = false;
 
 	}
 
 	async #llenar_tabla() {
 		const {
-			grados_secciones, 
+			vinculaciones, 
 			niveles_academicos, 
 			grados, 
 			secciones
-		} = await this._traer_datos('./api.php?controller=grados_secciones_controller&action=obtener_grados_secciones');
+		} = await this._traer_datos('./api.php?controller=academicos_controller&action=obtener_vinculaciones');
 		
-		if (grados_secciones && niveles_academicos && grados && secciones) {
+		if (vinculaciones && niveles_academicos && grados && secciones) {
 			
 			let tbody = '';
 			
-			grados_secciones.reverse();
+			vinculaciones.reverse();
 			
 			grados.forEach(g => {
 				tbody += `
@@ -110,7 +106,7 @@ export default class Vincular_grados_secciones_controller extends Utils {
 		                </td>
 		                <td class="text-end pe-3 py-2">
 							${
-		    					grados_secciones
+		    					vinculaciones
 						        .filter(gs => gs.grado_id == g.id)
 						        .map(gs => {
 						        	const secNombre = secciones.find(s => s.id == gs.seccion_id)?.nombre;
@@ -146,14 +142,14 @@ export default class Vincular_grados_secciones_controller extends Utils {
 
 	}
 
-	async #eliminar_grado_seccion(id) {
-		const {eliminado} = await this._enviar_datos('./api.php?controller=grados_secciones_controller&action=eliminar_grado_seccion', {'id': id}); 
+	async #eliminar_vinculacion(id) {
+		const {eliminado} = await this._enviar_datos('./api.php?controller=academicos_controller&action=eliminar_vinculacion', {'id': id}); 
 		if (eliminado) {
 			this.#llenar_tabla();
 		} 
 	}
-	async #alternar_estado_grado_seccion(id) {
-		const {alternado} = await this._enviar_datos('./api.php?controller=grados_secciones_controller&action=alternar_estado_grado_seccion', {'id': id}); 
+	async #alternar_estado_vinculacion(id) {
+		const {alternado} = await this._enviar_datos('./api.php?controller=academicos_controller&action=alternar_estado_vinculacion', {'id': id}); 
 		if (alternado) {
 			this.#llenar_tabla();
 		} 

@@ -6,7 +6,7 @@ export default class Seccion_2_controller extends Utils{
 
     constructor() {
         super();
-        this.#html = this._traer_html('./frontend/views/app/formulario-inscripcion/secciones/seccion_2.html');
+        this.#html = this._traer_html('./frontend/views/app/inscripcion/secciones/seccion_2.html');
     }
 
     async init(data) {

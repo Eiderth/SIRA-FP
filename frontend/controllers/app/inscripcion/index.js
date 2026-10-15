@@ -48,7 +48,7 @@ export default class Inscripcion_controller extends Utils {
 
    constructor() {
       super(); 
-      this.#html = this._traer_html('./frontend/views/app/formulario-inscripcion/index.html');
+      this.#html = this._traer_html('./frontend/views/app/inscripcion/index.html');
    }
 
    async init() {
@@ -82,7 +82,7 @@ export default class Inscripcion_controller extends Utils {
       if(json != null) {
          return JSON.parse(json);
       } else {
-         const {parametros = null} = await this._traer_datos('./api.php?controller=inscripcion_controller&action=traer_parametros');
+         const parametros = await this._traer_datos('./api.php?controller=inscripcion_controller&action=traer_parametros');
 
          if (parametros) {  
             localStorage.setItem('parametros_formulario', JSON.stringify(parametros));     

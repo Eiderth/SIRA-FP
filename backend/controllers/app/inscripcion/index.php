@@ -1,13 +1,12 @@
 <?php
 
+
 class Inscripcion_controller {
 
     private $modelo;
-    private $sistema;
 
-    public function __construct($modelo, $sistema) {
+    public function __construct($modelo) {
         $this->modelo = $modelo;
-        $this->sistema = $sistema; 
     }
 
     public function init($action, $input) {
@@ -21,8 +20,8 @@ class Inscripcion_controller {
             $this->guardar_estudiante($input);
             break;
 
-            case 'obtener_historial_estudiante': 
-            $this->obtener_historial_estudiante($input);
+            case 'obtener_datos_estudiante': 
+            $this->obtener_datos_estudiante($input);
             break;
 
             default: 
@@ -33,10 +32,21 @@ class Inscripcion_controller {
     }
 
     private function traer_parametros() {
-        $parametros = $this->sistema->obtener_parametros_formulario();
+
         echo json_encode([
             'estado' => 'completado',
-            'parametros' => $parametros
+            'periodos' => $this->modelo->obtener_periodos_academicos('Activo'),
+            'secciones' => $this->modelo->obtener_secciones(),
+
+            'grados'  => $this->modelo->obtener_grados(),
+            'niveles_academicos'  => $this->modelo->obtener_niveles_academicos(),
+
+            'grados_secciones' => $this->modelo->obtener_vinculaciones(),
+
+            'paises'  => $this->modelo->obtener_paises(),
+            'estados'  => $this->modelo->obtener_estados(),
+            'municipios' => $this->modelo->obtener_municipios(),
+            'parroquias' => $this->modelo->obtener_parroquias()
         ]);
     }
 
@@ -207,12 +217,13 @@ class Inscripcion_controller {
     }
 
 
-    private function obtener_historial_estudiante($input) {
+    private function obtener_datos_estudiante($input) {
         if(empty($input['cedula_identidad'])) {
             exit();
         }
 
-        $historial = $this->modelo->obtener_historial_estudiante(
+        $historial = $this->modelo->obtener_datos_estudiante(
+            'cedula_identidad',
             $input['cedula_identidad'],
         );
 

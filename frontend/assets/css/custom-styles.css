@@ -52,7 +52,6 @@
     opacity: 0.6;
 }
 
-/* Contenedor principal del Splash */
 .splash-container {
     position: fixed;
     top: 0;
@@ -60,7 +59,6 @@
     width: 100vw;
     height: 100vh;
     background-color: #050505;
-    /* Fondo radial sutil para dar profundidad y evitar el negro plano/vacío */
     background-image: radial-gradient(circle at center, #111a22 0%, #000000 70%);
     display: flex;
     justify-content: center;
@@ -69,7 +67,6 @@
     transition: opacity 0.8s ease, visibility 0.8s ease;
 }
 
-/* Contenedor interno general */
 .splash-wrapper {
     display: flex;
     flex-direction: column;
@@ -123,12 +120,11 @@
     height: 90px;
     object-fit: contain;
     filter: drop-shadow(0 0 10px rgba(13, 202, 240, 0.4));
-    transition: width 1s ease;
+    transition: width 1s ease-in;
 }
 
 .splash-wrapper.distribuir .splash-logo {
-    width: 75px; 
-    height: 75px;
+    transform:  scale(0.83) ;
 }
 
 .welcome-title {
@@ -150,7 +146,7 @@
     width: 1px;
     height: 0px;
     background: rgba(13, 202, 240, 0.3);
-    transition: height 1s ease 0.4s;
+    transition: height 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s;
 }
 
 .splash-wrapper.distribuir .splash-divider {
@@ -159,9 +155,10 @@
 
 .acrostic-box {
     opacity: 0;
+    visibility: 0;
     transform: translateY(20px);
-    transition: all 0.8s ease;
-    display: none;
+    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s ease;
+    display: flex;
     text-align: left;
 }
 
@@ -171,6 +168,7 @@
     gap: 8px;
     opacity: 1;
     transform: translateY(0);
+    transition-delay: 0.2s;
 }
 
 .acrostic-row {
@@ -211,4 +209,12 @@
 .splash-container.ocultar {
     opacity: 0;
     visibility: hidden;
+}
+
+.ocultar-barra {
+    &::webkit-scrollbar {
+        display: none;
+    }
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }

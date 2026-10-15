@@ -3,12 +3,9 @@
 class Reportes_controller {
     
     private $modelo;
-    private $sistema;
 
-
-    function __construct($modelo, $sistema){
+    function __construct($modelo){
         $this->modelo = $modelo;
-        $this->sistema = $sistema;
     }
 
     public function init($action, $input) {
@@ -45,9 +42,9 @@ class Reportes_controller {
         http_response_code(200);
         echo json_encode([
             'estado' => 'completado',
-            'periodos_academicos' => $this->sistema->obtener_periodos_academicos(),
-            'grados' => $this->sistema->obtener_grados(),
-            'secciones' => $this->sistema->obtener_secciones()
+            'periodos_academicos' => $this->modelo->obtener_periodos_academicos(),
+            'grados' => $this->modelo->obtener_grados(),
+            'secciones' => $this->modelo->obtener_secciones()
         ]);
 
     }

@@ -3,9 +3,8 @@ import Inscripcion_controller from "./inscripcion/index.js";
 import Dashboard_controller from "./dashboard/index.js";
 import Busqueda_controller from "./busqueda/index.js";
 import Reportes_controller from "./reportes/index.js";
-import Grados_secciones_controller from "./grados-secciones/index.js";
+import academicos_controller from "./academicos/index.js";
 import Usuarios_controller from "./usuarios/index.js";
-
 
 export default class App_controller extends Utils {
     #root;
@@ -32,7 +31,7 @@ export default class App_controller extends Utils {
         this.#inscripcion_controller = new Inscripcion_controller();
         this.#busqueda_controller = new Busqueda_controller();
         this.#reportes_controller = new Reportes_controller();
-        this.#grados_secciones_controller = new Grados_secciones_controller();
+        this.#grados_secciones_controller = new academicos_controller();
         this.#usuarios_controller = new Usuarios_controller();
 
     }

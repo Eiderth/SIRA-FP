@@ -1,22 +1,25 @@
 <?php
+
 require_once __DIR__ . '/./app/dashboard/index.php';
 require_once __DIR__ . '/./login/index.php';
 require_once __DIR__ . '/./app/inscripcion/index.php';
 require_once __DIR__ . '/./app/busqueda/index.php';
 require_once __DIR__ . '/./app/reportes/index.php';
-require_once __DIR__ . '/./app/grados-secciones/index.php';
+require_once __DIR__ . '/./app/academicos/index.php';
 require_once __DIR__ . '/./app/usuarios/index.php';
 require_once __DIR__ . '/../config/Database.php';
 
 require_once __DIR__ . '/../models/Sistema.php';
 require_once __DIR__ . '/../models/Administrador.php';
-require_once __DIR__ . '/../models/Usuario.php';
+
+foreach(glob(__DIR__ . '/../models/services/*.php') as $archivo) {
+    require_once $archivo;
+}
 
 
 class Router {
 
     private $sistema;
-    private $usuario; //puede ser admin o usuario comun
     
     public function __construct() {
          
@@ -64,7 +67,7 @@ class Router {
                             http_response_code(500);
                             echo json_encode([
                                 'estado'  => 'error',
-                                'error' => 'error_cerrar_session'
+                                'error' => 'error al cerros session, intente de nuevo'
                             ]);
 
                         }
@@ -85,45 +88,50 @@ class Router {
             if(empty($usuario_session)) {
                 http_response_code(401);
                 echo json_encode([
-                    'estado' => 'error', 
-                    'error' => 'session_expirada',
+                    'estado' => 'sessión-expirada', 
                 ]);
                 return;
             }
 
-            if ($usuario_session['rol'] == 'Administrador') {
+            // if ($usuario_session['rol'] == 'Administrador') {
             
-                $this->usuario = new Administrador(Database::get_instance(), $usuario_session['id']);
+            //     $this->usuario = new Administrador(Database::get_instance(), $usuario_session['id']);
             
-            } else {
+            // } else {
 
-                $this->usuario = new Usuario(Database::get_instance(), $usuario_session['id']);
+                // $this->usuario = new Usuario(Database::get_instance(), $usuario_session['id']);
                 
-            }
+            // }
 
             switch ($controlador) {
+                
                 case 'dashboard_controller':
-                    $dashboard_controller = new Dashboard_controller($this->usuario);
+                    $dashboard_model = new Dashboard_model(Database::get_instance());
+                    $dashboard_controller = new Dashboard_controller($dashboard_model);
                     $dashboard_controller->init($action, $input);
                     break;
                     
                 case 'inscripcion_controller':
-                    $inscripcion_controller = new Inscripcion_controller($this->usuario, $this->sistema);
+                    $inscripcion_model = new Inscripcion_model(Database::get_instance()) ;
+                    $inscripcion_controller = new Inscripcion_controller($inscripcion_model);
                     $inscripcion_controller->init($action, $input);
                     break;
 
-                case 'busqueda_controller':
-                    $busqueda_controller = new Busqueda_controller($this->usuario, $this->sistema);
+                case 'busqueda_controller': 
+                    $busqueda_model = new busqueda_model(Database::get_instance());
+                    $busqueda_controller = new Busqueda_controller($busqueda_model);
                     $busqueda_controller->init($action, $input);
                     break;
 
                 case 'reportes_controller':
-                    $reportes_controller = new Reportes_controller($this->usuario, $this->sistema);
+                    $reportes_model = new Reporte_model(Database::get_instance());
+                    $reportes_controller = new Reportes_controller($reportes_model);
                     $reportes_controller->init($action, $input);
                     break;
 
-                case 'grados_secciones_controller':
-                    $grados_secciones_controller = new Grados_secciones_controller($this->usuario, $this->sistema);
+                case 'academicos_controller':
+                    $academicos_model = new academicos_model(Database::get_instance());
+                    $grados_secciones_controller = new academicos_controller($academicos_model);
                     $grados_secciones_controller->init($action, $input);
                     break;
 
@@ -135,13 +143,14 @@ class Router {
                         echo json_encode(['estado' == 'error', 'error' => 'no_autorizado']);
                         break;
                     }
-
-                    $usuarios_controller = new Usuarios_controller($this->usuario);
+                    
+                    $admin_model = new Administrador(Database::get_instance(), $usuario_session['id']);
+                    $usuarios_controller = new Usuarios_controller($admin_model);
                     $usuarios_controller->init($action, $input);
                     break;
 
                 default:
-                    echo json_encode(['estado' => 'error', 'error' => 'accion_no_encontrada']);
+                    echo json_encode(['estado' => 'error', 'error' => 'accion no encontrada']);
                     break;
             }
             

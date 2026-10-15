@@ -35,7 +35,7 @@ export default class Secciones_controller extends Utils {
 	    }
 
 		this.#btn_crear_seccion.disabled = true;
-     	const {creada} = await this._enviar_datos('./api.php?controller=grados_secciones_controller&action=crear_seccion', data);
+     	const {creada} = await this._enviar_datos('./api.php?controller=academicos_controller&action=crear_seccion', data);
 
 		if (creada) {
 			this.#llenar_tabla();
@@ -47,7 +47,7 @@ export default class Secciones_controller extends Utils {
 	}
 
 	async #llenar_tabla() {
-		const {secciones} = await this._traer_datos('./api.php?controller=grados_secciones_controller&action=obtener_secciones');
+		const {secciones} = await this._traer_datos('./api.php?controller=academicos_controller&action=obtener_secciones');
 		
 		if (secciones) {
 
@@ -76,7 +76,7 @@ export default class Secciones_controller extends Utils {
 	}
 
 	async #eliminar_seccion(id) {
-		const {eliminada} = await this._enviar_datos('./api.php?controller=grados_secciones_controller&action=eliminar_seccion', {'id': id}); 
+		const {eliminada} = await this._enviar_datos('./api.php?controller=academicos_controller&action=eliminar_seccion', {'id': id}); 
 		if (eliminada) {
 			this.#llenar_tabla();
 		} 

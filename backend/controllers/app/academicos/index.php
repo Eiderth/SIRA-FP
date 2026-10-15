@@ -1,14 +1,11 @@
 <?php 
 
-class Grados_secciones_controller
+class academicos_controller
 {
     private $modelo;
-    private $sistema;
     
-    function __construct($modelo, $sistema)
-    {
+    function __construct($modelo ){
         $this->modelo = $modelo;
-        $this->sistema = $sistema;
     }
 
     public function init($action, $input) {
@@ -58,17 +55,17 @@ class Grados_secciones_controller
                 $this->eliminar_seccion($input);
                 break;
 
-            case 'obtener_grados_secciones':
-                $this->obtener_grados_secciones();
+            case 'obtener_vinculaciones':
+                $this->obtener_vinculaciones();
                 break;
-            case 'crear_grado_seccion':
-                $this->crear_grado_seccion($input);
+            case 'crear_vinculacion':
+                $this->crear_vinculacion($input);
                 break;
-            case 'eliminar_grado_seccion': 
-                $this->eliminar_grado_seccion($input);
+            case 'eliminar_vinculacion': 
+                $this->eliminar_vinculacion($input);
                 break;
-            case 'alternar_estado_grado_seccion': 
-                $this->alternar_estado_grado_seccion($input);
+            case 'alternar_estado_vinculacion': 
+                $this->alternar_estado_vinculacion($input);
                 break;
 
             default:
@@ -87,7 +84,7 @@ class Grados_secciones_controller
         http_response_code(200);
         echo json_encode([
             'estado' => 'completado', 
-            'periodos_academicos' => $this->sistema->obtener_periodos_academicos()
+            'periodos_academicos' => $this->modelo->obtener_periodos_academicos()
         ]);
 
     }
@@ -218,7 +215,7 @@ class Grados_secciones_controller
         http_response_code(200);
         echo json_encode([
             'estado' => 'completado', 
-            'niveles_academicos' => $this->sistema->obtener_niveles_academicos()
+            'niveles_academicos' => $this->modelo->obtener_niveles_academicos()
         ]);
 
     }
@@ -314,8 +311,8 @@ class Grados_secciones_controller
         http_response_code(200);
         echo json_encode([
             'estado' => 'completado', 
-            'grados' => $this->sistema->obtener_grados(),
-            'niveles_academicos' => $this->sistema->obtener_niveles_academicos()
+            'grados' => $this->modelo->obtener_grados(),
+            'niveles_academicos' => $this->modelo->obtener_niveles_academicos()
         ]);
 
     }
@@ -410,7 +407,7 @@ class Grados_secciones_controller
         http_response_code(200);
         echo json_encode([
             'estado' => 'completado', 
-            'secciones' => $this->sistema->obtener_secciones()
+            'secciones' => $this->modelo->obtener_secciones()
         ]);
     
     }
@@ -501,20 +498,20 @@ class Grados_secciones_controller
     // === VINCULAR GRADOS-SECCIONES
     // ==========================================
 
-    private function obtener_grados_secciones() {
+    private function obtener_vinculaciones() {
     
         http_response_code(200);
         echo json_encode([
             'estado' => 'completado', 
-            'grados_secciones' => $this->sistema->obtener_grados_secciones(),
-            'niveles_academicos' => $this->sistema->obtener_niveles_academicos(),
-            'grados' => $this->sistema->obtener_grados(),
-            'secciones' => $this->sistema->obtener_secciones()
+            'vinculaciones' => $this->modelo->obtener_vinculaciones(),
+            'niveles_academicos' => $this->modelo->obtener_niveles_academicos(),
+            'grados' => $this->modelo->obtener_grados(),
+            'secciones' => $this->modelo->obtener_secciones()
         ]);
     
     }
 
-    private function crear_grado_seccion($input) {
+    private function crear_vinculacion($input) {
         
         if (
             empty($input['grado_id']) || 
@@ -537,7 +534,7 @@ class Grados_secciones_controller
 
         try {
         
-            $grado_seccion_id = $this->modelo->crear_grado_seccion(
+            $grado_seccion_id = $this->modelo->crear_vinculacion(
                 $input['grado_id'],
                 $input['seccion_id']
             );
@@ -563,7 +560,7 @@ class Grados_secciones_controller
     
     }
 
-    private function eliminar_grado_seccion($input) {
+    private function eliminar_vinculacion($input) {
 
         if (empty($input['id']) || (int) $input['id'] < 1) {
 
@@ -581,7 +578,7 @@ class Grados_secciones_controller
 
         try {
             
-            $eliminado = $this->modelo->eliminar_grado_seccion($input['id']);
+            $eliminado = $this->modelo->eliminar_vinculacion($input['id']);
         
             if (!empty($eliminado)) {
         
@@ -603,7 +600,7 @@ class Grados_secciones_controller
     
     }
 
-    private function alternar_estado_grado_seccion($input) {
+    private function alternar_estado_vinculacion($input) {
         
         if (empty($input['id']) || (int) $input['id'] < 1) {
 
@@ -615,7 +612,7 @@ class Grados_secciones_controller
 
         try {
     
-            $alternado = $this->modelo->alternar_estado_grado_seccion($input['id']);
+            $alternado = $this->modelo->alternar_estado_vinculacion($input['id']);
             
             if (!empty($alternado)) {
             

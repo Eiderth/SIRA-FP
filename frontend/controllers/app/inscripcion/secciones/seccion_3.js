@@ -7,7 +7,7 @@ export default class Seccion_3_controller extends Utils{
 
     constructor(parametros_formulario) {
         super();
-        this.#html = this._traer_html('./frontend/views/app/formulario-inscripcion/secciones/seccion_3.html');
+        this.#html = this._traer_html('./frontend/views/app/inscripcion/secciones/seccion_3.html');
         this.parametros_formulario = parametros_formulario;
     }
 

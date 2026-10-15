@@ -8,7 +8,7 @@ export default class Seccion_1_controller extends Utils{
 
     constructor(parametros_formulario, alterar_data) {
         super();
-        this.#html = this._traer_html('./frontend/views/app/formulario-inscripcion/secciones/seccion_1.html');
+        this.#html = this._traer_html('./frontend/views/app/inscripcion/secciones/seccion_1.html');
         this.parametros_formulario = parametros_formulario;
         this.alterar_data = alterar_data;
     }
@@ -25,8 +25,8 @@ export default class Seccion_1_controller extends Utils{
 
         if(data) this._llenar_inputs(data);
 
-        const info = document.getElementById('info').classList.remove('d-none');
-        const botones = document.getElementById('botonera').classList.replace('d-none','d-flex');
+        document.getElementById('info').classList.remove('d-none');
+        document.getElementById('botonera').classList.replace('d-none','d-flex');
     }
 
     #insertar_parametros() { 
@@ -125,7 +125,7 @@ export default class Seccion_1_controller extends Utils{
             temp_cedula_identidad = setTimeout(async () => {
                 const valor = e.target.value.trim();
                     if(valor === '' || Object.keys(data).length != 0) return;
-                    const resp = await this._enviar_datos('./api.php?controller=inscripcion_controller&action=obtener_historial_estudiante', 
+                    const resp = await this._enviar_datos('./api.php?controller=inscripcion_controller&action=obtener_datos_estudiante', 
                     {'cedula_identidad': valor});
 
                     if(!resp.historial) return;

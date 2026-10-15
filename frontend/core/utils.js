@@ -43,8 +43,7 @@ export default class Utils {
             });
             const data = await json.json();
 
-            // Validar sesión expirada (puedes ajustar la condición según lo que devuelva tu backend)
-            if (json.status === 401 || (data.error && data.error.toLowerCase().includes('sesión'))) {
+            if (data.estado && data.estado.toLowerCase().includes('sessión-expirada')) {
                 this._manejar_sesion_expirada();
                 return;
             } 
@@ -69,7 +68,7 @@ export default class Utils {
             const json = await fetch(ruta);
             const data = await json.json();
 
-            if (json.status === 401 || (data.error && data.error.toLowerCase().includes('sesión'))) {
+            if (data.estado && data.estado.toLowerCase().includes('sessión-expirada')) {
                 this._manejar_sesion_expirada();
                 return;
             } 

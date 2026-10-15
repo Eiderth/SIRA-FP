@@ -6,7 +6,7 @@ export default class Seccion_exito extends Utils{
 
     constructor() {
         super();
-        this.#html = this._traer_html('./frontend/views/app/formulario-inscripcion/interfaz-final/exito.html');
+        this.#html = this._traer_html('./frontend/views/app/inscripcion/interfaz-final/exito.html');
     }
 
     async init(estudiante, llave_inscripcion, cedula_escolar, cambio_interfaz) {

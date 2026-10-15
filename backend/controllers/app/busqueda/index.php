@@ -3,11 +3,9 @@
 class Busqueda_controller {
 
     private $modelo;
-    private $sistema;
 
-    public function __construct($modelo, $sistema) {
+    public function __construct($modelo) {
         $this->modelo = $modelo;
-        $this->sistema = $sistema; 
     }
 
     public function init($action, $input) {
@@ -21,8 +19,8 @@ class Busqueda_controller {
             $this->buscar_coincidencias($input);
             break;
 
-            case 'buscar_datos_estudiante': 
-            $this->buscar_datos_estudiante($input);
+            case 'obtener_datos_estudiante': 
+            $this->obtener_datos_estudiante($input);
             break;
 
             default: 
@@ -33,39 +31,46 @@ class Busqueda_controller {
     }
 
     private function traer_parametros() {
-        $periodos =  $this->sistema->obtener_periodos_academicos();
-        $grados =  $this->sistema->obtener_grados();
-        $secciones =  $this->sistema->obtener_secciones();
+        $periodos =  $this->modelo->obtener_periodos_academicos();
+        $grados =  $this->modelo->obtener_grados();
+        $secciones =  $this->modelo->obtener_secciones();
 
         echo json_encode([
             'estado' => 'completado',
-            'data' => [
-                'periodos' => $periodos,
-                'grados' => $grados,
-                'secciones' => $secciones
-            ]
+            'periodos' => $periodos,
+            'grados' => $grados,
+            'secciones' => $secciones
         ]);
     }
 
     private function buscar_coincidencias($input) {
-        $resultados = [];
-        if (!empty(array_filter($input) )) {
-            $resultados['estudiantes'] = $this->sistema->buscar_coincidencias($input);
-        } 
+        $pagina = !empty($input['pagina']) ? (int)$input['pagina'] : 1;
+        $limite = 10;
+        $estudiantes = $this->modelo->buscar_coincidencias_estudiante($input, $pagina, $limite);
+        $total_registros = $this->modelo->contar_coincidencias_estudiante($input);
+
+        $total_paginas = ceil($total_registros / $limite);
+
+        http_response_code(200);
         echo json_encode([
-            'estado' => 'completado', 
-            'resultados' => $resultados
+            'estado' => 'completado',
+            'estudiantes' => $estudiantes,
+            'total' => $total_registros,
+            'total_paginas' => max(1, (int)$total_paginas),
+            'pagina_actual' => $pagina
+            
         ]);
     }
 
-    private function buscar_datos_estudiante($input) {
+    private function obtener_datos_estudiante($input) {
         $resultados = [];
         if (!empty(array_filter($input) )) {
-            $resultados = $this->sistema->buscar_historial_estudiante($input['estudiante_id']);
+            $resultados = $this->modelo->obtener_datos_estudiante('id', $input['estudiante_id']);
         } 
+
         echo json_encode([
             'estado' => 'completado', 
-            'resultados' => $resultados
+            ...$resultados
         ]);
     }
 
