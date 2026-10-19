@@ -64,16 +64,35 @@ class Busqueda_controller {
 
     private function obtener_datos_estudiante($input) {
         $resultados = [];
-        if (!empty(array_filter($input) )) {
-            $resultados = $this->modelo->obtener_datos_estudiante('id', $input['estudiante_id']);
+        
+        if (!empty(array_filter($input))) {
+            $datos_estudiante = $this->modelo->obtener_datos_estudiante('id', $input['estudiante_id']);
+            
+            if ($datos_estudiante) {
+                $rep_principal_id = $datos_estudiante['representante_principal_id'] ?? null;
+                $rep_secundario_id = $datos_estudiante['representante_secundario_id'] ?? null;
+
+                unset($datos_estudiante['representante_principal_id'], $datos_estudiante['representante_secundario_id']);
+
+                $resultados['estudiante'] = $datos_estudiante;
+
+                if (!empty($rep_principal_id)) {
+                    $resultados['representante_principal'] = $this->modelo->obtener_representante_completo('id',$rep_principal_id);
+                }
+
+                if (!empty($rep_secundario_id)) {
+                    $resultados['representante_secundario'] = $this->modelo->obtener_representante_completo('id',$rep_secundario_id);
+                }
+            }
         } 
 
+        http_response_code(200);
         echo json_encode([
             'estado' => 'completado', 
             ...$resultados
         ]);
     }
-
+    
 
     
 }

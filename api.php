@@ -7,7 +7,8 @@ error_reporting(E_ALL);
 
 require_once __DIR__. '/backend/controllers/index.php';
 
-$input = json_decode(file_get_contents('php://input'), true) ?? [];
+$input_json = json_decode(file_get_contents('php://input'), true) ?? [];
+$input = array_merge($_GET, $input_json);
 
 $controller = $_GET['controller'];
 $action = $_GET['action'];

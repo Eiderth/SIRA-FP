@@ -12,8 +12,12 @@ class Inscripcion_controller {
     public function init($action, $input) {
 
         switch ($action) {
-            case 'traer_parametros':
-            $this->traer_parametros();
+            case 'obtener_geografia':
+            $this->obtener_geografia();
+            break;
+
+            case 'obtener_parametros_academicos':
+            $this->obtener_parametros_academicos();
             break;
 
             case 'guardar_estudiante': 
@@ -24,30 +28,47 @@ class Inscripcion_controller {
             $this->obtener_datos_estudiante($input);
             break;
 
+            case 'obtener_datos_representante': 
+            $this->obtener_datos_representante($input);
+            break;
+
             default: 
             http_response_code(400);
             echo json_encode(['estado' => 'error', 'mensaje' => 'acción no válida']);
             break;
         }
     }
+    private function obtener_geografia() {
+        try {
+            http_response_code(200);
+            echo json_encode([
+                'estado' => 'completado',
+                'paises' => $this->modelo->obtener_paises(),
+                'estados' => $this->modelo->obtener_estados(),
+                'municipios' => $this->modelo->obtener_municipios(),
+                'parroquias' => $this->modelo->obtener_parroquias()
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['estado' => 'error', 'error' => 'Error al obtener los datos geográficos']);
+        }
+    }
 
-    private function traer_parametros() {
-
-        echo json_encode([
-            'estado' => 'completado',
-            'periodos' => $this->modelo->obtener_periodos_academicos('Activo'),
-            'secciones' => $this->modelo->obtener_secciones(),
-
-            'grados'  => $this->modelo->obtener_grados(),
-            'niveles_academicos'  => $this->modelo->obtener_niveles_academicos(),
-
-            'grados_secciones' => $this->modelo->obtener_vinculaciones(),
-
-            'paises'  => $this->modelo->obtener_paises(),
-            'estados'  => $this->modelo->obtener_estados(),
-            'municipios' => $this->modelo->obtener_municipios(),
-            'parroquias' => $this->modelo->obtener_parroquias()
-        ]);
+    private function obtener_parametros_academicos() {
+        try {
+            http_response_code(200);
+            echo json_encode([
+                'estado' => 'completado',
+                'periodos' => $this->modelo->obtener_periodos_academicos('Activo'),
+                'secciones' => $this->modelo->obtener_secciones(),
+                'grados' => $this->modelo->obtener_grados(),
+                'niveles_academicos' => $this->modelo->obtener_niveles_academicos(),
+                'grados_secciones' => $this->modelo->obtener_vinculaciones()
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['estado' => 'error', 'error' => 'Error al obtener los parámetros académicos']);
+        }
     }
 
     private function guardar_estudiante($input) {
@@ -231,13 +252,36 @@ class Inscripcion_controller {
             echo json_encode([
                 'estado' => 'completado',
                 'mensaje' => 'se encontro un estudiante',
-                'historial' => $historial
+                'estudiante' => $historial
             ]);
         } else {
             echo json_encode([
                 'estado' => 'completado',
                 'mensaje' => 'no se encontro ningun estudiante',
-                'historial' => null
+            ]);
+        }
+    }
+
+    private function obtener_datos_representante($input) {
+        if(empty($input['cedula_identidad'])) {
+            exit();
+        }
+
+        $historial = $this->modelo->obtener_datos_representante(
+            'cedula_identidad',
+            $input['cedula_identidad'],
+        );
+
+        if ($historial) {
+            echo json_encode([
+                'estado' => 'completado',
+                'mensaje' => 'se encontro un representante',
+                'representante' => $historial
+            ]);
+        } else {
+            echo json_encode([
+                'estado' => 'completado',
+                'mensaje' => 'no se encontro ningun representante',
             ]);
         }
     }

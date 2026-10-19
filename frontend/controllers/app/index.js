@@ -150,18 +150,18 @@ export default class App_controller extends Utils {
 
         switch(interfaz) {
             case 'buscar':
-                this._notificacion('buscar')
+                this.#iniciar_busqueda();
                 this.#seccion_app = 'buscar';
                 break;
             case 'periodos':
-                this._notificacion('periodos')
+                this.#iniciar_periodos();
                 this.#seccion_app = 'periodos';
                 break;
             case 'reportes':
                 this.#iniciar_reportes()
                 break;
-            case 'grados_secciones':
-                this._notificacion('grados_secciones')
+            case 'vinculaciones':
+                this.#iniciar_vinculaciones();
                 this.#seccion_app = 'grados_secciones';
                 break;
 

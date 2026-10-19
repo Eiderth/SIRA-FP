@@ -179,10 +179,10 @@ export default class Busqueda_controller extends Utils {
                 const id = ev.currentTarget.getAttribute('data-id');
                 if (!id) return;
 
-                const resultados = await this._enviar_datos('./api.php?controller=busqueda_controller&action=obtener_datos_estudiante', { 'estudiante_id': id });
+                const resp = await this._enviar_datos('./api.php?controller=busqueda_controller&action=obtener_datos_estudiante', { 'estudiante_id': id });
 
-                if (resultados) {
-                    this.#mostrar_expediente(resultados);
+                if (resp) {
+                    this.#mostrar_expediente(resp);
                     return;
                 }
 
@@ -196,7 +196,6 @@ export default class Busqueda_controller extends Utils {
         const tabRepSecundario = document.getElementById('item-tab-rep-secundario');
 
         const val = (valor, fallback = 'No registra') => (valor !== null && valor !== undefined && valor !== '') ? valor : fallback;
-
         const mapeo = {
             'estudiante_nombre_completo': `${data.estudiante.persona.nombre_1} ${data.estudiante.persona.nombre_2 || ''} ${data.estudiante.persona.apellido_1} ${data.estudiante.persona.apellido_2 || ''}`.trim(),
             'estudiante_cedula_completa': `${data.estudiante.persona.nacionalidad}-${data.estudiante.persona.cedula_identidad}`,
@@ -210,24 +209,24 @@ export default class Busqueda_controller extends Utils {
             'persona.sexo': data.estudiante.persona.sexo === 'M' ? 'Masculino' : 'Femenino',
             'estudiante.lateralidad': val(data.estudiante.persona_estudiante.lateralidad),
             'estudiante.numero_hijo': val(data.estudiante.persona_estudiante.numero_hijo),
-            'antropometricos.estatura': data.estudiante.antropometricos.estatura ? `${data.estudiante.antropometricos.estatura} cm` : 'No registra',
-            'antropometricos.peso': data.estudiante.antropometricos.peso ? `${data.estudiante.antropometricos.peso} kg` : 'No registra',
-            'antropometricos.talla_camisa': val(data.estudiante.antropometricos.talla_camisa),
-            'antropometricos.talla_pantalon': val(data.estudiante.antropometricos.talla_pantalon),
-            'antropometricos.talla_zapato': val(data.estudiante.antropometricos.talla_zapato),
+            'antropometrico.estatura': data.estudiante.antropometrico.estatura ? `${data.estudiante.antropometrico.estatura} cm` : 'No registra',
+            'antropometrico.peso': data.estudiante.antropometrico.peso ? `${data.estudiante.antropometrico.peso} kg` : 'No registra',
+            'antropometrico.talla_camisa': val(data.estudiante.antropometrico.talla_camisa),
+            'antropometrico.talla_pantalon': val(data.estudiante.antropometrico.talla_pantalon),
+            'antropometrico.talla_zapato': val(data.estudiante.antropometrico.talla_zapato),
             'salud.reacciones_alergicas': val(data.estudiante.salud.reacciones_alergicas),
             'salud.cuales_alergias': val(data.estudiante.salud.cuales_alergias),
             'salud.enfermedades_padecidas': val(data.estudiante.salud.enfermedades_padecidas),
             'salud.atencion_especial': val(data.estudiante.salud.atencion_especial),
             'salud.atendido_por_especialista': val(data.estudiante.salud.atendido_por_especialista),
             'salud.nombre_especialista': val(data.estudiante.salud.nombre_especialista),
-            'extra_curriculares.realiza_deportes': val(data.estudiante.extra_curriculares.realiza_deportes),
-            'extra_curriculares.cuales_deportes': val(data.estudiante.extra_curriculares.cuales_deportes),
-            'extra_curriculares.posee_canaima': val(data.estudiante.extra_curriculares.posee_canaima),
-            'extra_curriculares.estado_canaima': val(data.estudiante.extra_curriculares.estado_canaima),
-            'extra_curriculares.serial_canaima': val(data.estudiante.extra_curriculares.serial_canaima),
-            'extra_curriculares.posee_cargador': val(data.estudiante.extra_curriculares.posee_cargador),
-            'extra_curriculares.estado_cargador': val(data.estudiante.extra_curriculares.estado_cargador),
+            'extra_curricular.realiza_deportes': val(data.estudiante.extra_curricular.realiza_deportes),
+            'extra_curricular.cuales_deportes': val(data.estudiante.extra_curricular.cuales_deportes),
+            'extra_curricular.posee_canaima': val(data.estudiante.extra_curricular.posee_canaima),
+            'extra_curricular.estado_canaima': val(data.estudiante.extra_curricular.estado_canaima),
+            'extra_curricular.serial_canaima': val(data.estudiante.extra_curricular.serial_canaima),
+            'extra_curricular.posee_cargador': val(data.estudiante.extra_curricular.posee_cargador),
+            'extra_curricular.estado_cargador': val(data.estudiante.extra_curricular.estado_cargador),
             'rep_nombre_completo': `${data.representante_principal.persona.nombre_1} ${data.representante_principal.persona.nombre_2 || ''} ${data.representante_principal.persona.apellido_1} ${data.representante_principal.persona.apellido_2 || ''}`.trim(),
             'rep_cedula_completa': `${data.representante_principal.persona.nacionalidad}-${data.representante_principal.persona.cedula_identidad}`,
             'representante_principal.persona_representante.parentesco': val(data.representante_principal.persona_representante.parentesco),

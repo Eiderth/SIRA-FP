@@ -2,7 +2,7 @@
 <div class="d-flex justify-content-between align-items-center pb-3 mb-4 border-bottom">
     <div>
         <h1 class="h3 fw-bold mb-1 text-dark">Panel Principal</h1>
-        <p class="text-body-secondary small mb-0">Resumen operativo y métricas del sistema escolar</p>
+        <p class="text-body-secondary small mb-0">Resumen operativo, socioeconómico y métricas integrales del colegio</p>
     </div>
     <div class="d-flex align-items-center gap-3">
         <div class="d-flex align-items-center gap-2 bg-body-tertiary px-3 py-2 rounded-pill border border-secondary-subtle shadow-sm">
@@ -17,11 +17,11 @@
     </div>
 </div>
 
-<!-- 1. TARJETAS DE MÉTRICAS (Ajustadas a col-md-4 para llenar el ancho) -->
+<!-- 1. TARJETAS DE MÉTRICAS CLAVE (KPIs Superiores - 4 Columnas) -->
 <div class="row g-3 mb-4">
-    <!-- Total Inscritos -->
-    <div role="button" id="cont-estudiantes-activos" class="col-12 col-md-4 p">
-        <div class="card border-0 shadow-sm rounded-4 p-3 bg-body-tertiary">
+    <!-- Total Estudiantes Activos -->
+    <div role="button" id="cont-estudiantes-activos" class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-body-tertiary h-100">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <span class="text-body-secondary fw-semibold small d-block mb-1">Estudiantes Activos</span>
@@ -35,8 +35,8 @@
     </div>
 
     <!-- Período Activo -->
-    <div role="button" id="cont-periodo-activo" class="col-12 col-md-4">
-        <div class="card border-0 shadow-sm rounded-4 p-3 bg-body-tertiary">
+    <div role="button" id="cont-periodo-activo" class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-body-tertiary h-100">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <span class="text-body-secondary fw-semibold small d-block mb-1">Período Activo</span>
@@ -50,8 +50,8 @@
     </div>
 
     <!-- Secciones Activas -->
-    <div role="button" id="cont-grados-secciones-activas" class="col-12 col-md-4">
-        <div class="card border-0 shadow-sm rounded-4 p-3 bg-body-tertiary">
+    <div role="button" id="cont-grados-secciones-activas" class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-body-tertiary h-100">
             <div class="d-flex align-items-center justify-content-between">
                 <div>
                     <span class="text-body-secondary fw-semibold small d-block mb-1">Secciones Activas</span>
@@ -63,10 +63,227 @@
             </div>
         </div>
     </div>
+
+    <!-- Promedio Ingresos Representantes -->
+    <div role="button" id="cont-promedio-ingresos" class="col-12 col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-body-tertiary h-100">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-body-secondary fw-semibold small d-block mb-1">Prom. Sueldo Rep.</span>
+                    <h2 class="fw-bold mb-0 text-dark" id="promedio-ingresos">$ --</h2>
+                </div>
+                <div class="rounded-3 bg-warning bg-opacity-10 text-warning p-3 d-inline-flex align-items-center justify-content-center">
+                    <i class="bi bi-cash-stack fs-3"></i>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- 2. TABLA TRADICIONAL DE ACTIVIDAD RECIENTE -->
-<div class="card border-0 shadow-sm rounded-4 bg-body-tertiary overflow-y-scroll" style="max-height: 300px;">
+<!-- 2. BLOQUE SOCIOECONÓMICO DE REPRESENTANTES Y DISTRIBUCIÓN POR SECCIONES -->
+<div class="row g-3 mb-4">
+    <!-- Análisis Socioeconómico / Laboral -->
+    <div class="col-12 col-lg-6">
+        <div class="card border-0 shadow-sm rounded-4 bg-body-tertiary h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-briefcase-fill me-2 text-warning"></i>Perfil Económico y Laboral
+                </h5>
+                <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill">Sueldos y Empleo</span>
+            </div>
+            
+            <div class="row g-3">
+                <!-- Contenedor de Rango Salarial -->
+                <div class="col-12 col-sm-6">
+                    <div class="p-3 bg-white rounded-3 border">
+                        <span class="text-muted d-block small mb-2 fw-semibold">Distribución por Nivel de Ingreso</span>
+                        <ul class="list-group list-group-flush small" id="lista-rangos-ingresos">
+                            <li class="list-group-item d-flex justify-content-between px-0 bg-transparent text-muted py-1">
+                                <span>Cargando datos...</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Contenedor de Profesiones Más Comunes -->
+                <div class="col-12 col-sm-6">
+                    <div class="p-3 bg-white rounded-3 border" style="max-height: 200px; overflow-y: scroll;" >
+                        <span class="text-muted d-block small mb-2 fw-semibold">Top Profesiones / Oficios</span>
+                        <ul class="list-group list-group-flush small" id="lista-top-profesiones">
+                            <li class="list-group-item d-flex justify-content-between px-0 bg-transparent text-muted py-1">
+                                <span>Cargando datos...</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Distribución de Estudiantes por Secciones -->
+    <div class="col-12 col-lg-6">
+        <div class="card border-0 shadow-sm rounded-4 bg-body-tertiary h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-grid-3x3-gap-fill me-2 text-info"></i>Matrícula por Secciones
+                </h5>
+                <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill">Total Aulas</span>
+            </div>
+            <div class="table-responsive" style="max-height: 210px; overflow-y: auto;">
+                <table class="table table-sm table-hover align-middle mb-0 bg-white rounded-3 overflow-hidden border">
+                    <thead class="table-light small">
+                        <tr>
+                            <th class="ps-3 py-2">Grado y Sección</th>
+                            <th class="text-center py-2">Estudiantes Inscritos</th>
+                            <th class="text-end pe-3 py-2">% Ocupación</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-estudiantes-secciones" class="small">
+                        <tr>
+                            <td colspan="3" class="text-center py-3 text-muted">Cargando distribución...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 3. BLOQUE DE SALUD, MEDIDAS ANTROPOMÉTRICAS Y DEPORTES / CANAIMA -->
+<div class="row g-3 mb-4">
+    <!-- Resumen Médico y Antropométrico -->
+    <div class="col-12 col-lg-7">
+        <div class="card border-0 shadow-sm rounded-4 bg-body-tertiary h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-heart-pulse-fill me-2 text-danger"></i>Salud y Antropometría
+                </h5>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill">Expediente Médico</span>
+            </div>
+
+            <div class="row g-3">
+                <!-- Indicadores Rápidos de Salud -->
+                <div class="col-12 col-md-5">
+                    <div class="p-3 bg-white rounded-3 border h-100 d-flex flex-column justify-content-around">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="small text-muted">Atención Especial:</span>
+                            <strong class="text-danger fs-6" id="salud-atencion-especial">--</strong>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="small text-muted">Alergias Conocidas:</span>
+                            <strong class="text-dark fs-6" id="salud-alergias">--</strong>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <span class="small text-muted">Bajo Especialista:</span>
+                            <strong class="text-primary fs-6" id="salud-especialista">--</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Promedios de Tallas (Útil para Uniformes) -->
+                <div class="col-12 col-md-7">
+                    <div class="p-3 bg-white rounded-3 border h-100">
+                        <span class="text-muted d-block small mb-2 fw-semibold">Promedio de Tallaje Escolar</span>
+                        <div class="row text-center g-2 pt-1">
+                            <div class="col-4 border-end">
+                                <small class="text-muted d-block">Camisa</small>
+                                <strong class="text-dark" id="promedio-talla-camisa">--</strong>
+                            </div>
+                            <div class="col-4 border-end">
+                                <small class="text-muted d-block">Pantalón</small>
+                                <strong class="text-dark" id="promedio-talla-pantalon">--</strong>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted d-block">Calzado</small>
+                                <strong class="text-dark" id="promedio-talla-zapato">--</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actividades Deportivas y Proyecto Canaima -->
+    <div class="col-12 col-lg-5">
+        <div class="card border-0 shadow-sm rounded-4 bg-body-tertiary h-100 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-dark mb-0">
+                    <i class="bi bi-laptop-fill me-2 text-primary"></i>Deportes y Equipos Canaima
+                </h5>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">Inventario & Actividad</span>
+            </div>
+
+            <div class="row g-2">
+                <!-- Deportes -->
+                <div class="col-6">
+                    <div class="p-3 bg-white rounded-3 border text-center">
+                        <span class="text-muted d-block small mb-1">Practican Deportes</span>
+                        <h4 class="fw-bold text-success mb-0" id="deportes-porcentaje">-- %</h4>
+                    </div>
+                </div>
+                <!-- Canaimas Operativas -->
+                <div class="col-6">
+                    <div class="p-3 bg-white rounded-3 border text-center">
+                        <span class="text-muted d-block small mb-1">Canaimas Operativas</span>
+                        <h4 class="fw-bold text-primary mb-0" id="canaimas-operativas">--</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 4. BLOQUE GEOGRÁFICO Y RESUMEN DE VIVIENDA -->
+<div class="card border-0 shadow-sm rounded-4 bg-body-tertiary mb-4 p-3">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-dark mb-0">
+            <i class="bi bi-geo-alt-fill me-2 text-secondary"></i>Resumen Geográfico y Condición de Vivienda
+        </h5>
+        <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill">Hábitat Estudiantil</span>
+    </div>
+
+    <div class="row g-3">
+        <!-- Principales Sectores -->
+        <div class="col-12 col-md-4">
+            <div class="p-3 bg-white rounded-3 border" style="max-height: 240px; overflow-y: scroll;">
+                <span class="text-muted d-block small mb-2 fw-semibold">Top Sectores / Barrios</span>
+                <ul class="list-group list-group-flush small" id="lista-top-sectores">
+                    <li class="list-group-item d-flex justify-content-between px-0 bg-transparent text-muted py-1">
+                        <span>Cargando sectores...</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Tipos de Vivienda -->
+        <div class="col-12 col-md-4">
+            <div class="p-3 bg-white rounded-3 border">
+                <span class="text-muted d-block small mb-2 fw-semibold">Tipos de Vivienda</span>
+                <ul class="list-group list-group-flush small" id="lista-tipos-vivienda">
+                    <li class="list-group-item d-flex justify-content-between px-0 bg-transparent text-muted py-1">
+                        <span>Cargando tipos...</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Condición de Vivienda -->
+        <div class="col-12 col-md-4">
+            <div class="p-3 bg-white rounded-3 border">
+                <span class="text-muted d-block small mb-2 fw-semibold">Tenencia / Condición</span>
+                <ul class="list-group list-group-flush small" id="lista-condicion-vivienda">
+                    <li class="list-group-item d-flex justify-content-between px-0 bg-transparent text-muted py-1">
+                        <span>Cargando condiciones...</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 5. TABLA TRADICIONAL DE ACTIVIDAD RECIENTE -->
+<div class="card border-0 shadow-sm rounded-4 bg-body-tertiary mb-4">
     <div class="card-header bg-transparent py-3 px-4 border-0 d-flex justify-content-between align-items-center">
         <div>
             <h5 class="card-title fw-bold mb-0 text-dark">
@@ -80,9 +297,9 @@
     </div>
     
     <div class="card-body p-0">
-        <div class="table-responsive">
+        <div class="table-responsive rounded-bottom-4" style="max-height: 320px; overflow-y: auto;">
             <table class="table table-hover align-middle mb-0 border-top">
-                <thead class="table-light">
+                <thead class="table-light sticky-top">
                     <tr>
                         <th class="ps-4">Estudiante</th>
                         <th>Cédula</th>
@@ -93,7 +310,7 @@
                 <tbody id="resumen-reportes">
                     <tr>
                         <td colspan="4" class="text-center py-4 text-body-secondary">
-                            <i class="bi bi-inbox fs-2 d-block mb-2 text-opacity-50"></i>
+                            <div class="spinner-border spinner-border-sm me-2 text-primary" role="status"></div>
                             Cargando la data reciente del servidor...
                         </td>
                     </tr>

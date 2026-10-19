@@ -5,7 +5,7 @@ foreach(glob(__DIR__ . './../entities/*.php') as $archivo) {
 }
 
 class Dashboard_model{
-	use Inscripcion, Periodo_academico, Estudiante,Vinculacion;
+	use Inscripcion, Periodo_academico, Estudiante,Vinculacion, Representante;
 
 	protected $db;
 	

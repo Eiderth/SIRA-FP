@@ -9,7 +9,7 @@ export default class Seccion_exito extends Utils{
         this.#html = this._traer_html('./frontend/views/app/inscripcion/interfaz-final/exito.html');
     }
 
-    async init(estudiante, llave_inscripcion, cedula_escolar, cambio_interfaz) {
+    async init(estudiante, llave_inscripcion, cedula_escolar) {
         const html = await this.#html;
         await this._inyectar_html(document.getElementById('secciones-root'), html)
 
@@ -21,6 +21,5 @@ export default class Seccion_exito extends Utils{
 
         document.getElementById('mensaje-tecnico').textContent = mensaje_tecnico;
         document.getElementById('lista-tecnica').innerHTML = lista_tecnica;
-        document.getElementById('btn-volver').addEventListener('click',() => cambio_interfaz());
     }
 }

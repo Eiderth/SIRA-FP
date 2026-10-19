@@ -1,85 +1,204 @@
 <div class="container-fluid px-3 py-2">
-    <div class="card border-0 shadow-sm rounded-3 p-3 bg-white">
-        
-        <!-- Encabezado Compacto -->
-        <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
+    <!-- CONTENEDOR PRINCIPAL LIMPIO -->
+    <div class="bg-white rounded-3 shadow-sm p-3 border">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
             <div>
-                <h4 class="fw-bold text-dark m-0">Reporte de Alumnos Inscritos</h4>
-                <span class="text-muted small">Generación de listados por lote y filtros académicos</span>
+                <h4 class="fw-bold text-dark m-0">Reporte Avanzado de Alumnos Inscritos</h4>
+                <span class="text-muted small">Generación de listados por lote, filtros geográficos, médicos y socioeconómicos</span>
             </div>
             <div class="d-flex align-items-center gap-2">
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1 fs-6 fw-bold" id="total-inscritos">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1.5 fs-6 fw-bold" id="total-inscritos">
                     0 Alumnos
                 </span>
-                <button type="button" id="btn-exportar-reporte" class="btn btn-success btn-sm fw-bold d-flex align-items-center gap-1">
+                <!-- Botón de Bootstrap puro -->
+                <button type="button" class="btn btn-outline-secondary btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm" data-bs-toggle="collapse" data-bs-target="#contenedor-filtros-avanzados" aria-expanded="true" aria-controls="contenedor-filtros-avanzados">
+                    <i class="bi bi-sliders"></i> Ocultar Filtros
+                </button>
+                <button type="button" id="btn-exportar-reporte" class="btn btn-success btn-sm fw-bold d-flex align-items-center gap-1 shadow-sm">
                     <i class="bi bi-file-earmark-excel"></i> Exportar Listado
                 </button>
             </div>
         </div>
 
-        <!-- BARRA DE FILTROS COMPACTA -->
-        <div class="card border bg-light rounded-2 p-2 mb-2">
-            <form id="formulario-filtrar-reportes" class="row g-2 align-items-end">
-                
-                <!-- Filtro Período -->
-                <div class="col-6 col-md-3">
-                    <label class="form-label fs-7 fw-bold text-secondary mb-1">Período Escolar</label>
-                    <select id="filtro-periodo" name="periodo_id" class="form-select form-select-sm bg-white shadow-none">
-                        <option value="">Todos los Períodos</option>
-                    </select>
-                </div>
+        <!-- BARRA DE FILTROS AVANZADOS MULTI-CATEGORÍA (ContENEDOR COLAPSIBLE) -->
+        <div class="collapse show bg-body-tertiary border rounded-3 p-3 mb-3" id="contenedor-filtros-avanzados">
+            <form id="formulario-filtrar-reportes">
+                <div class="row g-2 align-items-end">
 
-                <!-- Filtro Grado / Año -->
-                <div class="col-6 col-md-3">
-                    <label class="form-label fs-7 fw-bold text-secondary mb-1">Grado / Año</label>
-                    <select id="filtro-grado" name="grado_id" class="form-select form-select-sm bg-white shadow-none">
-                        <option value="">Todos los Grados</option>
-                    </select>
-                </div>
+                    <!-- SECCIÓN 1: ACADÉMICO -->
+                    <div class="col-12">
+                        <span class="badge bg-secondary-subtle text-secondary mb-1 fw-bold fs-7">
+                            <i class="bi bi-journal-bookmark me-1"></i> Filtros Académicos
+                        </span>
+                    </div>
 
-                <!-- Filtro Sección -->
-                <div class="col-6 col-md-3">
-                    <label class="form-label fs-7 fw-bold text-secondary mb-1">Sección</label>
-                    <select id="filtro-seccion" name="seccion_id" class="form-select form-select-sm bg-white shadow-none">
-                        <option value="">Todas</option>
-                    </select>
-                </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label fs-7 fw-bold text-secondary mb-1">Período Escolar</label>
+                        <select id="filtro-periodo" name="periodo_id" class="form-select form-select-sm bg-white shadow-none">
+                            <option value="">Todos los Períodos</option>
+                        </select>
+                    </div>
 
-                <!-- Botones Filtro -->
-                <div class="col-12 col-md-3 d-flex gap-1">
-                    <button type="button" id="btn-filtrar" class="btn btn-primary btn-sm w-50 fw-semibold d-flex align-items-center justify-content-center gap-1">
-                        <i class="bi bi-funnel-fill"></i> Filtrar
-                    </button>
-                    <button type="button" id="btn-limpiar-filtros" class="btn btn-outline-secondary btn-sm w-50 fw-semibold" title="Limpiar Filtros">
-                        <i class="bi bi-arrow-counterclockwise"></i>
-                    </button>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label fs-7 fw-bold text-secondary mb-1">Grado / Año</label>
+                        <select id="filtro-grado" name="grado_id" class="form-select form-select-sm bg-white shadow-none">
+                            <option value="">Todos los Grados</option>
+                        </select>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <label class="form-label fs-7 fw-bold text-secondary mb-1">Sección</label>
+                        <select id="filtro-seccion" name="seccion_id" class="form-select form-select-sm bg-white shadow-none">
+                            <option value="">Todas</option>
+                        </select>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <label class="form-label fs-7 fw-bold text-secondary mb-1">Tipo de Ingreso</label>
+                        <select id="filtro-tipo-ingreso" name="tipo_ingreso" class="form-select form-select-sm bg-white shadow-none">
+                            <option value="">Todos</option>
+                            <option value="Nuevo Ingreso">Nuevo Ingreso</option>
+                            <option value="Regular">Regular</option>
+                            <option value="Repitiente">Repitiente</option>
+                        </select>
+                    </div>
+
+                    <!-- SECCIÓN 2: UBICACIÓN GEOGRÁFICA -->
+                    <div class="col-12 pt-2">
+                        <span class="badge bg-secondary-subtle text-secondary mb-1 fw-bold fs-7">
+                            <i class="bi bi-geo-alt me-1"></i> Ubicación Residencial
+                        </span>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <label class="form-label fs-7 fw-bold text-secondary mb-1">Estado</label>
+                        <select id="filtro-estado" name="estado_id" class="form-select form-select-sm bg-white shadow-none">
+                            <option value="">Todos los Estados</option>
+                        </select>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <label class="form-label fs-7 fw-bold text-secondary mb-1">Municipio</label>
+                        <select id="filtro-municipio" name="municipio_id" class="form-select form-select-sm bg-white shadow-none">
+                            <option value="">Todos los Municipios</option>
+                        </select>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <label class="form-label fs-7 fw-bold text-secondary mb-1">Parroquia</label>
+                        <select id="filtro-parroquia" name="parroquia_id" class="form-select form-select-sm bg-white shadow-none">
+                            <option value="">Todas las Parroquias</option>
+                        </select>
+                    </div>
+
+                    <!-- SECCIÓN 3: SALUD Y BIENESTAR -->
+                    <div class="col-12 pt-2">
+                        <span class="badge bg-secondary-subtle text-secondary mb-1 fw-bold fs-7">
+                            <i class="bi bi-heart-pulse me-1"></i> Salud y Antropometría
+                        </span>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <label class="form-label fs-7 fw-bold text-secondary mb-1">Atención Especial</label>
+                        <select id="filtro-atencion-especial" name="atencion_especial" class="form-select form-select-sm bg-white shadow-none">
+                            <option value="">Indiferente</option>
+                            <option value="Si">Sí requiere</option>
+                            <option value="No">No requiere</option>
+                        </select>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <label class="form-label fs-7 fw-bold text-secondary mb-1">Posee Alergias</label>
+                        <select id="filtro-alergias" name="posee_alergias" class="form-select form-select-sm bg-white shadow-none">
+                            <option value="">Indiferente</option>
+                            <option value="Si">Sí presenta</option>
+                            <option value="No">No presenta</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="form-label fs-7 fw-bold text-secondary mb-1">Búsqueda por Enfermedad / Padecimiento</label>
+                        <input type="text" id="filtro-enfermedad" name="enfermedad" class="form-select-sm form-control bg-white shadow-none" placeholder="Ej: Asma, Diabetes, Alergia a Penicilina...">
+                    </div>
+
+                    <!-- SECCIÓN 4: SOCIOECONÓMICO, CANAIMA Y ACCIONES -->
+                    <div class="col-12 pt-2">
+                        <span class="badge bg-secondary-subtle text-secondary mb-1 fw-bold fs-7">
+                            <i class="bi bi-people me-1"></i> Perfil Socioeconómico y Recursos
+                        </span>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <label class="form-label fs-7 fw-bold text-secondary mb-1">Profesión Representante</label>
+                        <select id="filtro-profesion" name="profesion" class="form-select form-select-sm bg-white shadow-none">
+                            <option value="">Todas las Profesiones</option>
+                        </select>
+                    </div>
+
+                    <div class="col-6 col-md-3">
+                        <label class="form-label fs-7 fw-bold text-secondary mb-1">Rango de Ingreso ($)</label>
+                        <select id="filtro-rango-ingreso" name="rango_ingreso" class="form-select form-select-sm bg-white shadow-none">
+                            <option value="">Cualquier Ingreso</option>
+                            <option value="0-100">Menos de $100</option>
+                            <option value="100-300">$100 - $300</option>
+                            <option value="301-500">$301 - $500</option>
+                            <option value="500+">Más de $500</option>
+                        </select>
+                    </div>
+
+                    <div class="col-6 col-md-2">
+                        <label class="form-label fs-7 fw-bold text-secondary mb-1">Estado Canaima</label>
+                        <select id="filtro-estado-canaima" name="estado_canaima" class="form-select form-select-sm bg-white shadow-none">
+                            <option value="">Cualquiera</option>
+                            <option value="Operativa">Operativa</option>
+                            <option value="Dañada">Dañada</option>
+                            <option value="En Reparacion">En Reparación</option>
+                            <option value="No Posee">No Posee</option>
+                        </select>
+                    </div>
+
+                    <div class="col-6 col-md-2">
+                        <label class="form-label fs-7 fw-bold text-secondary mb-1">Realiza Deporte</label>
+                        <select id="filtro-deportes" name="realiza_deportes" class="form-select form-select-sm bg-white shadow-none">
+                            <option value="">Indiferente</option>
+                            <option value="Si">Sí</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+
+                    <!-- BOTONES DE ACCIÓN -->
+                    <div class="col-12 col-md-2 d-flex gap-1 pt-1">
+                        <button type="button" id="btn-filtrar" class="btn btn-primary btn-sm w-75 fw-semibold d-flex align-items-center justify-content-center gap-1 shadow-sm">
+                            <i class="bi bi-funnel-fill"></i> Filtrar
+                        </button>
+                        <button type="button" id="btn-limpiar-filtros" class="btn btn-outline-secondary btn-sm w-25 fw-semibold d-flex align-items-center justify-content-center" title="Limpiar Filtros">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </button>
+                    </div>
+
                 </div>
             </form>
         </div>
 
         <!-- TABLA CON SCROLL VERTICAL Y CABECERA FIJA -->
-        <div 
-         id="contenedor-tabla-reportes" 
-         class="table-responsive rounded-2 border"
-         style="max-height: 400px; overflow-y: auto;"
-        >
+        <div id="contenedor-tabla-reportes" class="table-responsive rounded-2 border" style="max-height: 450px; overflow-y: auto;">
             <table class="table table-sm table-hover align-middle m-0 text-nowrap">
                 <thead class="table-dark small text-uppercase">
                     <tr>
-                        <th scope="col" class="py-2 ps-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">#</th>
+                        <th scope="col" class="py-2 ps-3" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">#</th>
                         <th scope="col" class="py-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Cédula / Escolar</th>
                         <th scope="col" class="py-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Estudiante</th>
                         <th scope="col" class="py-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Período Académico</th>
                         <th scope="col" class="py-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Grado y Sección</th>
                         <th scope="col" class="py-2 text-center" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Estado</th>
-                        <th scope="col" class="py-2 text-end pe-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Acciones</th>
+                        <th scope="col" class="py-2 text-end pe-3" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="tabla-inscritos-body" class="small">
                     <tr>
-                        <td colspan="7" class="text-center py-4 text-secondary">
+                        <td colspan="7" class="text-center py-5 text-secondary">
                             <div class="spinner-border spinner-border-sm me-2 text-primary" role="status"></div>
-                            Cargando listado...
+                            Cargando listado y aplicando filtros...
                         </td>
                     </tr>
                 </tbody>

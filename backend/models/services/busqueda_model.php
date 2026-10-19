@@ -4,7 +4,7 @@ foreach(glob(__DIR__ . './../entities/*.php') as $archivo) {
 }
 
 class Busqueda_model{
-	use Estudiante, Grado,Seccion,Periodo_academico;
+	use Estudiante,Representante, Grado,Seccion,Periodo_academico;
 
 	protected $db;
 	

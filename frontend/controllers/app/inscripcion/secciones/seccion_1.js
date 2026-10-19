@@ -13,36 +13,33 @@ export default class Seccion_1_controller extends Utils{
         this.alterar_data = alterar_data;
     }
 
-    async init(data) {
+    async init(data = null) {
         const html = await this.#html;
         await this._inyectar_html(document.getElementById('secciones-root'), html);
         document.getElementById('btn-atras').classList.add('d-none');
         document.getElementById('info').classList.remove('d-none');
         document.getElementById('botonera').classList.replace('d-none','d-flex');
-        this.#insertar_parametros();
+        this.#insertar_parametros_academicos();
         this.#dar_eventos_select();
-        this.#dar_eventos_busqueda(data);
+        this.#dar_eventos_busqueda();
 
-        if(data) this._llenar_inputs(data);
+        if (data) this._llenar_inputs(data);
+
+        if (data != null && data.pais_nacimiento_id && data.estado_nacimiento_id && data.municipio_nacimiento_id && data.parroquia_nacimiento_id) {
+
+            this.#insertar_parametros_geograficos(
+                this.parametros_formulario.paises.find((p)=> p.id == data.pais_nacimiento_id).nombre || null,
+                this.parametros_formulario.estados.find((p)=> p.id == data.estado_nacimiento_id).nombre || null,
+                this.parametros_formulario.municipios.find((p)=> p.id == data.municipio_nacimiento_id).nombre || null,
+                this.parametros_formulario.parroquias.find((p)=> p.id == data.parroquia_nacimiento_id).nombre || null
+            )
+        } else this.#insertar_parametros_geograficos();
 
         document.getElementById('info').classList.remove('d-none');
         document.getElementById('botonera').classList.replace('d-none','d-flex');
     }
 
-    #insertar_parametros() { 
-        const select_pais = document.getElementById('select-pais');
-        const select_estado = document.getElementById('select-estado');
-        const select_municipio  = document.getElementById('select-municipio');
-        const select_parroquia = document.getElementById('select-parroquia');
-
-        this._llenar_select(select_pais, this.parametros_formulario.paises, 'Venezuela'); 
-
-        this._llenar_select(select_estado, this.parametros_formulario.estados, 'Carabobo');
-        
-        this._llenar_select(select_municipio, this.parametros_formulario.municipios.filter(m=> m.estado_id == select_estado.value), 'Valencia');
-    
-        this._llenar_select(select_parroquia, this.parametros_formulario.parroquias.filter(p=> p.municipio_id == select_municipio.value), 'Miguel Peña');
-        
+    #insertar_parametros_academicos() { 
         const select_nivel_academico = document.getElementById('select-nivel-academico');
         const select_grado = document.getElementById('select-grado');
         const select_seccion = document.getElementById('select-seccion');
@@ -61,6 +58,20 @@ export default class Seccion_1_controller extends Utils{
         
         this._llenar_select(select_seccion, this.parametros_formulario.secciones.filter((s) => secciones_filtradas.includes(s.id) ), 'A')
 
+    }
+    #insertar_parametros_geograficos(pais = 'Venezuela', estado = 'Carabobo', municipio = 'Valencia', parroquia = 'Miguel Peña'){
+        const select_pais = document.getElementById('select-pais');
+        const select_estado = document.getElementById('select-estado');
+        const select_municipio  = document.getElementById('select-municipio');
+        const select_parroquia = document.getElementById('select-parroquia');
+
+        this._llenar_select(select_pais, this.parametros_formulario.paises, pais); 
+
+        this._llenar_select(select_estado, this.parametros_formulario.estados, estado);
+        
+        this._llenar_select(select_municipio, this.parametros_formulario.municipios.filter(m=> m.estado_id == select_estado.value), municipio);
+    
+        this._llenar_select(select_parroquia, this.parametros_formulario.parroquias.filter(p=> p.municipio_id == select_municipio.value), parroquia);
     }
 
     #dar_eventos_select() {
@@ -116,7 +127,7 @@ export default class Seccion_1_controller extends Utils{
         });
     }
 
-    #dar_eventos_busqueda(data) {
+    #dar_eventos_busqueda() {
         let temp_cedula_identidad;
         document.getElementById('input-cedula-identidad-estudiante')?.addEventListener('input', (e) => {
 
@@ -124,15 +135,29 @@ export default class Seccion_1_controller extends Utils{
 
             temp_cedula_identidad = setTimeout(async () => {
                 const valor = e.target.value.trim();
-                    if(valor === '' || Object.keys(data).length != 0) return;
-                    const resp = await this._enviar_datos('./api.php?controller=inscripcion_controller&action=obtener_datos_estudiante', 
+                    if(valor === '') return;
+                    const {estudiante, mensaje} = await this._enviar_datos('./api.php?controller=inscripcion_controller&action=obtener_datos_estudiante', 
                     {'cedula_identidad': valor});
 
-                    if(!resp.historial) return;
-                    this._llenar_inputs({...resp.historial.estudiante.persona, ...resp.historial.estudiante.persona_estudiante, ...resp.historial.inscripcion});
                     
-                    
-                    this.alterar_data(resp.historial);
+                    if (estudiante) {
+                        
+                        this._llenar_inputs({
+                            ...estudiante.persona,
+                            ...estudiante.persona_estudiante
+                        });
+
+                        this.#insertar_parametros_geograficos(
+                            this.parametros_formulario.paises.find((p)=> p.id == estudiante.persona_estudiante.pais_nacimiento_id).nombre,
+                            this.parametros_formulario.estados.find((p)=> p.id == estudiante.persona_estudiante.estado_nacimiento_id).nombre,
+                            this.parametros_formulario.municipios.find((p)=> p.id == estudiante.persona_estudiante.municipio_nacimiento_id).nombre,
+                            this.parametros_formulario.parroquias.find((p)=> p.id == estudiante.persona_estudiante.parroquia_nacimiento_id).nombre
+                        )
+                        
+                        this.alterar_data({'estudiante': estudiante});
+
+                    }
+                    this._notificacion(mensaje, 'mensaje' ,1000);
 
             }, 1500);
         });

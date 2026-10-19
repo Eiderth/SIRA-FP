@@ -183,6 +183,15 @@ class academicos_controller
 
         try {
 
+            $estado_actual = $this->modelo->buscar_valor('estado', 'PERIODO_ACADEMICO', 'id', $input['id']);
+
+            if ($estado_actual === 'Cerrado') {
+                if($this->modelo->existe('PERIODO_ACADEMICO', 'estado', 'Activo')){
+                    echo json_encode(['estado' => 'error', 'error' => 'No puede haber más de un periodo activo']);
+                    return;
+                }
+            }
+
             $alternado = $this->modelo->alternar_estado_periodo_academico($input['id']);
             
             if (!empty($alternado)) {

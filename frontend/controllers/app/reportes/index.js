@@ -1,110 +1,142 @@
-import Utils from "../../../core/utils.js"
-
+import Utils from "../../../core/utils.js";
 
 export default class Reportes_controlller extends Utils {
     #html;
-
     #badgeTotal;
     #tbody;
     #formulario_filtrar_reportes;
     #btn_filtrar_reportes;
-    #btn_limpiar_filtros
-
+    #btn_limpiar_filtros;
     #contenedor_tabla_reportes;
 
     #pagina_actual = 1;
     #total_paginas = 1;
     #cargando = false;
-    #filtros_actuales = {};
+    #parametros_formulario = {}; 
 
     constructor() {
         super();
         this.#html = this._traer_html('./frontend/views/app/reportes/index.html');
-    } 
+    }  
 
     async init() {
-        
         const html = await this.#html;
         
         await this._inyectar_html(document.getElementById('root-app'), html);
+        
         this.#tbody = document.getElementById('tabla-inscritos-body');
         this.#badgeTotal = document.getElementById('total-inscritos');
-
         this.#formulario_filtrar_reportes = document.getElementById('formulario-filtrar-reportes');
-
         this.#btn_filtrar_reportes = document.getElementById('btn-filtrar');
-
         this.#btn_limpiar_filtros = document.getElementById('btn-limpiar-filtros');
         this.#contenedor_tabla_reportes = document.getElementById('contenedor-tabla-reportes');
 
-        this.#llenar_filtros();
-        this.#cargar_reportes();
+        await this.#cargar_parametros_iniciales();
+        this.#cargar_reportes(); // Carga inicial leyendo el formulario directamente
+
+        // Eventos principales
         this.#btn_filtrar_reportes.addEventListener('click', () => this.#filtrar_reportes());
-        this.#btn_limpiar_filtros.addEventListener('click',() => this.#resetear_filtros());
+        this.#btn_limpiar_filtros.addEventListener('click', () => this.#resetear_filtros());
         this.#contenedor_tabla_reportes.addEventListener('scroll', () => this.#paginacion());
         document.getElementById('btn-exportar-reporte').addEventListener('click', () => this.#exportar_reporte());
+
+        this.#configurar_eventos_ubicacion();
     }
 
     #paginacion() {
-   
         const llego_al_final = (this.#contenedor_tabla_reportes.scrollTop + this.#contenedor_tabla_reportes.clientHeight) >= (this.#contenedor_tabla_reportes.scrollHeight - 20);
 
         if (llego_al_final && !this.#cargando && this.#pagina_actual < this.#total_paginas) {
             this.#pagina_actual++;
             this.#cargar_reportes(true);
         }
-        
     }
 
-    async #llenar_filtros(){
+    async #cargar_parametros_iniciales() {
+        const respuesta = await this._traer_datos('./api.php?controller=reportes_controller&action=traer_parametros_filtros');
 
-        const {periodos_academicos = null, grados = null, secciones = null} = await this._traer_datos('./api.php?controller=reportes_controller&action=traer_parametros_filtros');
+        if (!respuesta) return;
 
-        if(periodos_academicos && grados && secciones) {
+        const {
+            periodos_academicos = [], 
+            grados = [], 
+            secciones = [],
+            estados = [],
+            municipios = [],
+            parroquias = [],
+            profesiones = []
+        } = respuesta;
 
-            this._llenar_select(document.getElementById('filtro-periodo'), [{nombre: 'Todos los periodos', id: ''}, ...periodos_academicos ], 'Todos los periodos');
-            this._llenar_select(document.getElementById('filtro-grado'), [{nombre: 'Todos los grados', id: ''}, ...grados ], 'Todos los grados');
-            this._llenar_select(document.getElementById('filtro-seccion'), [{nombre: 'Todas las secciones', id: ''}, ...secciones], 'Todas las secciones');            
-        
+        this.#parametros_formulario = { estados, municipios, parroquias };
+
+        this._llenar_select(document.getElementById('filtro-periodo'), [{nombre: 'Todos los períodos', id: ''}, ...periodos_academicos], 'Todos los períodos');
+        this._llenar_select(document.getElementById('filtro-grado'), [{nombre: 'Todos los grados', id: ''}, ...grados], 'Todos los grados');
+        this._llenar_select(document.getElementById('filtro-seccion'), [{nombre: 'Todas las secciones', id: ''}, ...secciones], 'Todas las secciones');
+
+        if (estados.length > 0) {
+            this._llenar_select(document.getElementById('filtro-estado'), [{nombre: 'Todos los estados', id: ''}, ...estados], 'Todos los estados');
+        }
+        if (municipios.length > 0) {
+            this._llenar_select(document.getElementById('filtro-municipio'), [{nombre: 'Todos los municipios', id: ''}, ...municipios], 'Todos los municipios');
+        }
+        if (parroquias.length > 0) {
+            this._llenar_select(document.getElementById('filtro-parroquia'), [{nombre: 'Todas las parroquias', id: ''}, ...parroquias], 'Todas las parroquias');
+        }
+
+        const selectProfesion = document.getElementById('filtro-profesion');
+        if (selectProfesion && profesiones.length > 0) {
+            this._llenar_select(selectProfesion, [{nombre: 'Todas las profesiones', id: ''}, ...profesiones], 'Todas las profesiones');
         }
     }
 
+    #configurar_eventos_ubicacion() {
+        const select_estado = document.getElementById('filtro-estado');
+        const select_municipio = document.getElementById('filtro-municipio');
+        const select_parroquia = document.getElementById('filtro-parroquia');
+
+        if (!select_estado || !select_municipio || !select_parroquia) return;
+
+        select_estado.addEventListener('change', (e) => {
+            const estado_id = e.target.value;
+            const municipios_filtrados = estado_id === '' 
+                ? [{nombre: 'Todos los municipios', id: ''}, ...(this.#parametros_formulario.municipios || [])]
+                : [{nombre: 'Todos los municipios', id: ''}, ...(this.#parametros_formulario.municipios || []).filter(m => m.estado_id == estado_id)];
+            
+            this._llenar_select(select_municipio, municipios_filtrados, '');
+            this._llenar_select(select_parroquia, [{nombre: 'Todas las parroquias', id: ''}], '');
+        });
+
+        select_municipio.addEventListener('change', (e) => {
+            const municipio_id = e.target.value;
+            const parroquias_filtradas = municipio_id === ''
+                ? [{nombre: 'Todas las parroquias', id: ''}, ...(this.#parametros_formulario.parroquias || [])]
+                : [{nombre: 'Todas las parroquias', id: ''}, ...(this.#parametros_formulario.parroquias || []).filter(p => p.municipio_id == municipio_id)];
+            
+            this._llenar_select(select_parroquia, parroquias_filtradas, '');
+        });
+    }
+
     async #resetear_filtros() {
-    
         this.#btn_limpiar_filtros.disabled = true;    
         this.#formulario_filtrar_reportes.reset();
-        
-        this.#filtros_actuales = {};
 
-        await this.#llenar_filtros();
+        await this.#cargar_parametros_iniciales();
+        this.#pagina_actual = 1;
         await this.#cargar_reportes();
 
         this.#btn_limpiar_filtros.disabled = false;    
     }
 
     async #filtrar_reportes() {
-
         this.#btn_filtrar_reportes.disabled = true;
 
-        const formData = Object.fromEntries(new FormData(this.#formulario_filtrar_reportes));
-        const filtros = {};
-
-        for (let clave in formData) {
-            const valor = formData[clave].trim();
-            filtros[clave] = valor === "" ? null : valor;
-        }
-
-        this.#filtros_actuales = filtros;
         this.#pagina_actual = 1;
-
         this.#contenedor_tabla_reportes.scrollTop = 0;
 
         await this.#cargar_reportes(false);
 
         this.#btn_filtrar_reportes.disabled = false;
-
     }
-
 
     async #cargar_reportes(concatenar = false) {
         this.#cargando = true;
@@ -120,29 +152,33 @@ export default class Reportes_controlller extends Utils {
                 </tr>`;
         }
 
+        const filtros_actuales = Object.fromEntries(new FormData(this.#formulario_filtrar_reportes));
+        this._limpiar_objeto(filtros_actuales);
 
-        const { inscripciones, paginacion } = await this._enviar_datos(
+        const respuesta = await this._enviar_datos(
             './api.php?controller=reportes_controller&action=filtrar_reportes', 
             {
-                ...this.#filtros_actuales,
+                ...filtros_actuales,
                 pagina: this.#pagina_actual   
             }
         );
 
         this.#cargando = false;
 
-        if (!inscripciones || !paginacion) {
+        if (!respuesta || !respuesta.inscripciones || !respuesta.paginacion) {
             if (!concatenar) {
                 this.#tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Error al cargar listado</td></tr>`;
             }
             return;
         }
 
+        const { inscripciones, paginacion } = respuesta;
+
         this.#total_paginas = paginacion.total_paginas;
-        this.#badgeTotal.textContent = `${paginacion.total_registros} Alumnos`;
+        this.#badgeTotal.textContent = `${paginacion.total_registros} registros`;
 
         if (inscripciones.length === 0 && !concatenar) {
-            this.#tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-secondary">No hay registros</td></tr>`;
+            this.#tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-secondary">No hay registros con los filtros seleccionados</td></tr>`;
             return;
         }
 
@@ -186,19 +222,22 @@ export default class Reportes_controlller extends Utils {
         });
     }
 
-
-
     async #generar_pdf(id) {
-
-        const {datos} = await this._traer_datos(`./api.php?controller=reportes_controller&action=detalles_planilla&id=${id}`);
+        const respuesta = await this._traer_datos(`./api.php?controller=reportes_controller&action=detalles_planilla&id=${id}`);
         
-        if(!datos){
+        if (!respuesta || !respuesta.datos) {
             this._notificacion('Error al traer datos', 'Error');
             return;
         } 
 
-        const estudiante = datos.inscripcion;
+        const datos = respuesta.datos;
+        const e = datos.inscripcion; // Estudiante + Académico + Ubicación
         const rep = datos.representante_principal;
+        const repSec = datos.representante_secundario || null;
+        const salud = datos.salud || {};
+        const ant = datos.antropometrico || {};
+        const ext = datos.extra_curricular || {};
+
         const vista = await this._traer_html('./frontend/views/app/reportes/planilla.html');
 
         const ventana_impresion = window.open('', '_blank');
@@ -206,35 +245,89 @@ export default class Reportes_controlller extends Utils {
         ventana_impresion.document.close();
 
         ventana_impresion.onload = () => {
-        const d = ventana_impresion.document;
+            const d = ventana_impresion.document;
 
-            d.getElementById('pl-periodo').textContent = estudiante.periodo;
-            d.getElementById('pl-nivel').textContent = estudiante.nivel_academico;
-            d.getElementById('pl-grado').textContent = estudiante.grado;
-            d.getElementById('pl-seccion').textContent = estudiante.seccion;
-            d.getElementById('pl-ingreso').textContent = estudiante.tipo_ingreso;
+            // --- ACADÉMICO E INSCRIPCIÓN ---
+            d.getElementById('pl-periodo').textContent = e.periodo || 'N/P';
+            d.getElementById('pl-nivel').textContent = e.nivel_academico || 'N/P';
+            d.getElementById('pl-grado').textContent = e.grado || 'N/P';
+            d.getElementById('pl-seccion').textContent = e.seccion || 'N/P';
+            d.getElementById('pl-ingreso').textContent = e.tipo_ingreso || 'N/P';
+            d.getElementById('pl-colegio-procedencia').textContent = e.colegio_procedencia || 'N/A';
 
-            d.getElementById('pl-nombres').textContent = `${estudiante.nombre_1} ${estudiante.nombre_2 || ''}`;
-            d.getElementById('pl-apellidos').textContent = `${estudiante.apellido_1} ${estudiante.apellido_2 || ''}`;
-            d.getElementById('pl-ci').textContent = estudiante.cedula_identidad ? `${estudiante.nacionalidad}-${estudiante.cedula_identidad}` : 'No posee';
-            d.getElementById('pl-escolar').textContent = estudiante.cedula_escolar;
-            d.getElementById('pl-nacimiento').textContent = estudiante.fecha_nacimiento;
+            // --- DATOS PERSONALES DEL ESTUDIANTE ---
+            d.getElementById('pl-nacionalidad').textContent = e.nacionalidad || 'V';
+            d.getElementById('pl-ci').textContent = e.cedula_identidad || 'No posee';
+            d.getElementById('pl-escolar').textContent = e.cedula_escolar || 'N/P';
+            d.getElementById('pl-nombres').textContent = `${e.nombre_1 || ''} ${e.nombre_2 || ''}`.trim();
+            d.getElementById('pl-apellidos').textContent = `${e.apellido_1 || ''} ${e.apellido_2 || ''}`.trim();
+            d.getElementById('pl-nacimiento').textContent = e.fecha_nacimiento || 'N/P';
+            d.getElementById('pl-sexo').textContent = e.sexo || 'N/P';
+            d.getElementById('pl-lateralidad').textContent = e.lateralidad || 'N/P';
 
+            // --- UBICACIÓN DOMICILIARIA ---
+            d.getElementById('pl-estado').textContent = e.estado_nombre || 'N/P';
+            d.getElementById('pl-municipio').textContent = e.municipio_nombre || 'N/P';
+            d.getElementById('pl-parroquia').textContent = e.parroquia_nombre || 'N/P';
+            d.getElementById('pl-sector').textContent = e.sector || 'N/P';
+            d.getElementById('pl-calle').textContent = e.calle || 'N/P';
+            d.getElementById('pl-vivienda').textContent = `${e.tipo_vivienda || ''} - N° ${e.numero_vivienda || 'S/N'}`;
+
+            // --- ANTROPOMETRÍA ---
+            d.getElementById('pl-estatura').textContent = ant.estatura ? `${ant.estatura} m` : 'N/P';
+            d.getElementById('pl-peso').textContent = ant.peso ? `${ant.peso} kg` : 'N/P';
+            d.getElementById('pl-t-camisa').textContent = ant.talla_camisa || 'N/P';
+            d.getElementById('pl-t-pantalon').textContent = ant.talla_pantalon || 'N/P';
+            d.getElementById('pl-t-zapato').textContent = ant.talla_zapato || 'N/P';
+
+            // --- SALUD ---
+            d.getElementById('pl-alergias').textContent = salud.reacciones_alergicas === 'Si' ? `Sí: ${salud.cuales_alergias || ''}` : 'No';
+            d.getElementById('pl-enfermedades').textContent = salud.enfermedades_padecidas || 'Ninguna';
+            d.getElementById('pl-atencion').textContent = salud.atencion_especial === 'Si' ? `Sí (${salud.horario_tratamiento || 'Sin horario especificado'})` : 'No';
+
+            // --- EXTRA CURRICULAR / CANAIMA ---
+            d.getElementById('pl-deportes').textContent = ext.realiza_deportes === 'Si' ? `Sí: ${ext.cuales_deportes || ''}` : 'No';
+            d.getElementById('pl-canaima').textContent = ext.posee_canaima === 'Si' ? `Sí - Serial: ${ext.serial_canaima || 'N/S'} (${ext.estado_canaima || 'Operativa'})` : 'No posee';
+
+            // --- REPRESENTANTE PRINCIPAL ---
             if (rep) {
-                d.getElementById('pl-rep-nombre').textContent = `${rep.nombre_1} ${rep.apellido_1}`;
-                d.getElementById('pl-rep-ci').textContent = `${rep.nacionalidad}-${rep.cedula_identidad}`;
-                d.getElementById('pl-rep-parentesco').textContent = rep.parentesco;
+                d.getElementById('pl-rep-ci').textContent = `${rep.nacionalidad || 'V'}-${rep.cedula_identidad || ''}`;
+                d.getElementById('pl-rep-nombre').textContent = `${rep.nombre_1 || ''} ${rep.apellido_1 || ''}`.trim();
+                d.getElementById('pl-rep-parentesco').textContent = rep.parentesco || 'N/P';
+                d.getElementById('pl-rep-telefono').textContent = rep.telefono_movil || 'N/P';
+                d.getElementById('pl-rep-profesion').textContent = rep.profesion || 'N/P';
+                d.getElementById('pl-rep-ingreso').textContent = rep.ingreso_mensual ? `$${rep.ingreso_mensual}` : '0';
             }
 
-            setTimeout(() => { ventana_impresion.print(); }, 300);
+            // --- REPRESENTANTE SECUNDARIO (Si existe) ---
+            const repSec = datos.representante_secundario;
+            if (repSec) {
+                d.getElementById('p2-rep-ci').textContent = `${repSec.nacionalidad || 'V'}-${repSec.cedula_identidad || ''}`;
+                d.getElementById('p2-rep-nombre').textContent = `${repSec.nombre_1 || ''} ${repSec.apellido_1 || ''}`.trim();
+                d.getElementById('p2-rep-parentesco').textContent = repSec.parentesco || 'N/P';
+                d.getElementById('p2-rep-telefono').textContent = repSec.telefono_movil || 'N/P';
+                d.getElementById('p2-rep-profesion').textContent = repSec.profesion || 'N/P';
+                d.getElementById('p2-rep-ingreso').textContent = repSec.ingreso_mensual ? `$${repSec.ingreso_mensual}` : '0';
+
+                // Ubicación del representante secundario
+                d.getElementById('p2-estado').textContent = repSec.estado_nombre || 'N/P';
+                d.getElementById('p2-municipio').textContent = repSec.municipio_nombre || 'N/P';
+                d.getElementById('p2-parroquia').textContent = repSec.parroquia_nombre || 'N/P';
+                d.getElementById('p2-sector').textContent = repSec.sector || 'N/P';
+                d.getElementById('p2-calle').textContent = repSec.calle || 'N/P';
+                d.getElementById('p2-vivienda').textContent = `${repSec.tipo_vivienda || ''} - N° ${repSec.numero_vivienda || 'S/N'}`;
+            }
+
+            setTimeout(() => { ventana_impresion.print(); }, 400);
         };
     }
 
     #exportar_reporte() {
-
+        const filtros_actuales = Object.fromEntries(new FormData(this.#formulario_filtrar_reportes));
+        this._limpiar_objeto(filtros_actuales);
         const params = new URLSearchParams();
         
-        for (const [clave, valor] of Object.entries(this.#filtros_actuales)) {
+        for (const [clave, valor] of Object.entries(filtros_actuales)) {
             if (valor !== null && valor !== undefined && valor !== "") {
                 params.append(clave, valor);
             }
