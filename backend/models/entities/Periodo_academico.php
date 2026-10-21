@@ -22,6 +22,7 @@ trait Periodo_academico {
     }
 
 	public function crear_periodo_academico($periodo_academico) {
+		$this->cerrar_periodos_activos();
 		return $this->insertar('PERIODO_ACADEMICO', ['nombre' => $periodo_academico]);
 	}
 
@@ -32,14 +33,30 @@ trait Periodo_academico {
 	}
 
 	public function alternar_estado_periodo_academico($id) {
-		$estado_actual = $this->buscar_valor('estado', 'PERIODO_ACADEMICO', 'id', $id);
-		$nuevo_estado = $estado_actual == 'Activo' ? 'Cerrado': 'Activo';
-		$stmt = $this->db->prepare("UPDATE PERIODO_ACADEMICO SET estado = :nuevo_estado WHERE id = :id");
-		$stmt->execute([
-			'nuevo_estado' => $nuevo_estado,
-			'id' => $id
-		]);
-		return true;
+		$this->cerrar_periodos_activos($id);
+		
+		$sql = "
+		 UPDATE PERIODO_ACADEMICO SET estado = CASE
+			WHEN id = :id AND estado = 'Cerrado' THEN 'Activo'
+		 	WHEN id = :id AND estado = 'Activo' THEN 'Cerrado'
+		 END
+		 WHERE id = :id
+		";
+
+		$stmt = $this->db->prepare($sql);
+		return $stmt->execute(['id' => $id]);
+	}
+
+	private function cerrar_periodos_activos($id = null){
+		$sql = "UPDATE PERIODO_ACADEMICO SET estado = 'Cerrado' WHERE estado = 'Activo'";
+		$params = [];
+		if (!empty($id)){
+			$params['id'] = $id;
+		 	$sql .= "AND id != :id";
+		}
+
+		$stmt = $this->db->prepare($sql);
+		return $stmt->execute($params);
 	}
 }
 

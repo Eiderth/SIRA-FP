@@ -48,7 +48,7 @@ export default class Utils {
                 return;
             } 
 
-            if (!json.ok || data.estado !== 'completado') {    
+            if (!json.ok || data.estado === 'error') {    
                 const mensaje_error = data.error || 'Ocurrió un error inesperado en el servidor.';
                 throw new Error(mensaje_error);
             }

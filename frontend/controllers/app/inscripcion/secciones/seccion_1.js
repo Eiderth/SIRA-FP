@@ -161,5 +161,39 @@ export default class Seccion_1_controller extends Utils{
 
             }, 1500);
         });
+
+        let temp_cedula_escolar;
+        document.getElementById('input-cedula-escolar-estudiante')?.addEventListener('input', (e) => {
+
+            clearTimeout(temp_cedula_escolar);
+
+            temp_cedula_escolar = setTimeout(async () => {
+                const valor = e.target.value.trim();
+                    if(valor === '') return;
+                    const {estudiante, mensaje} = await this._enviar_datos('./api.php?controller=inscripcion_controller&action=obtener_datos_estudiante', 
+                    {'cedula_escolar': valor});
+
+                    
+                    if (estudiante) {
+                        
+                        this._llenar_inputs({
+                            ...estudiante.persona,
+                            ...estudiante.persona_estudiante
+                        });
+
+                        this.#insertar_parametros_geograficos(
+                            this.parametros_formulario.paises.find((p)=> p.id == estudiante.persona_estudiante.pais_nacimiento_id).nombre,
+                            this.parametros_formulario.estados.find((p)=> p.id == estudiante.persona_estudiante.estado_nacimiento_id).nombre,
+                            this.parametros_formulario.municipios.find((p)=> p.id == estudiante.persona_estudiante.municipio_nacimiento_id).nombre,
+                            this.parametros_formulario.parroquias.find((p)=> p.id == estudiante.persona_estudiante.parroquia_nacimiento_id).nombre
+                        )
+                        
+                        this.alterar_data({'estudiante': estudiante});
+
+                    }
+                    this._notificacion(mensaje, 'mensaje' ,1000);
+
+            }, 1500);
+        });
     }
 }

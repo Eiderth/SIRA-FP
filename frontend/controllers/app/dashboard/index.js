@@ -63,7 +63,7 @@ export default class Dashboard_controller extends Utils {
             document.getElementById('grados-secciones-activas').textContent = datos.grados_secciones_activas;
         }
         if (datos.promedio_ingresos !== undefined) {
-            document.getElementById('promedio-ingresos').textContent = `$ ${datos.promedio_ingresos}`;
+            document.getElementById('promedio-ingresos').textContent = `$ ${Number(datos.promedio_ingresos).toFixed(2)}`;
         }
     }
 

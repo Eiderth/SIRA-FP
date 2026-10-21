@@ -88,14 +88,29 @@ class Inscripcion_controller {
 
         if(strlen($input['representante_principal']['persona']['cedula_identidad'] ?? '') < 6) {
             echo json_encode([
-                'estado' => 'error',
+                'estado' => 'validacion',
                 'mensaje' => "La cedula del representante principal no puede tener menos de 6 digitos"
             ]);
-           
+            exit();
+        }
+
+        if(empty($input['inscripcion']['periodo_id'])) {
+            echo json_encode([
+                'estado' => 'validacion',
+                'mensaje' => "Debe ingresar algun periodo"
+            ]);
             exit();
         }
 
         try {
+
+            if (empty($this->modelo->existe('GRADO_SECCION', 'id, estado', [$input['inscripcion']['grado_seccion_id'], 'Activo'] ))){
+                echo json_encode([
+                    'estado' => 'validacion',
+                    'mensaje' => "la seccion seleccionada no se encuentra activa o no existe"
+                ]);
+                exit();
+            }
 
             $estudiante_id = null;
             $representante_principal_id = null;
@@ -142,7 +157,7 @@ class Inscripcion_controller {
                 if ($existe_registro_periodo) {
                    
                     echo json_encode([
-                      'estado' => 'error',
+                      'estado' => 'validacion',
                       'mensaje' => "Es estudiante {$input['estudiante']['persona']['nombre_1']} {$input['estudiante']['persona']['apellido_1']} ya ha sido inscrito en el periodo <br>No se permite doble inscripcion en un mismo periodo"
                     ]);
                 
@@ -221,7 +236,6 @@ class Inscripcion_controller {
 
             echo json_encode([
                 'estado' => 'completado',
-                'mensaje' => 'estudiante insertado con exito',
                 'cedula_escolar' => $input['estudiante']['persona_estudiante']['cedula_escolar'],
                 'llave_inscripcion' => $llave_inscripcion
             ]);
@@ -239,14 +253,20 @@ class Inscripcion_controller {
 
 
     private function obtener_datos_estudiante($input) {
-        if(empty($input['cedula_identidad'])) {
-            exit();
-        }
+        $historial =[];
 
-        $historial = $this->modelo->obtener_datos_estudiante(
-            'cedula_identidad',
-            $input['cedula_identidad'],
-        );
+        if(!empty($input['cedula_identidad'])) {
+            $historial = $this->modelo->obtener_datos_estudiante(
+                'cedula_identidad',
+                $input['cedula_identidad'],
+            );
+        } else if (!empty($input['cedula_escolar'])) {
+    
+            $historial = $this->modelo->obtener_datos_estudiante(
+                'cedula_escolar',
+                $input['cedula_escolar'],
+            );
+        }
 
         if ($historial) {
             echo json_encode([

@@ -68,85 +68,59 @@ trait Estudiante  {
 
 
 	public function obtener_datos_estudiante($key, $value) {
-        $campo_busqueda = ($key === 'cedula_identidad') ? 'p.cedula_identidad' : 'e.id';
 
-        $sql = "SELECT 
-                    -- Datos de la Persona (Estudiante)
-                    p.id AS persona_id, p.nacionalidad, p.cedula_identidad, p.nombre_1, p.nombre_2, p.apellido_1, p.apellido_2, p.fecha_nacimiento, p.sexo,
-                    -- Datos del Estudiante
-                    e.id AS estudiante_id, e.cedula_escolar, e.numero_hijo, e.lateralidad, e.estado AS estado_estudiante,
-                    e.pais_nacimiento_id, e.parroquia_nacimiento_id,
-                    -- IDs geográficos en cadena para los selects (Parroquia -> Municipio -> Estado)
-                    pr.municipio_id AS municipio_nacimiento_id,
-                    m.estado_id AS estado_nacimiento_id,
-                    -- Antropométricos
-                    ant.id AS antropometrico_id, ant.estatura, ant.peso, ant.talla_camisa, ant.talla_pantalon, ant.talla_zapato,
-                    -- Salud
-                    sal.id AS salud_id, sal.reacciones_alergicas, sal.cuales_alergias, sal.enfermedades_padecidas, sal.atencion_especial, sal.horario_tratamiento, sal.atendido_por_especialista, sal.nombre_especialista, sal.fecha_inicio_especialista, sal.condicion_atencion,
-                    -- Extracurriculares / Canaima
-                    ext.id AS extra_curricular_id, ext.realiza_deportes, ext.cuales_deportes, ext.posee_canaima, ext.fecha_asignacion_canaima, ext.serial_canaima, ext.estado_canaima, ext.falla_canaima, ext.posee_cargador, ext.estado_cargador, ext.falla_cargador,
-                    -- IDs de Representantes
-                    e.representante_principal_id, e.representante_secundario_id
-                FROM PERSONA_ESTUDIANTE e
-                INNER JOIN PERSONA p ON e.persona_id = p.id
-                LEFT JOIN ANTROPOMETRICO ant ON e.antropometrico_id = ant.id
-                LEFT JOIN SALUD sal ON e.salud_id = sal.id
-                LEFT JOIN EXTRA_CURRICULAR ext ON e.extra_curricular_id = ext.id
-                LEFT JOIN PARROQUIA pr ON e.parroquia_nacimiento_id = pr.id
-                LEFT JOIN MUNICIPIO m ON pr.municipio_id = m.id
-                WHERE {$campo_busqueda} = :value LIMIT 1";
+        $persona = [];
+        $persona_estudiante = [];
 
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute(['value' => $value]);
-        $estudiante_completo = $stmt->fetch(PDO::FETCH_ASSOC);
+    	// var_dump('estoy aqui', $value);
+        if ($key === 'cedula_identidad') {
+        	$persona = $this->buscar_todo('PERSONA', 'cedula_identidad', $value);
+        	if ($persona['id']) $persona_estudiante = $this->buscar_todo('PERSONA_ESTUDIANTE', 'persona_id', $persona['id']);
+        } 
+        
+        if ($key === 'cedula_escolar') { //alfo anda mal aqui
+	        $persona_estudiante = $this->buscar_todo('PERSONA_ESTUDIANTE','cedula_escolar', $value);
+        	if ($persona_estudiante['persona_id']) $persona = $this->buscar_todo('PERSONA', 'id', $persona_estudiante['persona_id']);
+        } 
 
-        if (!$estudiante_completo) {
-            return null;
+        if ($key === 'id') {
+	        $persona_estudiante = $this->buscar_todo('PERSONA_ESTUDIANTE', 'id', $value);
+        	if ($persona_estudiante['persona_id']) $persona = $this->buscar_todo('PERSONA', 'id', $persona_estudiante['persona_id']);
         }
 
+		if (empty($persona) || empty($persona_estudiante)) return;
+
+		$antropometrico = $this->buscar_todo('ANTROPOMETRICO', 'id', $persona_estudiante['antropometrico_id']);
+		$salud = $this->buscar_todo('SALUD', 'id', $persona_estudiante['salud_id']);
+		$extra_curricular = $this->buscar_todo('EXTRA_CURRICULAR', 'id', $persona_estudiante['extra_curricular_id']);
+
+		if (!empty($persona_estudiante['parroquia_nacimiento_id'])) {
+    
+		    $sql = "SELECT 
+		                mun.estado_id AS estado_nacimiento_id, 
+		                mun.id AS municipio_nacimiento_id 
+		            FROM PARROQUIA par
+		            JOIN MUNICIPIO mun ON par.municipio_id = mun.id
+		            WHERE par.id = :parroquia_id";
+
+		    $stmt = $this->db->prepare($sql);
+		    $stmt->execute([':parroquia_id' => $persona_estudiante['parroquia_nacimiento_id']]);
+		    $geo = $stmt->fetch(PDO::FETCH_ASSOC);
+
+		    if ($geo) {
+		        $persona_estudiante['estado_nacimiento_id'] = $geo['estado_nacimiento_id'];
+		        $persona_estudiante['municipio_nacimiento_id'] = $geo['municipio_nacimiento_id'];
+		    }
+		}
+
         return [
-            'persona_estudiante' => [
-                'cedula_escolar' => $estudiante_completo['cedula_escolar'],
-                'numero_hijo' => $estudiante_completo['numero_hijo'],
-                'lateralidad' => $estudiante_completo['lateralidad'],
-                'pais_nacimiento_id' => $estudiante_completo['pais_nacimiento_id'],
-                'estado_nacimiento_id' => $estudiante_completo['estado_nacimiento_id'],
-                'municipio_nacimiento_id' => $estudiante_completo['municipio_nacimiento_id'],
-                'parroquia_nacimiento_id' => $estudiante_completo['parroquia_nacimiento_id']
-            ],
-            'persona' => [
-                'nacionalidad' => $estudiante_completo['nacionalidad'],
-                'cedula_identidad' => $estudiante_completo['cedula_identidad'],
-                'nombre_1' => $estudiante_completo['nombre_1'],
-                'nombre_2' => $estudiante_completo['nombre_2'],
-                'apellido_1' => $estudiante_completo['apellido_1'],
-                'apellido_2' => $estudiante_completo['apellido_2'],
-                'fecha_nacimiento' => $estudiante_completo['fecha_nacimiento'],
-                'sexo' => $estudiante_completo['sexo']
-            ],
-            'antropometrico' => [
-                'estatura' => $estudiante_completo['estatura'],
-                'peso' => $estudiante_completo['peso'],
-                'talla_camisa' => $estudiante_completo['talla_camisa'],
-                'talla_pantalon' => $estudiante_completo['talla_pantalon'],
-                'talla_zapato' => $estudiante_completo['talla_zapato']
-            ],
-            'salud' => [
-                'reacciones_alergicas' => $estudiante_completo['reacciones_alergicas'],
-                'cuales_alergias' => $estudiante_completo['cuales_alergias'],
-                'enfermedades_padecidas' => $estudiante_completo['enfermedades_padecidas'],
-                'atencion_especial' => $estudiante_completo['atencion_especial'],
-                'horario_tratamiento' => $estudiante_completo['horario_tratamiento']
-            ],
-            'extra_curricular' => [
-                'realiza_deportes' => $estudiante_completo['realiza_deportes'],
-                'cuales_deportes' => $estudiante_completo['cuales_deportes'],
-                'posee_canaima' => $estudiante_completo['posee_canaima'],
-                'serial_canaima' => $estudiante_completo['serial_canaima'],
-                'estado_canaima' => $estudiante_completo['estado_canaima']
-            ],
-            'representante_principal_id' => $estudiante_completo['representante_principal_id'],
-            'representante_secundario_id' => $estudiante_completo['representante_secundario_id']
+            'persona_estudiante' => $persona_estudiante,
+            'persona' => $persona,
+            'antropometrico' => $antropometrico,
+            'salud' => $salud,
+            'extra_curricular' => $extra_curricular,
+            'representante_principal_id' => $persona_estudiante['representante_principal_id'],
+            'representante_secundario_id' => $persona_estudiante['representante_secundario_id']
         ];
     }
     

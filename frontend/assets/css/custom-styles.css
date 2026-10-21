@@ -218,3 +218,9 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
+
+.hover-scale{}
+.hover-scale:hover {
+    transform: scale(1.25);
+    color: #0a58ca;
+}
