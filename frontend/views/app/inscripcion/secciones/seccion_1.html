@@ -4,15 +4,28 @@
     <form id="formulario-inscripcion" class="card border-0 shadow-sm rounded-4 mb-4 bg-white" novalidate>
         <div class="card-body p-4 p-md-5">
             
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4 pb-3 border-bottom">
-                <div>
+           <div class="mb-4 pb-3 border-bottom">
+                <!-- Fila 1: Título y Paso -->
+                <div class="mb-3">
                     <span class="badge bg-primary-subtle text-primary fw-semibold px-3 py-2 rounded-pill mb-2">Paso 1</span>
                     <h5 class="fw-bold text-dark m-0 fs-4">Datos Escolares</h5>
                 </div>
-                <div class="w-100 w-md-auto" style="min-width: 220px;">
-                    <label class="form-label fw-semibold small text-muted mb-1">Periodo Escolar *</label>
-                    <select id="select-periodo" name="periodo_academico_id" class="form-select bg-light border-0 py-2 rounded-3" required>
-                    </select>
+
+                <!-- Fila 2: Selector y Botón repartidos mitad y mitad (col-md-6 cada uno) -->
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold small text-muted mb-1">Periodo Escolar *</label>
+                        <select id="select-periodo" name="periodo_academico_id" class="form-select bg-light border-0 py-2 rounded-3" required>
+                        </select>
+                    </div>
+                    <div class="col-md-6 d-grid">
+                        <button type="button" 
+                                id="btn-ir-periodos" 
+                                class="btn btn-outline-secondary py-2 rounded-3 d-flex align-items-center justify-content-center gap-2">
+                            <i class="bi bi-calendar-plus"></i>
+                            <span>Activar otro periodo</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 

@@ -5,12 +5,14 @@ export default class Seccion_1_controller extends Utils{
     parametros_formulario;
     alterar_data
     #html;
+    cambio_de_interfaz;
 
-    constructor(parametros_formulario, alterar_data) {
+    constructor(parametros_formulario, alterar_data, cambio_de_interfaz) {
         super();
         this.#html = this._traer_html('./frontend/views/app/inscripcion/secciones/seccion_1.html');
         this.parametros_formulario = parametros_formulario;
         this.alterar_data = alterar_data;
+        this.cambio_de_interfaz = cambio_de_interfaz
     }
 
     async init(data = null) {
@@ -37,6 +39,7 @@ export default class Seccion_1_controller extends Utils{
 
         document.getElementById('info').classList.remove('d-none');
         document.getElementById('botonera').classList.replace('d-none','d-flex');
+        document.getElementById('btn-ir-periodos').addEventListener('click', () => this.cambio_de_interfaz('periodos'))
     }
 
     #insertar_parametros_academicos() { 
@@ -156,8 +159,8 @@ export default class Seccion_1_controller extends Utils{
                         
                         this.alterar_data({'estudiante': estudiante});
 
+                        this._notificacion(mensaje, 'mensaje' ,1000);
                     }
-                    this._notificacion(mensaje, 'mensaje' ,1000);
 
             }, 1500);
         });
@@ -190,8 +193,8 @@ export default class Seccion_1_controller extends Utils{
                         
                         this.alterar_data({'estudiante': estudiante});
 
+                        this._notificacion(mensaje, 'mensaje' ,1000);
                     }
-                    this._notificacion(mensaje, 'mensaje' ,1000);
 
             }, 1500);
         });

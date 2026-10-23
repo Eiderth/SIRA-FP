@@ -69,8 +69,8 @@ class Busqueda_controller {
             $datos_estudiante = $this->modelo->obtener_datos_estudiante('id', $input['estudiante_id']);
             
             if ($datos_estudiante) {
-                $rep_principal_id = $datos_estudiante['representante_principal_id'] ?? null;
-                $rep_secundario_id = $datos_estudiante['representante_secundario_id'] ?? null;
+                $rep_principal_id = $datos_estudiante['persona_estudiante']['representante_principal_id'] ?? null;
+                $rep_secundario_id = $datos_estudiante['persona_estudiante']['representante_secundario_id'] ?? null;
 
                 unset($datos_estudiante['representante_principal_id'], $datos_estudiante['representante_secundario_id']);
 

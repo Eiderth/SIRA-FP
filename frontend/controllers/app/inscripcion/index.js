@@ -41,9 +41,12 @@ export default class Inscripcion_controller extends Utils {
    #btn_atras;
    #btn_reset; 
 
-   constructor() {
+   cambio_de_interfaz;
+
+   constructor(cambio_de_interfaz) {
       super(); 
       this.#html = this._traer_html('./frontend/views/app/inscripcion/index.html');
+      this.cambio_de_interfaz = cambio_de_interfaz;
    }
 
    async init() {
@@ -56,7 +59,7 @@ export default class Inscripcion_controller extends Utils {
          this.#parametros_formulario = await this.#traer_parametros();
          
          this.#secciones_controllers = [
-            new Seccion_1_controller(this.#parametros_formulario, (data) => this._alterar_data(data)),
+            new Seccion_1_controller(this.#parametros_formulario, (data) => this._alterar_data(data), this.cambio_de_interfaz),
             new Seccion_2_controller(),
             new Seccion_3_controller(this.#parametros_formulario, (data) => this._alterar_data(data)),
             new Seccion_4_controller(this.#parametros_formulario, (data) => this._alterar_data(data))
@@ -115,7 +118,10 @@ export default class Inscripcion_controller extends Utils {
 
 
    async #siguiente() {
-      if (!this._validar_formulario(document.querySelectorAll('form'))) return;
+
+      if (this.#cont !== 4 && !this._validar_formulario(document.querySelectorAll('form'))) return;
+      
+      if (this.#cont === 4 && document.getElementById('input-cedula-identidad-representante-secundario').value !== '' && !this._validar_formulario(document.querySelectorAll('form'))) return;
       
       if (this.#cont == 1) {
          this._data.inscripcion = Object.fromEntries(new FormData(document.getElementById('formulario-inscripcion')));

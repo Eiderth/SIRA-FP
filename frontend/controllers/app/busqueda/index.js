@@ -119,20 +119,18 @@ export default class Busqueda_controller extends Utils {
             pagina: this.#pagina_actual
         };
 
-        const { estudiantes = [], total_paginas = 1, total = 0 } = await this._enviar_datos('./api.php?controller=busqueda_controller&action=buscar_coincidencias', data);
+        const resultado = await this._enviar_datos('./api.php?controller=busqueda_controller&action=buscar_coincidencias', data);
 
         this.#cargando = false;
 
-        if (!estudiantes, !total_paginas , !total) {
+        if (!resultado || Object.keys(resultado).length === 0) {
             if (!concatenar) {
                 this.#tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger">Error al consultar registros</td></tr>`;
             }
             return;
         }
 
-
-        this.#total_paginas = total_paginas;
-        this.#badge_total_resultados.textContent = `${total} Registros`;
+        const { estudiantes = [], total_paginas = 1, total = 0 } = resultado;
 
         if (estudiantes.length === 0 && !concatenar) {
             this.#tbody.innerHTML = `
@@ -144,6 +142,10 @@ export default class Busqueda_controller extends Utils {
                 </tr>`;
             return;
         }
+
+        this.#total_paginas = total_paginas;
+        this.#badge_total_resultados.textContent = `${total} Registros`;
+
 
         const filas_HTML = estudiantes.map(e => {
             const cedula = e.est_cedula_identidad ? `${e.est_nacionalidad || 'V'}-${e.est_cedula_identidad}` : (e.est_cedula_escolar || 'N/P');

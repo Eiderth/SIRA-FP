@@ -94,7 +94,7 @@ class Inscripcion_controller {
             exit();
         }
 
-        if(empty($input['inscripcion']['periodo_id'])) {
+        if(empty($input['inscripcion']['periodo_academico_id'])) {
             echo json_encode([
                 'estado' => 'validacion',
                 'mensaje' => "Debe ingresar algun periodo"

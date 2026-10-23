@@ -38,27 +38,25 @@ trait Representante {
 
         if ($clave === 'cedula_identidad') {
             $persona = $this->buscar_todo('PERSONA', $clave, $valor);
-            $persona_representante = $persona ? $this->buscar_todo('PERSONA_REPRESENTANTE', 'persona_id', $persona['id']) : [];
+            if (!empty($persona)) $persona_representante = $this->buscar_todo('PERSONA_REPRESENTANTE', 'persona_id', $persona['id']);
         } else {
             $persona_representante = $this->buscar_todo('PERSONA_REPRESENTANTE', $clave, $valor);
-            $persona = $persona_representante ?  $this->buscar_todo('PERSONA', 'id', $persona_representante['persona_id']) : [];
+            if (!empty($persona_representante)) $persona =  $this->buscar_todo('PERSONA', 'id', $persona_representante['persona_id']);
         }
-        
-        if (!empty($persona) && !empty($persona['direccion_id'])) {
-            $stmt = $this->db->prepare("
-                SELECT d.*, p.id as parroquia_id, m.id as municipio_id, e.id as estado_id
-                FROM DIRECCION d 
-                INNER JOIN PARROQUIA p ON p.id = d.parroquia_id
-                INNER JOIN MUNICIPIO m ON m.id = p.municipio_id
-                INNER JOIN ESTADO e ON e.id = m.estado_id
-                WHERE d.id = :direccion_id LIMIT 1
-            ");
 
-            $stmt->execute(['direccion_id' => $persona['direccion_id']]);
-            $direccion = $stmt->fetch(PDO::FETCH_ASSOC);
-        } else {
-            return [];
-        }
+        if (empty($persona) || empty($persona_representante)) return;
+        
+        $stmt = $this->db->prepare("
+            SELECT d.*, p.id as parroquia_id, m.id as municipio_id, e.id as estado_id
+            FROM DIRECCION d 
+            INNER JOIN PARROQUIA p ON p.id = d.parroquia_id
+            INNER JOIN MUNICIPIO m ON m.id = p.municipio_id
+            INNER JOIN ESTADO e ON e.id = m.estado_id
+            WHERE d.id = :direccion_id LIMIT 1
+        ");
+
+        $stmt->execute(['direccion_id' => $persona['direccion_id']]);
+        $direccion = $stmt->fetch(PDO::FETCH_ASSOC);
         
         return [
             'persona_representante' => $persona_representante,

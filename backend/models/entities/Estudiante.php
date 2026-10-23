@@ -72,20 +72,19 @@ trait Estudiante  {
         $persona = [];
         $persona_estudiante = [];
 
-    	// var_dump('estoy aqui', $value);
         if ($key === 'cedula_identidad') {
         	$persona = $this->buscar_todo('PERSONA', 'cedula_identidad', $value);
-        	if ($persona['id']) $persona_estudiante = $this->buscar_todo('PERSONA_ESTUDIANTE', 'persona_id', $persona['id']);
+        	if (!empty($persona['id'])) $persona_estudiante = $this->buscar_todo('PERSONA_ESTUDIANTE', 'persona_id', $persona['id']);
         } 
         
         if ($key === 'cedula_escolar') { //alfo anda mal aqui
 	        $persona_estudiante = $this->buscar_todo('PERSONA_ESTUDIANTE','cedula_escolar', $value);
-        	if ($persona_estudiante['persona_id']) $persona = $this->buscar_todo('PERSONA', 'id', $persona_estudiante['persona_id']);
+        	if (!empty($persona_estudiante['persona_id'])) $persona = $this->buscar_todo('PERSONA', 'id', $persona_estudiante['persona_id']);
         } 
 
         if ($key === 'id') {
 	        $persona_estudiante = $this->buscar_todo('PERSONA_ESTUDIANTE', 'id', $value);
-        	if ($persona_estudiante['persona_id']) $persona = $this->buscar_todo('PERSONA', 'id', $persona_estudiante['persona_id']);
+        	if (!empty($persona_estudiante['persona_id'])) $persona = $this->buscar_todo('PERSONA', 'id', $persona_estudiante['persona_id']);
         }
 
 		if (empty($persona) || empty($persona_estudiante)) return;
@@ -119,8 +118,6 @@ trait Estudiante  {
             'antropometrico' => $antropometrico,
             'salud' => $salud,
             'extra_curricular' => $extra_curricular,
-            'representante_principal_id' => $persona_estudiante['representante_principal_id'],
-            'representante_secundario_id' => $persona_estudiante['representante_secundario_id']
         ];
     }
     
