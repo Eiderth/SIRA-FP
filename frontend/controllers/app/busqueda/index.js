@@ -9,6 +9,7 @@ export default class Busqueda_controller extends Utils {
     #btn_buscar;
     #btn_limpiar_filtros;
     #contenedor_tabla_busqueda;
+    #observer = null;
 
     #pagina_actual = 1;
     #total_paginas = 1;
@@ -43,9 +44,33 @@ export default class Busqueda_controller extends Utils {
             this.#resetear_filtros();
         });
 
-        this.#contenedor_tabla_busqueda.addEventListener('scroll', () => {
-            this.#paginacion();
-        });
+        this.#configurar_observer();
+    }
+
+    #configurar_observer() {
+        const centinela = document.getElementById('fila-centinela');
+        if (!centinela) return;
+
+        if (this.#observer) {
+            this.#observer.disconnect();
+        }
+
+        const opciones = {
+            root: this.#contenedor_tabla_busqueda,
+            rootMargin: '0px 0px 150px 0px',
+            threshold: 0.1
+        };
+
+        this.#observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !this.#cargando && this.#pagina_actual < this.#total_paginas) {
+                    this.#pagina_actual++;
+                    this.#ejecutar_busqueda(true);
+                }
+            });
+        }, opciones);
+
+        this.#observer.observe(centinela);
     }
 
     async #insertar_parametros() {
@@ -54,15 +79,6 @@ export default class Busqueda_controller extends Utils {
         this._llenar_select(document.getElementById('select-periodo'), [{ nombre: 'Todos los períodos', id: '' }, ...periodos], 'Todos los períodos');
         this._llenar_select(document.getElementById('select-grado'), [{ nombre: 'Todos los grados', id: '' }, ...grados], 'Todos los grados');
         this._llenar_select(document.getElementById('select-seccion'), [{ nombre: 'Todas las secciones', id: '' }, ...secciones], 'Todas las secciones');
-    }
-
-    #paginacion() {
-        const llego_al_final = (this.#contenedor_tabla_busqueda.scrollTop + this.#contenedor_tabla_busqueda.clientHeight) >= (this.#contenedor_tabla_busqueda.scrollHeight - 20);
-
-        if (llego_al_final && !this.#cargando && this.#pagina_actual < this.#total_paginas) {
-            this.#pagina_actual++;
-            this.#ejecutar_busqueda(true);
-        }
     }
 
     async #resetear_filtros() {
@@ -76,6 +92,7 @@ export default class Busqueda_controller extends Utils {
         await this.#ejecutar_busqueda(false);
 
         this.#btn_limpiar_filtros.disabled = false;
+        this.#configurar_observer();
     }
 
     async #filtrar_busqueda() {
@@ -98,6 +115,8 @@ export default class Busqueda_controller extends Utils {
         setTimeout(() => {
             this.#btn_buscar.disabled = false;
         }, 300);
+
+        this.#configurar_observer();
     }
 
     async #ejecutar_busqueda(concatenar = false) {
@@ -119,18 +138,18 @@ export default class Busqueda_controller extends Utils {
             pagina: this.#pagina_actual
         };
 
-        const resultado = await this._enviar_datos('./api.php?controller=busqueda_controller&action=buscar_coincidencias', data);
+        const {estudiantes, paginacion} = await this._enviar_datos('./api.php?controller=busqueda_controller&action=buscar_coincidencias', data);
 
         this.#cargando = false;
 
-        if (!resultado || Object.keys(resultado).length === 0) {
+        if (!estudiantes || Object.keys(paginacion).length === 0) {
             if (!concatenar) {
                 this.#tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger">Error al consultar registros</td></tr>`;
             }
             return;
         }
 
-        const { estudiantes = [], total_paginas = 1, total = 0 } = resultado;
+        this.#total_paginas = paginacion.total_paginas;
 
         if (estudiantes.length === 0 && !concatenar) {
             this.#tbody.innerHTML = `
@@ -143,9 +162,7 @@ export default class Busqueda_controller extends Utils {
             return;
         }
 
-        this.#total_paginas = total_paginas;
-        this.#badge_total_resultados.textContent = `${total} Registros`;
-
+        this.#badge_total_resultados.textContent = `${paginacion.total} Registros`;
 
         const filas_HTML = estudiantes.map(e => {
             const cedula = e.est_cedula_identidad ? `${e.est_nacionalidad || 'V'}-${e.est_cedula_identidad}` : (e.est_cedula_escolar || 'N/P');
@@ -156,7 +173,7 @@ export default class Busqueda_controller extends Utils {
             return `
                 <tr>
                     <td class="ps-3 py-2.5 fw-semibold text-secondary align-middle">${cedula}</td>
-                    <td class="py-2.5 fw-bold text-dark align-middle">${estudiante_nombre}</td>                
+                    <td class="py-2.5 fw-bold text-dark align-middle">${estudiante_nombre}</td>            
                     <td class="py-2.5 align-middle">
                         <span class="d-block text-dark">${rep_nombre}</span>
                         <small class="text-muted">${e.rep_telefono_movil ?? ''}</small>
@@ -170,10 +187,20 @@ export default class Busqueda_controller extends Utils {
                 </tr>`;
         }).join('');
 
+        const centinela_HTML = `
+            <tr id="fila-centinela">
+                <td colspan="5" class="text-center py-3 text-muted border-0">
+                    <small>${this.#pagina_actual < this.#total_paginas ? 'Cargando más registros...' : 'No hay más registros'}</small>
+                </td>
+            </tr>`;
+
         if (concatenar) {
-            this.#tbody.insertAdjacentHTML('beforeend', filas_HTML);
+            const centinelaEl = document.getElementById('fila-centinela');
+            if (centinelaEl) centinelaEl.remove();
+
+            this.#tbody.insertAdjacentHTML('beforeend', filas_HTML + centinela_HTML);
         } else {
-            this.#tbody.innerHTML = filas_HTML;
+            this.#tbody.innerHTML = filas_HTML + centinela_HTML;
         }
 
         this.#tbody.querySelectorAll('.btn-buscar-data-estudiante').forEach(btn => {
@@ -191,6 +218,10 @@ export default class Busqueda_controller extends Utils {
                 this._notificacion('algo ha salido mal');
             };
         });
+
+        if (this.#pagina_actual < this.#total_paginas) {
+            this.#configurar_observer();
+        }
     }
 
     #mostrar_expediente(data) {

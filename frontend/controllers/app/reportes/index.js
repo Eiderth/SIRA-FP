@@ -8,6 +8,7 @@ export default class Reportes_controlller extends Utils {
     #btn_filtrar_reportes;
     #btn_limpiar_filtros;
     #contenedor_tabla_reportes;
+    #observer = null; 
 
     #pagina_actual = 1;
     #total_paginas = 1;
@@ -17,7 +18,7 @@ export default class Reportes_controlller extends Utils {
     constructor() {
         super();
         this.#html = this._traer_html('./frontend/views/app/reportes/index.html');
-    }  
+    }   
 
     async init() {
         const html = await this.#html;
@@ -32,24 +33,39 @@ export default class Reportes_controlller extends Utils {
         this.#contenedor_tabla_reportes = document.getElementById('contenedor-tabla-reportes');
 
         await this.#cargar_parametros_iniciales();
-        this.#cargar_reportes(); // Carga inicial leyendo el formulario directamente
+        await this.#cargar_reportes(false); 
 
-        // Eventos principales
         this.#btn_filtrar_reportes.addEventListener('click', () => this.#filtrar_reportes());
         this.#btn_limpiar_filtros.addEventListener('click', () => this.#resetear_filtros());
-        this.#contenedor_tabla_reportes.addEventListener('scroll', () => this.#paginacion());
         document.getElementById('btn-exportar-reporte').addEventListener('click', () => this.#exportar_reporte());
 
         this.#configurar_eventos_ubicacion();
     }
 
-    #paginacion() {
-        const llego_al_final = (this.#contenedor_tabla_reportes.scrollTop + this.#contenedor_tabla_reportes.clientHeight) >= (this.#contenedor_tabla_reportes.scrollHeight - 20);
+    #configurar_observer() {
+        const centinela = document.getElementById('fila-centinela');
+        if (!centinela) return;
 
-        if (llego_al_final && !this.#cargando && this.#pagina_actual < this.#total_paginas) {
-            this.#pagina_actual++;
-            this.#cargar_reportes(true);
+        if (this.#observer) {
+            this.#observer.disconnect();
         }
+
+        const opciones = {
+            root: this.#contenedor_tabla_reportes,
+            rootMargin: '0px 0px 150px 0px',
+            threshold: 0.1
+        };
+
+        this.#observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !this.#cargando && this.#pagina_actual < this.#total_paginas) {
+                    this.#pagina_actual++;
+                    this.#cargar_reportes(true);
+                }
+            });
+        }, opciones);
+
+        this.#observer.observe(centinela);
     }
 
     async #cargar_parametros_iniciales() {
@@ -122,7 +138,8 @@ export default class Reportes_controlller extends Utils {
 
         await this.#cargar_parametros_iniciales();
         this.#pagina_actual = 1;
-        await this.#cargar_reportes();
+        this.#contenedor_tabla_reportes.scrollTop = 0;
+        await this.#cargar_reportes(false);
 
         this.#btn_limpiar_filtros.disabled = false;    
     }
@@ -135,7 +152,9 @@ export default class Reportes_controlller extends Utils {
 
         await this.#cargar_reportes(false);
 
-        this.#btn_filtrar_reportes.disabled = false;
+        setTimeout(() => {
+            this.#btn_filtrar_reportes.disabled = false;
+        }, 300);
     }
 
     async #cargar_reportes(concatenar = false) {
@@ -155,24 +174,22 @@ export default class Reportes_controlller extends Utils {
         const filtros_actuales = Object.fromEntries(new FormData(this.#formulario_filtrar_reportes));
         this._limpiar_objeto(filtros_actuales);
 
-        const respuesta = await this._enviar_datos(
+        const {inscripciones, paginacion} = await this._enviar_datos(
             './api.php?controller=reportes_controller&action=filtrar_reportes', 
             {
                 ...filtros_actuales,
-                pagina: this.#pagina_actual   
+                pagina: this.#pagina_actual    
             }
         );
 
         this.#cargando = false;
 
-        if (!respuesta || !respuesta.inscripciones || !respuesta.paginacion) {
+        if (!inscripciones || Object.keys(paginacion) === 0) {
             if (!concatenar) {
                 this.#tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Error al cargar listado</td></tr>`;
             }
             return;
         }
-
-        const { inscripciones, paginacion } = respuesta;
 
         this.#total_paginas = paginacion.total_paginas;
         this.#badgeTotal.textContent = `${paginacion.total_registros} registros`;
@@ -190,12 +207,9 @@ export default class Reportes_controlller extends Utils {
                 ? 'bg-success-subtle text-success' 
                 : 'bg-warning-subtle text-secondary';
 
-            const numero_fila = ((this.#pagina_actual - 1) * paginacion.limite) + (index + 1);
-
             return `
                 <tr data-id="${i.id_inscripcion}">
-                    <td class="ps-2 py-2 text-secondary fw-bold align-middle">${numero_fila}</td>
-                    <td class="py-2 align-middle font-monospace fw-semibold">${doc}</td>
+                    <td class="ps-2 py-2 align-middle font-monospace fw-semibold">${doc}</td>
                     <td class="py-2 align-middle text-dark fw-bold">${nombre_completo}</td>
                     <td class="py-2 align-middle"><span class="badge bg-light text-dark border">${i.periodo || 'N/P'}</span></td>
                     <td class="py-2 align-middle fw-semibold">${grado_seccion}</td>
@@ -208,13 +222,32 @@ export default class Reportes_controlller extends Utils {
                 </tr>`;
         }).join('');
 
+        const hay_mas = this.#pagina_actual < this.#total_paginas;
+        const centinela_HTML = `
+            <tr id="fila-centinela">
+                <td colspan="7" class="text-center py-3 text-muted border-0">
+                    <small>${hay_mas ? 'Cargando más registros...' : 'No hay más registros'}</small>
+                </td>
+            </tr>`;
+
         if (concatenar) {
-            this.#tbody.insertAdjacentHTML('beforeend', filas_HTML);
+            const centinelaEl = document.getElementById('fila-centinela');
+            if (centinelaEl) centinelaEl.remove();
+
+            this.#tbody.insertAdjacentHTML('beforeend', filas_HTML + centinela_HTML);
         } else {
-            this.#tbody.innerHTML = filas_HTML;
+            this.#tbody.innerHTML = filas_HTML + centinela_HTML;
         }
 
-        document.querySelectorAll('.btn-generar-pdf').forEach(btn => {
+        this.#inicializar_botones_pdf();
+
+        if (hay_mas) {
+            this.#configurar_observer();
+        }
+    }
+
+    #inicializar_botones_pdf() {
+        this.#tbody.querySelectorAll('.btn-generar-pdf').forEach(btn => {
             btn.onclick = (e) => {
                 const id = e.currentTarget.getAttribute('data-id');
                 this.#generar_pdf(id);
@@ -300,7 +333,6 @@ export default class Reportes_controlller extends Utils {
             }
 
             // --- REPRESENTANTE SECUNDARIO (Si existe) ---
-            const repSec = datos.representante_secundario;
             if (repSec) {
                 d.getElementById('p2-rep-ci').textContent = `${repSec.nacionalidad || 'V'}-${repSec.cedula_identidad || ''}`;
                 d.getElementById('p2-rep-nombre').textContent = `${repSec.nombre_1 || ''} ${repSec.apellido_1 || ''}`.trim();

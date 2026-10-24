@@ -89,7 +89,6 @@ class Reportes_controller {
             'inscripciones' => $inscripciones,
             'paginacion'    => [
                 'pagina_actual'   => $pagina,
-                'limite'          => $limite,
                 'total_registros' => $total_registros,
                 'total_paginas'   => max(1, (int)$total_paginas)
             ]

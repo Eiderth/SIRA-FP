@@ -185,8 +185,7 @@
             <table class="table table-sm table-hover align-middle m-0 text-nowrap">
                 <thead class="table-dark small text-uppercase">
                     <tr>
-                        <th scope="col" class="py-2 ps-3" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">#</th>
-                        <th scope="col" class="py-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Cédula / Escolar</th>
+                        <th scope="col" class="py-2 ps-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Cédula / Escolar</th>
                         <th scope="col" class="py-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Estudiante</th>
                         <th scope="col" class="py-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Período Académico</th>
                         <th scope="col" class="py-2" style="position: sticky; top: 0; z-index: 2; background-color: #212529;">Grado y Sección</th>
@@ -195,10 +194,9 @@
                     </tr>
                 </thead>
                 <tbody id="tabla-inscritos-body" class="small">
-                    <tr>
-                        <td colspan="7" class="text-center py-5 text-secondary">
-                            <div class="spinner-border spinner-border-sm me-2 text-primary" role="status"></div>
-                            Cargando listado y aplicando filtros...
+                    <tr id="fila-centinela">
+                        <td colspan="5" class="text-center py-3 text-muted border-0">
+                            <small>Cargando más registros...</small>
                         </td>
                     </tr>
                 </tbody>

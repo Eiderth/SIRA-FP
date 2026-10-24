@@ -55,9 +55,11 @@ class Busqueda_controller {
         echo json_encode([
             'estado' => 'completado',
             'estudiantes' => $estudiantes,
-            'total' => $total_registros,
-            'total_paginas' => max(1, (int)$total_paginas),
-            'pagina_actual' => $pagina
+            'paginacion' => [
+                'total' => $total_registros,
+                'total_paginas' => max(1, (int)$total_paginas),
+                'pagina_actual' => $pagina
+            ]
             
         ]);
     }
