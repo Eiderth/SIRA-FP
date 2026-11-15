@@ -81,7 +81,6 @@ class Inscripcion_controller {
             $input['estudiante']['persona']['cedula_identidad'] = null;
         }
 
-
         if(strlen($input['representante_secundario']['persona']['cedula_identidad'] ?? '') < 6) {
             $input['representante_secundario']['persona']['cedula_identidad'] = null;
         }
@@ -135,7 +134,6 @@ class Inscripcion_controller {
                     ) ? : null;
                 }
             }
-
 
             if (empty($estudiante_id)) {
 
@@ -212,6 +210,7 @@ class Inscripcion_controller {
                 }
             }
 
+
             if (!empty($estudiante_id)) {
                 
                 $this->modelo->actualizar_estudiante(
@@ -222,12 +221,13 @@ class Inscripcion_controller {
                 );
 
             } else {
-                
+   
                 $estudiante_id = $this->modelo->guardar_estudiante(
                     $input['estudiante'], 
                     $representante_principal_id, 
                     $representante_secundario_id
                 );
+
             }
 
             $llave_inscripcion = $this->modelo->procesar_periodo_inscripcion($input['inscripcion'], $estudiante_id);
@@ -245,7 +245,7 @@ class Inscripcion_controller {
             $this->modelo->revertir_transaccion();
             echo json_encode([
                 'estado' => 'error',
-                'mensaje' => 'Error desconocido',
+                'mensaje' => 'Error EN CATCH',
                 'error' => $e->getMessage()
             ]);
         }

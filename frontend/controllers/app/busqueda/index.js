@@ -214,8 +214,7 @@ export default class Busqueda_controller extends Utils {
                     this.#mostrar_expediente(resp);
                     return;
                 }
-
-                this._notificacion('algo ha salido mal');
+                
             };
         });
 

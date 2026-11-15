@@ -65,51 +65,6 @@ trait Representante {
         ];
     }
 
-    public function obtener_representante_completo($clave, $valor) {
-        $sql = "SELECT 
-                    pr.id AS representante_id, pr.parentesco, pr.ingreso_mensual, pr.telefono_movil, 
-                    pr.correo_electronico, pr.profesion, pr.estado_civil, 
-                    pr.empresa_trabajo, p.direccion_id,
-                    p.id AS persona_id, p.nacionalidad, p.cedula_identidad, p.nombre_1, p.nombre_2, 
-                    p.apellido_1, p.apellido_2, p.fecha_nacimiento, p.sexo
-                FROM PERSONA_REPRESENTANTE pr
-                INNER JOIN PERSONA p ON pr.persona_id = p.id
-                WHERE pr.id = :id LIMIT 1";
-
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$clave => $valor]);
-        $rep_completo = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$rep_completo) {
-            return null;
-        }
-
-        return [
-            'persona_representante' => [
-                'id' => $rep_completo['representante_id'],
-                'parentesco' => $rep_completo['parentesco'],
-                'ingreso_mensual' => $rep_completo['ingreso_mensual'],
-                'telefono_movil' => $rep_completo['telefono_movil'],
-                'correo_electronico' => $rep_completo['correo_electronico'],
-                'profesion' => $rep_completo['profesion'],
-                'estado_civil' => $rep_completo['estado_civil'],
-                'empresa_trabajo' => $rep_completo['empresa_trabajo'],
-                'direccion_id' => $rep_completo['direccion_id']
-            ],
-            'persona' => [
-                'id' => $rep_completo['persona_id'],
-                'nacionalidad' => $rep_completo['nacionalidad'],
-                'cedula_identidad' => $rep_completo['cedula_identidad'],
-                'nombre_1' => $rep_completo['nombre_1'],
-                'nombre_2' => $rep_completo['nombre_2'],
-                'apellido_1' => $rep_completo['apellido_1'],
-                'apellido_2' => $rep_completo['apellido_2'],
-                'fecha_nacimiento' => $rep_completo['fecha_nacimiento'],
-                'sexo' => $rep_completo['sexo']
-            ]
-        ];
-    }
-
     public function obtener_ingresos_mensuales_representantes($clave = null, $condicion = null) {
         $sql = "SELECT ingreso_mensual FROM PERSONA_REPRESENTANTE";
         $parametros = [];

@@ -36,7 +36,38 @@ trait Inscripcion {
 		return (int) $stmt->fetchColumn() === 1;
 	}
 
-    public function buscar_planilla_inscripcion($id){
+    public function obtener_historial_inscripciones_estudiante($id) {
+        
+        $stmt = $this->db->prepare("
+            SELECT i.*, p_est.nombre_1 as nombre_estudiante, p_est.apellido_1 as apellido_estudiante,
+            p_rep_1.nombre_1 as nombre_representante_principal, p_rep_1.apellido_1 as apellido_representante_principal,
+            p_rep_2.nombre_1 as nombre_representante_secundario, p_rep_2.apellido_1 as apellido_representante_secundario,
+            g.nombre as grado, s.nombre as seccion, pa.nombre as periodo_academico
+            FROM INSCRIPCION i 
+            INNER JOIN PERSONA_ESTUDIANTE est ON i.estudiante_id = est.id
+            INNER JOIN PERSONA p_est ON est.persona_id = p_est.id
+            
+            INNER JOIN PERSONA_REPRESENTANTE rep_1 ON est.representante_principal_id = rep_1.id
+            INNER JOIN PERSONA p_rep_1 ON rep_1.persona_id = p_rep_1.id
+
+            LEFT JOIN PERSONA_REPRESENTANTE rep_2 ON est.representante_secundario_id = rep_2.id
+            LEFT JOIN PERSONA p_rep_2 ON rep_2.persona_id = p_rep_2.id
+
+            INNER JOIN GRADO_SECCION gs ON i.grado_seccion_id = gs.id
+            INNER JOIN GRADO g ON gs.grado_id = g.id
+            INNER JOIN SECCION s ON gs.seccion_id = s.id
+            INNER JOIN PERIODO_ACADEMICO pa ON i.periodo_academico_id = pa.id
+
+            WHERE est.id = :id
+        ");
+
+        $stmt->execute(['id' => $id]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    }
+
+    public function obtener_planilla_inscripcion($id){
         $stmt = $this->db->prepare("
             SELECT 
                 i.*, 

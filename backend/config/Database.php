@@ -24,6 +24,4 @@
         }
     }
 
-    // $db = Database::getInstance()
-
 ?>

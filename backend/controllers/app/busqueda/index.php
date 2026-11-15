@@ -79,22 +79,29 @@ class Busqueda_controller {
                 $resultados['estudiante'] = $datos_estudiante;
 
                 if (!empty($rep_principal_id)) {
-                    $resultados['representante_principal'] = $this->modelo->obtener_representante_completo('id',$rep_principal_id);
+                    $resultados['representante_principal'] = $this->modelo->obtener_datos_representante('id',$rep_principal_id);
                 }
 
                 if (!empty($rep_secundario_id)) {
-                    $resultados['representante_secundario'] = $this->modelo->obtener_representante_completo('id',$rep_secundario_id);
+                    $resultados['representante_secundario'] = $this->modelo->obtener_datos_representante('id',$rep_secundario_id);
                 }
+
             }
-        } 
+        }
 
-        http_response_code(200);
-        echo json_encode([
-            'estado' => 'completado', 
-            ...$resultados
-        ]);
+        if (!empty($resultados['estudiante']) && !empty($resultados['representante_principal'])) {
+            http_response_code(200);
+            echo json_encode([
+                'estado' => 'completado', 
+                ...$resultados
+            ]);   
+        } else {
+            http_response_code(404);
+            echo json_encode([
+                'estado' => 'error', 
+                'error' => 'estudiante no encontrado, posible error en la base de datos'
+            ]); 
+        }
+
     }
-    
-
-    
 }

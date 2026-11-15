@@ -97,7 +97,7 @@ class Reportes_controller {
 
   private function detalles_planilla($id) {
         try {
-            $registro = $this->modelo->buscar_planilla_inscripcion($id);
+            $registro = $this->modelo->obtener_planilla_inscripcion($id);
 
             if ($registro) {
                 http_response_code(200);

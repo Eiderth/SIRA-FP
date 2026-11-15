@@ -77,7 +77,7 @@ trait Estudiante  {
         	if (!empty($persona['id'])) $persona_estudiante = $this->buscar_todo('PERSONA_ESTUDIANTE', 'persona_id', $persona['id']);
         } 
         
-        if ($key === 'cedula_escolar') { //alfo anda mal aqui
+        if ($key === 'cedula_escolar') { 
 	        $persona_estudiante = $this->buscar_todo('PERSONA_ESTUDIANTE','cedula_escolar', $value);
         	if (!empty($persona_estudiante['persona_id'])) $persona = $this->buscar_todo('PERSONA', 'id', $persona_estudiante['persona_id']);
         } 
