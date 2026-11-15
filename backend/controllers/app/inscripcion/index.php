@@ -75,11 +75,14 @@ class Inscripcion_controller {
 
             //=== Validaciones ===    
 
-        $input['estudiante']['persona_estudiante']['cedula_escolar'] = $this->modelo->crear_cedula_escolar($input);
-
         if(strlen($input['estudiante']['persona']['cedula_identidad'] ?? '') < 6) {
             $input['estudiante']['persona']['cedula_identidad'] = null;
         }
+
+        if(strlen($input['estudiante']['persona_estudiante']['cedula_escolar'] ?? '') < 11) {
+            $input['estudiante']['persona']['cedula_escolar'] = null;
+        }
+
 
         if(strlen($input['representante_secundario']['persona']['cedula_identidad'] ?? '') < 6) {
             $input['representante_secundario']['persona']['cedula_identidad'] = null;
@@ -136,6 +139,10 @@ class Inscripcion_controller {
             }
 
             if (empty($estudiante_id)) {
+
+                if (empty($input['estudiante']['persona_estudiante']['cedula_escolar'])){
+                    $input['estudiante']['persona_estudiante']['cedula_escolar'] = $this->modelo->crear_cedula_escolar($input);
+                } 
 
                 $estudiante_id = $this->modelo->buscar_valor(
                     'id', 

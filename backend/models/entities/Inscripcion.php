@@ -7,7 +7,12 @@ trait Inscripcion {
     //=== Metodos para el manejo de inscripciones ===
 
 	public function crear_cedula_escolar($data) {
-		return "{$data['estudiante']['persona']['nacionalidad']}{$data['estudiante']['persona']['fecha_nacimiento'][2]}{$data['estudiante']['persona']['fecha_nacimiento'][3]}{$data['estudiante']['persona_estudiante']['numero_hijo']}{$data['representante_principal']['persona']['cedula_identidad']}";
+
+        $nacionalidad = strtoupper($data['estudiante']['persona']['nacionalidad']);
+        $anio_nac = date('y', strtotime($data['estudiante']['persona']['fecha_nacimiento']));
+        $num_hijo = $data['estudiante']['persona_estudiante']['numero_hijo'];
+        $cedula_pad = str_pad($data['representante_principal']['persona']['cedula_identidad'], 8, '0', STR_PAD_LEFT);
+        return "{$nacionalidad}{$anio_nac}{$num_hijo}{$cedula_pad}";
 	}
 
 	public function procesar_periodo_inscripcion($data_inscripcion, $estudiante_id) {
