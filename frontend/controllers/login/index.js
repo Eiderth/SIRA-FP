@@ -19,6 +19,8 @@ export default class Login_controller extends Utils {
         const html = await this.#html;
         await this._inyectar_html(this.#root, html);
 
+        const icon =  new Image();
+        icon.src = './frontend/assets/img/icon-512.webp';
         const splash = document.getElementById("splash-screen");
         const wrapper = document.getElementById("splash-wrapper");
 
