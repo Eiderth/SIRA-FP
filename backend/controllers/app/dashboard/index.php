@@ -15,17 +15,16 @@ class Dashboard_controller
 			case 'obtener_datos_resumen':
 				$this->obtener_datos_resumen();
 				break;
-			
-			default:
-				// code...
-				break;
 		}
 	}
 
 	private function obtener_datos_resumen(){
 
 		$ingresos_mensuales = $this->modelo->obtener_ingresos_mensuales_representantes();
-		$promedio_ingresos = array_sum(array_column($ingresos_mensuales, 'ingreso_mensual')) /count($ingresos_mensuales);
+		
+		$divisor = count($ingresos_mensuales);
+		$promedio_ingresos =  $divisor !== 0 ? round(array_sum($ingresos_mensuales)/$divisor, 2) : 0;
+		
 		$periodo_id = $this->modelo->buscar_valor('id', 'PERIODO_ACADEMICO', 'estado', 'Activo');
 
 		echo json_encode([

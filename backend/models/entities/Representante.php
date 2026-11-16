@@ -76,7 +76,7 @@ trait Representante {
 
         $stmt =  $this->db->prepare($sql);
         $stmt->execute($parametros);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);         
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);         
     }
 
     public function obtener_profesiones($limit = null) {
