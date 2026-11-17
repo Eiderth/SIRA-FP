@@ -128,8 +128,6 @@ export default class Inscripcion_controller extends Utils {
          this._data.estudiante.persona = Object.fromEntries(new FormData(document.getElementById('formulario-persona')));
          this._data.estudiante.persona_estudiante = Object.fromEntries(new FormData(document.getElementById('formulario-persona-estudiante')));
 
-         console.log(this._data);
-
          const grado_encontrado = this.#parametros_formulario.grados_secciones.find(
             gs => gs.grado_id == this._data.inscripcion.grado_id && gs.seccion_id == this._data.inscripcion.seccion_id
          );

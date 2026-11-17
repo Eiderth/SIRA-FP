@@ -80,9 +80,8 @@ class Inscripcion_controller {
         }
 
         if(strlen($input['estudiante']['persona_estudiante']['cedula_escolar'] ?? '') < 11) {
-            $input['estudiante']['persona']['cedula_escolar'] = null;
+            $input['estudiante']['persona_estudiante']['cedula_escolar'] = null;
         }
-
 
         if(strlen($input['representante_secundario']['persona']['cedula_identidad'] ?? '') < 6) {
             $input['representante_secundario']['persona']['cedula_identidad'] = null;
