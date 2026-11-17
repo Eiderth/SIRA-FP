@@ -230,7 +230,7 @@ export default class Busqueda_controller extends Utils {
         const val = (valor, fallback = 'No registra') => (valor !== null && valor !== undefined && valor !== '') ? valor : fallback;
         const mapeo = {
             'estudiante_nombre_completo': `${data.estudiante.persona.nombre_1} ${data.estudiante.persona.nombre_2 || ''} ${data.estudiante.persona.apellido_1} ${data.estudiante.persona.apellido_2 || ''}`.trim(),
-            'estudiante_cedula_completa': `${data.estudiante.persona.nacionalidad}-${data.estudiante.persona.cedula_identidad}`,
+            'estudiante_cedula_completa': `${data.estudiante.persona.cedula_identidad ? data.estudiante.persona.nacionalidad + '-' + data.estudiante.persona.cedula_identidad : 'N/A'}`,
             'estudiante_cedula_escolar': val(data.estudiante.persona_estudiante.cedula_escolar),
             'estudiante_estado': val(data.estudiante.persona_estudiante.estado),
             'persona.nombre_1': val(data.estudiante.persona.nombre_1),
