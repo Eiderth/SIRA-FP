@@ -117,40 +117,7 @@ class Inscripcion_controller {
             $representante_principal_id = null;
             $representante_secundario_id = null;
 
-            if (!empty($input['estudiante']['persona']['cedula_identidad'])) {
-                
-                $persona_id = $this->modelo->buscar_valor(
-                    'id', 
-                    'PERSONA', 
-                    'cedula_identidad', 
-                    $input['estudiante']['persona']['cedula_identidad'] 
-                ) ? : null;
-                
-                if (!empty($persona_id)) {
-                    
-                    $estudiante_id = $this->modelo->buscar_valor(
-                        'id', 
-                        'PERSONA_ESTUDIANTE', 
-                        'persona_id', 
-                        $persona_id 
-                    ) ? : null;
-                }
-            }
-
-            if (empty($estudiante_id)) {
-
-                if (empty($input['estudiante']['persona_estudiante']['cedula_escolar'])){
-                    $input['estudiante']['persona_estudiante']['cedula_escolar'] = $this->modelo->crear_cedula_escolar($input);
-                } 
-
-                $estudiante_id = $this->modelo->buscar_valor(
-                    'id', 
-                    'PERSONA_ESTUDIANTE', 
-                    'cedula_escolar', 
-                    $input['estudiante']['persona_estudiante']['cedula_escolar']
-                ) ? : null;
-
-            }
+            $estudiante_id = $this->modelo->buscar_id_estudiante($input['estudiante']['persona'], $input['estudiante']['persona_estudiante']);
 
             if($estudiante_id) {      
                 $existe_registro_periodo = $this->modelo->verificar_inscripcion(
@@ -227,6 +194,7 @@ class Inscripcion_controller {
                 );
 
             } else {
+                $input['estudiante']['persona_estudiante']['cedula_escolar'] = $this->modelo->crear_cedula_escolar($input);
    
                 $estudiante_id = $this->modelo->guardar_estudiante(
                     $input['estudiante'], 
@@ -238,11 +206,13 @@ class Inscripcion_controller {
 
             $llave_inscripcion = $this->modelo->procesar_periodo_inscripcion($input['inscripcion'], $estudiante_id);
 
+            $cedula_escolar = $this->modelo->buscar_valor('cedula_escolar', 'PERSONA_ESTUDIANTE', 'id', $estudiante_id);
+
             $this->modelo->confirmar_transaccion();
 
             echo json_encode([
                 'estado' => 'completado',
-                'cedula_escolar' => $input['estudiante']['persona_estudiante']['cedula_escolar'],
+                'cedula_escolar' => $cedula_escolar,
                 'llave_inscripcion' => $llave_inscripcion
             ]);
 

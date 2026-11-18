@@ -66,6 +66,36 @@ trait Estudiante  {
 
 	}
 
+	public function buscar_id_estudiante($persona, $persona_estudiante) {
+		
+		$parametros = [
+			':nombre_1' => $persona['nombre_1'],
+			':apellido_1' => $persona['apellido_1'],
+			':fecha_nacimiento' => $persona['fecha_nacimiento']
+		];
+
+		$sql = "SELECT pe.id FROM PERSONA_ESTUDIANTE pe 
+		 INNER JOIN PERSONA p ON p.id = pe.persona_id 
+		 WHERE p.nombre_1 = :nombre_1 
+		 AND p.apellido_1 = :apellido_1 
+		 AND p.fecha_nacimiento = :fecha_nacimiento
+		";
+
+		if (!empty($persona['cedula_identidad']) ) {
+			$parametros[':cedula_identidad'] = $persona['cedula_identidad'];
+			$sql .= " AND (p.cedula_identidad = :cedula_identidad OR p.cedula_identidad IS NULL OR p.cedula_identidad = '')";
+		}
+
+		if (!empty($persona_estudiante['cedula_escolar']) ) {
+			$parametros[':cedula_escolar'] = $persona_estudiante['cedula_escolar'];	
+			$sql .= " AND pe.cedula_escolar = :cedula_escolar";
+		}
+
+		$stmt = $this->db->prepare($sql);
+		$stmt->execute($parametros);
+		return $stmt->fetchColumn();
+	}
+
 
 	public function obtener_datos_estudiante($key, $value) {
 
